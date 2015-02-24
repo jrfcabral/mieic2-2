@@ -62,7 +62,7 @@ public class Posicao {
 	{
 		int dx = Math.abs(this.x - posicao.x), dy = Math.abs(this.y - posicao.y);
 		
-		System.out.println(Integer.toString(dx));
+		
 		return (dx + dy)*(dx+dy) == 1; 		 
 		
 	}

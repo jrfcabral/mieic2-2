@@ -1,6 +1,7 @@
 package labirinto;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class Tabuleiro {
 	private static final char ESPACO = ' ';
@@ -62,6 +63,8 @@ public class Tabuleiro {
 	public char getCellSymbol(Posicao posicao)
 	{
 		if (posicao.equals(this.heroi.getPosicao())) return heroi.getType();
+		else if (posicao.equals(this.espada.getPosicao()) && posicao.equals(this.dragao.getPosicao()))
+			return espada.getType();
 		else if (posicao.equals(this.espada.getPosicao())) return espada.getType();
 		else if (posicao.equals(this.dragao.getPosicao())) return dragao.getType();
 		else return mapa[posicao.getX()][posicao.getY()];
@@ -70,6 +73,9 @@ public class Tabuleiro {
 	//wasd:mover heroi
 	public void handleInput(char input)
 	{
+		if (input == '\n')
+			return;
+	
 		Posicao novaPosicao = this.heroi.getPosicao().novaPosicao(input);
 		if (this.validPosition(novaPosicao))
 			heroi.setPosicao(novaPosicao);
@@ -82,7 +88,17 @@ public class Tabuleiro {
 		if (heroi.getType() == HEROI_ARMADO && heroi.getPosicao().getX() == 5 && heroi.getPosicao().getY() == 9)
 			done = true;
 		
-		if (dragao.getPosicao().isAdjacente(heroi.getPosicao()) && dragao.getType() == DRAGAO)
+		//mover dragao
+		Posicao novaDragao;		
+		Random r = new Random();
+		do
+		{
+			novaDragao = dragao.getPosicao().getAdjacencias()[r.nextInt(4)]; //escolher adjacencia aleatoria			
+		}while(!validPosition(novaDragao)); 
+		dragao.setPosicao(novaDragao);
+		
+		//verificar proximidade
+		if ( (dragao.getPosicao().equals(heroi.getPosicao()) ||dragao.getPosicao().isAdjacente(heroi.getPosicao())) && dragao.getType() == DRAGAO)
 		{
 			if (heroi.getType() == HEROI_ARMADO)
 				dragao.setType(ESPACO);
@@ -100,6 +116,8 @@ public class Tabuleiro {
 	private boolean validPosition(Posicao posicao)
 	{
 		if (this.mapa[posicao.getX()][posicao.getY()] == PAREDE)
+			return false;
+		else if (posicao.getX() > 9 || posicao.getX() < 0 || posicao.getY() > 9 || posicao.getY() < 0)
 			return false;
 		return true;
 	}
