@@ -82,9 +82,18 @@ public class Tabuleiro {
 		if (heroi.getType() == HEROI_ARMADO && heroi.getPosicao().getX() == 5 && heroi.getPosicao().getY() == 9)
 			done = true;
 		
-		Posicao[] adjacenciasDragao = dragao.getPosicao().getAdjacencias();
-		
-
+		if (dragao.getPosicao().isAdjacente(heroi.getPosicao()) && dragao.getType() == DRAGAO)
+		{
+			if (heroi.getType() == HEROI_ARMADO)
+				dragao.setType(ESPACO);
+			
+			else{
+				this.done = true;
+				this.perdeu= true;
+				heroi.setType(ESPACO);
+			}
+				
+		}
 			
 	}
 	

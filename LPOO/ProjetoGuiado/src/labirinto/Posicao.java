@@ -58,6 +58,14 @@ public class Posicao {
 	{
 		return posicao.x == this.x && posicao.y == this.y;			
 	}
+	public boolean isAdjacente(Posicao posicao)
+	{
+		int dx = Math.abs(this.x - posicao.x), dy = Math.abs(this.y - posicao.y);
+		
+		System.out.println(Integer.toString(dx));
+		return (dx + dy)*(dx+dy) == 1; 		 
+		
+	}
 	
 	public Posicao[] getAdjacencias()
 	{

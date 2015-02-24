@@ -19,7 +19,12 @@ public class Interface {
 			tabuleiro.handleInput(input);
 			
 		}while(!tabuleiro.isDone());
-		System.out.println("Venceu!");
+		
+		printTabuleiro(tabuleiro);
+		if (!tabuleiro.isPerdeu())
+			System.out.println("Venceu!");
+		else
+			System.out.println("Perdeu! :(");
 	}
 
 	private static void printTabuleiro(Tabuleiro tabuleiro) {
