@@ -5,9 +5,21 @@ import java.util.Stack;
 
 public class main {
 	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args){
+		char test[][] = generate(31);
+		
+		for(int i = 0; i < 31; i++){
+			for(int j = 0; j < 31; j++){
+				System.out.print(test[i][j]);
+			}
+			System.out.print("\n");
+		}
+	}
+	
+	
+	
+	public static char[][] generate(int side){
 			 
-		int side = 31;
 		char lab[][] = new char[side][side];
 		int vis = (side-1)/2;
 		char visited[][] = new char[vis][vis];
@@ -63,13 +75,13 @@ public class main {
 		}
 		
 		
-		//lab[guidedStartX][guidedStartY] = '+';
+
 		visited[(guidedStartX - 1 )/2][(guidedStartY - 1)/2] = '+';
 		currPos[0] = (guidedStartX - 1 )/2;
 		currPos[1] = (guidedStartY - 1)/2;
 		pushCoord(cellHist, (guidedStartX - 1 )/2, (guidedStartY - 1)/2);
 		
-		while(!cellHist.isEmpty()){
+		while(!cellHist.isEmpty()){ //Generating maze
 			int dir = rand.nextInt(4);
 
 			if(dir == 0 && (currPos[0]-1 >= 0 && visited[currPos[0]-1][currPos[1]] != '+')){ //up 
@@ -106,8 +118,8 @@ public class main {
 			visited[currPos[0]][currPos[1]] = '+';
 		}
 		
-		
-		for(int i = 0; i < side; i++){
+		return lab;
+		/*for(int i = 0; i < side; i++){
 			for(int j = 0; j < side; j++){
 				System.out.print(lab[i][j]);
 			}
@@ -123,7 +135,7 @@ public class main {
 			System.out.print("\n");
 		}
 		System.out.print(cellHist);
-		
+		*/
 	}
 		
 	public static void pushCoord(Stack st, int x, int y){
