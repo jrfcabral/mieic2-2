@@ -7,10 +7,11 @@ public class main {
 	
 	public static void main(String[] args) throws IOException{
 			 
-		int side = 7;
+		int side = 31;
 		char lab[][] = new char[side][side];
 		int vis = (side-1)/2;
 		char visited[][] = new char[vis][vis];
+		int currPos[] = new int[2];
 		Stack cellHist = new Stack();
 		
 		for(int i = 0; i < side; i++){ //Filling the labyrinth with walls
@@ -62,26 +63,48 @@ public class main {
 		}
 		
 		
-		lab[guidedStartX][guidedStartY] = '+';
+		//lab[guidedStartX][guidedStartY] = '+';
 		visited[(guidedStartX - 1 )/2][(guidedStartY - 1)/2] = '+';
-		
+		currPos[0] = (guidedStartX - 1 )/2;
+		currPos[1] = (guidedStartY - 1)/2;
 		pushCoord(cellHist, (guidedStartX - 1 )/2, (guidedStartY - 1)/2);
 		
 		while(!cellHist.isEmpty()){
-			/*aqui o ciclo d exploracao*/
-			System.out.print("Under Construction");
+			int dir = rand.nextInt(4);
+
+			if(dir == 0 && (currPos[0]-1 >= 0 && visited[currPos[0]-1][currPos[1]] != '+')){ //up 
+					currPos[0]--;
+					lab[2*currPos[0]+2][2*currPos[1]+1] = ' ';
+			}
+			else if(dir == 1 && (currPos[1]-1 >= 0 && visited[currPos[0]][currPos[1]-1] != '+')){ //left
+					currPos[1]--;
+					lab[2*currPos[0]+1][2*currPos[1]+2] = ' ';
+			}
+			else if(dir == 2 && (currPos[1]+1 < visited.length && visited[currPos[0]][currPos[1]+1] != '+')){ //right
+					currPos[1]++;
+					lab[2*currPos[0]+1][2*currPos[1]] = ' ';
+			}
+			else if(dir == 3 && (currPos[0]+1 < visited.length && visited[currPos[0]+1][currPos[1]] != '+')){ //down
+					currPos[0]++;
+					lab[2*currPos[0]][2*currPos[1]+1] = ' ';
+					
+			}
+			else{
+				if(currPos[0] - 1 < 0 || (currPos[0] - 1 >= 0 && visited[currPos[0]-1][currPos[1]] == '+')){
+					if(currPos[0] + 1 >= visited.length || (currPos[0] + 1 < visited.length && visited[currPos[0]+1][currPos[1]] == '+')){
+						if(currPos[1] - 1 < 0 || (currPos[1] - 1 >= 0 && visited[currPos[0]][currPos[1]-1] == '+')){
+							if( currPos[1] + 1 >= visited.length || (currPos[1] + 1 < visited.length && visited[currPos[0]][currPos[1]+1] == '+')){
+								currPos[0] = (int)cellHist.pop();
+								currPos[1] = (int)cellHist.pop();
+							}
+						}
+					}
+				}
+				continue;
+			}
+			pushCoord(cellHist, currPos[0], currPos[1]);
+			visited[currPos[0]][currPos[1]] = '+';
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		for(int i = 0; i < side; i++){
@@ -100,6 +123,7 @@ public class main {
 			System.out.print("\n");
 		}
 		System.out.print(cellHist);
+		
 	}
 		
 	public static void pushCoord(Stack st, int x, int y){
@@ -107,7 +131,7 @@ public class main {
 		st.push(x);
 	}
 	
-	public static void popCoord(Stack st){
+	public static void popCoord(Stack st){ //nunce e usada...
 		st.pop();
 		st.pop();
 	}
