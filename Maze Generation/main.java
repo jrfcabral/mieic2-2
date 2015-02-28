@@ -6,10 +6,11 @@ import java.util.Stack;
 public class main {
 	
 	public static void main(String[] args){
-		char test[][] = generate(31);
+		int size = 21;
+		char test[][] = generate(size);
 		
-		for(int i = 0; i < 31; i++){
-			for(int j = 0; j < 31; j++){
+		for(int i = 0; i < size; i++){
+			for(int j = 0; j < size; j++){
 				System.out.print(test[i][j]);
 			}
 			System.out.print("\n");
@@ -40,21 +41,7 @@ public class main {
 		
 		
 		Random rand = new Random(); 
-		int exitPlacement = rand.nextInt(101) + 1; //Placing exit on one of the walls
-		int exitCoord = rand.nextInt(side-2) + 1;
 		
-		if((exitPlacement % 4) ==  0){
-			lab[0][exitCoord] = 'S';
-		}
-		else if((exitPlacement % 3) == 0){
-			lab[exitCoord][0] = 'S';
-		}
-		else if((exitPlacement % 2) == 0){
-			lab[exitCoord][side-1] = 'S';
-		}
-		else{
-			lab[side-1][exitCoord] = 'S';
-		}
 		
 		for(int i = 0; i < side; i++){ //Poking holes in the maze
 			for(int j = 0; j < side; j++){
@@ -116,6 +103,35 @@ public class main {
 			}
 			pushCoord(cellHist, currPos[0], currPos[1]);
 			visited[currPos[0]][currPos[1]] = '+';
+		}
+		
+		int exitPlacement = rand.nextInt(101) + 1; //Placing exit on one of the walls
+		int exitCoord = rand.nextInt(side-2) + 1;
+		
+		if((exitPlacement % 4) ==  0){
+			if(lab[1][exitCoord] != ' ')
+				lab[0][exitCoord+1] = 'S';
+			else
+				lab[0][exitCoord] = 'S';
+		}
+		else if((exitPlacement % 3) == 0){
+			if(lab[exitCoord][1] != ' ')
+				lab[exitCoord+1][0] = 'S';
+			else
+				lab[exitCoord][0] = 'S';
+			
+		}
+		else if((exitPlacement % 2) == 0){
+			if(lab[exitCoord][side-2] != ' ')
+				lab[exitCoord+1][side-1] = 'S';
+			else
+				lab[exitCoord][side-1] = 'S';
+		}
+		else{
+			if(lab[side-2][exitCoord] != ' ')
+				lab[side-1][exitCoord+1] = 'S';
+			else
+				lab[side-1][exitCoord] = 'S';
 		}
 		
 		return lab;
