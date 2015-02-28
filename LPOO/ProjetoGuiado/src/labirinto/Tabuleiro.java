@@ -1,7 +1,7 @@
 package labirinto;
 
-import java.util.Arrays;
 import java.util.Random;
+import java.util.Stack;
 
 public class Tabuleiro {
 	private static final char ESPACO = ' ';
@@ -25,6 +25,8 @@ public class Tabuleiro {
 	private boolean done;
 	private boolean perdeu;
 	
+	private int dimensao;
+	
 	public boolean isPerdeu() {
 		return perdeu;
 	}
@@ -34,22 +36,32 @@ public class Tabuleiro {
 	}
 
 	
-	public Tabuleiro(){
-		this.mapa = new char[][]
-				{	{'x','x','x','x','x','x','x','x','x','x'},
-				{'x',' ',' ',' ',' ',' ',' ',' ',' ','x'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ',' ',' ',' ',' ',' ','x',' ','s'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ','x','x',' ',' ',' ',' ',' ','x'},
-				{'x','x','x','x','x','x','x','x','x','x'},
-			};
-		heroi = new Peca(new Posicao(1,1), HEROI);
-		espada = new Peca(new Posicao(8,1), ESPADA);
-		dragao = new Peca(new Posicao(2,4), DRAGAO);
+	public Tabuleiro(char[][] formatoTabuleiro, int dimensao)
+	{
+		this.mapa = formatoTabuleiro;		
+		this.dimensao = dimensao;
+		inicializarPecas();
+	}
+	
+
+	private void inicializarPecas() {		
+		
+		heroi = new Peca(getFreeCell(), HEROI);		
+		espada = new Peca(getFreeCell(), ESPADA);
+		dragao = new Peca(getFreeCell(), DRAGAO);
+	}
+
+	private Posicao getFreeCell() {
+		Random r = new Random();
+		int randx;
+		int randy;
+		do
+		{
+			randx = r.nextInt(dimensao);
+			randy = r.nextInt(dimensao);			
+		}while(getCellSymbol(randx, randy) != ' ');
+		
+		return new Posicao(randx, randy);
 	}
 	
 	public char getCellSymbol(int x, int y){
@@ -59,11 +71,11 @@ public class Tabuleiro {
 	
 	public char getCellSymbol(Posicao posicao)
 	{
-		if (posicao.equals(this.heroi.getPosicao())) return heroi.getType();
-		else if (posicao.equals(this.espada.getPosicao()) && posicao.equals(this.dragao.getPosicao()))
-			return espada.getType();
-		else if (posicao.equals(this.espada.getPosicao())) return espada.getType();
-		else if (posicao.equals(this.dragao.getPosicao())) return dragao.getType();
+		if (heroi != null && posicao.equals(this.heroi.getPosicao())) return heroi.getType();
+		else if (espada != null && dragao != null &&posicao.equals(this.espada.getPosicao()) && posicao.equals(this.dragao.getPosicao()))
+			return 'f';
+		else if (espada != null && posicao.equals(this.espada.getPosicao())) return espada.getType();
+		else if (dragao != null && posicao.equals(this.dragao.getPosicao())) return dragao.getType();
 		else return mapa[posicao.getX()][posicao.getY()];
 	}
 	
@@ -112,9 +124,10 @@ public class Tabuleiro {
 	
 	private boolean validPosition(Posicao posicao)
 	{
-		if (this.mapa[posicao.getX()][posicao.getY()] == PAREDE)
+		
+		if (posicao.getX() > dimensao-1 || posicao.getX() < 0 || posicao.getY() > dimensao -1 || posicao.getY() < 0)
 			return false;
-		else if (posicao.getX() > 9 || posicao.getX() < 0 || posicao.getY() > 9 || posicao.getY() < 0)
+		if (this.mapa[posicao.getX()][posicao.getY()] == PAREDE)
 			return false;
 		return true;
 	}

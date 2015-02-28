@@ -1,11 +1,11 @@
-import java.io.IOException;
+package labirinto;
 import java.util.Random;
 import java.util.Stack;
 
 
-public class main {
+final class MazeGenerator {
 	
-	public static void main(String[] args){
+	public static void printRandomMaze(String[] args){
 		char test[][] = generate(31);
 		
 		for(int i = 0; i < 31; i++){
@@ -24,11 +24,11 @@ public class main {
 		int vis = (side-1)/2;
 		char visited[][] = new char[vis][vis];
 		int currPos[] = new int[2];
-		Stack cellHist = new Stack();
+		Stack<Integer> cellHist = new Stack<Integer>();
 		
 		for(int i = 0; i < side; i++){ //Filling the labyrinth with walls
 			for(int j = 0; j < side; j++){
-				lab[i][j] = 'X';
+				lab[i][j] = 'x';
 			}
 		}
 		
@@ -138,15 +138,14 @@ public class main {
 		*/
 	}
 		
-	public static void pushCoord(Stack st, int x, int y){
+	private static void pushCoord(Stack<Integer> st, int x, int y){
 		st.push(y);
 		st.push(x);
 	}
 	
-	public static void popCoord(Stack st){ //nunce e usada...
-		st.pop();
-		st.pop();
-	}
+	
+	
+	private MazeGenerator(){} //nao deve ser instanciada
 			
 }
 	
