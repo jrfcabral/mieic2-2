@@ -33,10 +33,7 @@ public class Tabuleiro {
 		return done;
 	}
 
-	public void setDone(boolean done) {
-		this.done = done;
-	}
-
+	
 	public Tabuleiro(){
 		this.mapa = new char[][]
 				{	{'x','x','x','x','x','x','x','x','x','x'},
@@ -50,8 +47,8 @@ public class Tabuleiro {
 				{'x',' ','x','x',' ',' ',' ',' ',' ','x'},
 				{'x','x','x','x','x','x','x','x','x','x'},
 			};
-		heroi = new Peca(new Posicao(1,1), 'h');
-		espada = new Peca(new Posicao(8,1), 'e');
+		heroi = new Peca(new Posicao(1,1), HEROI);
+		espada = new Peca(new Posicao(8,1), ESPADA);
 		dragao = new Peca(new Posicao(2,4), DRAGAO);
 	}
 	
