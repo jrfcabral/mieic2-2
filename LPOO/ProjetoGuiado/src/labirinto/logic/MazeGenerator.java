@@ -5,7 +5,7 @@ import java.util.Stack;
 public final class MazeGenerator {
 	
 	public static void printRandomMaze(int size){
-		char test[][] = generate(size);
+		Terreno[][] test = generate(size);
 		
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < size; j++){
@@ -17,9 +17,9 @@ public final class MazeGenerator {
 	
 	
 	
-	public static char[][] generate(int side){
+	public static Terreno[][] generate(int side){
 			 
-		char lab[][] = new char[side][side];
+		Terreno lab[][] = new Terreno[side][side];
 		int vis = (side-1)/2;
 		char visited[][] = new char[vis][vis];
 		int currPos[] = new int[2];
@@ -27,7 +27,7 @@ public final class MazeGenerator {
 		
 		for(int i = 0; i < side; i++){ //Filling the labyrinth with walls
 			for(int j = 0; j < side; j++){
-				lab[i][j] = 'X';
+				lab[i][j] = Terreno.PAREDE;
 			}
 		}
 		
@@ -43,7 +43,7 @@ public final class MazeGenerator {
 		for(int i = 0; i < side; i++){ //Poking holes in the maze
 			for(int j = 0; j < side; j++){
 				if((i % 2 != 0) && (j % 2 != 0) && i != side-1 && j != side-1){
-					lab[i][j] = ' ';
+					lab[i][j] = Terreno.CHAO;
 				}
 			}
 		}
@@ -70,19 +70,19 @@ public final class MazeGenerator {
 
 			if(dir == 0 && (currPos[0]-1 >= 0 && visited[currPos[0]-1][currPos[1]] != '+')){ //up 
 					currPos[0]--;
-					lab[2*currPos[0]+2][2*currPos[1]+1] = ' ';
+					lab[2*currPos[0]+2][2*currPos[1]+1] = Terreno.CHAO;
 			}
 			else if(dir == 1 && (currPos[1]-1 >= 0 && visited[currPos[0]][currPos[1]-1] != '+')){ //left
 					currPos[1]--;
-					lab[2*currPos[0]+1][2*currPos[1]+2] = ' ';
+					lab[2*currPos[0]+1][2*currPos[1]+2] = Terreno.CHAO;
 			}
 			else if(dir == 2 && (currPos[1]+1 < visited.length && visited[currPos[0]][currPos[1]+1] != '+')){ //right
 					currPos[1]++;
-					lab[2*currPos[0]+1][2*currPos[1]] = ' ';
+					lab[2*currPos[0]+1][2*currPos[1]] = Terreno.CHAO;
 			}
 			else if(dir == 3 && (currPos[0]+1 < visited.length && visited[currPos[0]+1][currPos[1]] != '+')){ //down
 					currPos[0]++;
-					lab[2*currPos[0]][2*currPos[1]+1] = ' ';
+					lab[2*currPos[0]][2*currPos[1]+1] = Terreno.CHAO;
 					
 			}
 			else{
@@ -106,29 +106,29 @@ public final class MazeGenerator {
 		int exitCoord = rand.nextInt(side-2) + 1;
 		
 		if((exitPlacement % 4) ==  0){
-			if(lab[1][exitCoord] != ' ')
-				lab[0][exitCoord+1] = 'S';
+			if(lab[1][exitCoord] != Terreno.CHAO)
+				lab[0][exitCoord+1] = Terreno.SAIDA;
 			else
-				lab[0][exitCoord] = 'S';
+				lab[0][exitCoord] = Terreno.SAIDA;
 		}
 		else if((exitPlacement % 3) == 0){
-			if(lab[exitCoord][1] != ' ')
-				lab[exitCoord+1][0] = 'S';
+			if(lab[exitCoord][1] != Terreno.CHAO)
+				lab[exitCoord+1][0] = Terreno.SAIDA;
 			else
-				lab[exitCoord][0] = 'S';
+				lab[exitCoord][0] = Terreno.SAIDA;
 			
 		}
 		else if((exitPlacement % 2) == 0){
-			if(lab[exitCoord][side-2] != ' ')
-				lab[exitCoord+1][side-1] = 'S';
+			if(lab[exitCoord][side-2] != Terreno.CHAO)
+				lab[exitCoord+1][side-1] = Terreno.SAIDA;
 			else
-				lab[exitCoord][side-1] = 'S';
+				lab[exitCoord][side-1] = Terreno.SAIDA;
 		}
 		else{
-			if(lab[side-2][exitCoord] != ' ')
-				lab[side-1][exitCoord+1] = 'S';
+			if(lab[side-2][exitCoord] != Terreno.CHAO)
+				lab[side-1][exitCoord+1] = Terreno.SAIDA;
 			else
-				lab[side-1][exitCoord] = 'S';
+				lab[side-1][exitCoord] = Terreno.SAIDA;
 		}
 		
 		return lab;
@@ -145,24 +145,43 @@ public final class MazeGenerator {
 
 
 
-	public static char[][] getPredef() {
-		return  new char[][]
-				{	{'x','x','x','x','x','x','x','x','x','x'},
-				{'x',' ',' ',' ',' ',' ',' ',' ',' ','x'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ',' ',' ',' ',' ',' ','x',' ','s'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ','x','x',' ','x',' ','x',' ','x'},
-				{'x',' ','x','x',' ',' ',' ',' ',' ','x'},
-				{'x','x','x','x','x','x','x','x','x','x'},
-			};		
+	public static Terreno[][] getPredef() {
+		return  converteMapa(new char[][]
+				{	{'X','X','X','X','X','X','X','X','X','X'},
+				{'X',' ',' ',' ',' ',' ',' ',' ',' ','X'},
+				{'X',' ','X','X',' ','X',' ','X',' ','X'},
+				{'X',' ','X','X',' ','X',' ','X',' ','X'},
+				{'X',' ','X','X',' ','X',' ','X',' ','X'},
+				{'X',' ',' ',' ',' ',' ',' ','X',' ','S'},
+				{'X',' ','X','X',' ','X',' ','X',' ','X'},
+				{'X',' ','X','X',' ','X',' ','X',' ','X'},
+				{'X',' ','X','X',' ',' ',' ',' ',' ','X'},
+				{'X','X','X','X','X','X','X','X','X','X'},
+			}, 10);		
 	}
 	
 	public static int getPredefSize()
 	{
 		return 10;	
+	}
+	
+	private static Terreno[][] converteMapa(char[][] mapa, int tamanho)
+	{
+		Terreno[][] novoMapa = new Terreno[tamanho][tamanho];
+		for (int y = 0; y < tamanho; y++)
+			for(int x = 0; x < tamanho; x++){
+				switch(mapa[x][y]){
+				case 'X':
+					novoMapa[x][y] = Terreno.PAREDE;
+				case ' ' :
+					novoMapa[x][y] = Terreno.CHAO;
+				case 'S' : 
+					novoMapa[x][y] = Terreno.SAIDA;
+				}
+			}
+				
+		
+		return novoMapa;
 	}
 			
 }

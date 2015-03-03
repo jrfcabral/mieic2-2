@@ -25,8 +25,7 @@ public class Peca {
 	}
 	public Peca(int x, int y)
 	{
-		this.posicao = new Posicao(x,y);
-		
+		this(new Posicao(x,y));		
 	}
 	
 }

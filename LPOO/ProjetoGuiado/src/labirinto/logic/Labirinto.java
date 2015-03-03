@@ -41,7 +41,7 @@ public class Labirinto {
 	}
 
 	
-	public Labirinto(char[][] formatoTabuleiro, int dimensao)
+	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao)
 	{
 		this.tabuleiro = new Tabuleiro(formatoTabuleiro, dimensao);		
 		this.dimensao = dimensao;
@@ -70,7 +70,7 @@ public class Labirinto {
 			return 'F';
 		else if (espada != null && posicao.equals(this.espada.getPosicao())) return 'E';
 		else if (dragao != null && posicao.equals(this.dragao.getPosicao())) return 'D';
-		else return tabuleiro.at(posicao);
+		else return tabuleiro.at(posicao).toString().charAt(0);
 	}
 	
 	//wasd:mover heroi
