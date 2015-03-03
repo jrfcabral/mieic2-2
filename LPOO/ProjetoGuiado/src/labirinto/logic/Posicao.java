@@ -1,4 +1,6 @@
-package labirinto;
+package labirinto.logic;
+
+import labirinto.logic.Direcao;
 
 public class Posicao {
 	private int x, y;
@@ -31,24 +33,26 @@ public class Posicao {
 		this.y = posicao.y;
 	}
 	
-	public Posicao novaPosicao(char direcao){
+	public Posicao novaPosicao(Direcao direcao){
 		
 		Posicao posicao = new Posicao(this);
 		
 		switch (direcao)
 		{
-		case 'w':
+		case CIMA:
 			posicao.x -= 1;
 			break;
-		case 's':
+		case BAIXO:
 			posicao.x +=1;
 			break;
-		case 'a':
+		case ESQUERDA:
 			posicao.y -=1;
 			break;
-		case 'd':
+		case DIREITA:
 			posicao.y +=1;
-			break;		
+			break;
+		default:
+			break;
 		}
 		
 		return posicao;

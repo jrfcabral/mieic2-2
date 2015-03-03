@@ -1,4 +1,4 @@
-package labirinto;
+package labirinto.logic;
 
 public class Peca {
 	private Posicao posicao;
@@ -18,15 +18,15 @@ public class Peca {
 	
 	
 	
-	public Peca(Posicao posicao, char type)
+	public Peca(Posicao posicao)
 	{
 		this.posicao = posicao;
-		this.type = type;
+		
 	}
-	public Peca(int x, int y, char type)
+	public Peca(int x, int y)
 	{
 		this.posicao = new Posicao(x,y);
-		this.type = type;
+		
 	}
 	
 }

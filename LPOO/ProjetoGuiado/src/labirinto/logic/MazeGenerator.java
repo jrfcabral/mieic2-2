@@ -1,9 +1,8 @@
-package labirinto;
+package labirinto.logic;
 import java.util.Random;
 import java.util.Stack;
 
-
-final class MazeGenerator {
+public final class MazeGenerator {
 	
 	public static void printRandomMaze(int size){
 		char test[][] = generate(size);
@@ -28,7 +27,7 @@ final class MazeGenerator {
 		
 		for(int i = 0; i < side; i++){ //Filling the labyrinth with walls
 			for(int j = 0; j < side; j++){
-				lab[i][j] = 'x';
+				lab[i][j] = 'X';
 			}
 		}
 		
@@ -143,6 +142,28 @@ final class MazeGenerator {
 	
 	
 	private MazeGenerator(){} //nao deve ser instanciada
+
+
+
+	public static char[][] getPredef() {
+		return  new char[][]
+				{	{'x','x','x','x','x','x','x','x','x','x'},
+				{'x',' ',' ',' ',' ',' ',' ',' ',' ','x'},
+				{'x',' ','x','x',' ','x',' ','x',' ','x'},
+				{'x',' ','x','x',' ','x',' ','x',' ','x'},
+				{'x',' ','x','x',' ','x',' ','x',' ','x'},
+				{'x',' ',' ',' ',' ',' ',' ','x',' ','s'},
+				{'x',' ','x','x',' ','x',' ','x',' ','x'},
+				{'x',' ','x','x',' ','x',' ','x',' ','x'},
+				{'x',' ','x','x',' ',' ',' ',' ',' ','x'},
+				{'x','x','x','x','x','x','x','x','x','x'},
+			};		
+	}
+	
+	public static int getPredefSize()
+	{
+		return 10;	
+	}
 			
 }
 	
