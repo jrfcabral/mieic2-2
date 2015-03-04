@@ -21,11 +21,7 @@ TPscene.prototype.init = function (application) {
     this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis=new CGFaxis(this);
-   // this.obj = new MyObject(this);
-   /* this.obj = new MyUnitCubeQuad(this);
-    this.obj2 = new MyUnitCube(this);*/
-    this.obj = new myTable(this);
-    this.obj2 = new myFloor(this);
+    this.obj = new MyObject(this);
 
 };
 
@@ -69,13 +65,70 @@ TPscene.prototype.display = function () {
 
 	// Draw axis
 	this.axis.display();
-	this.setDefaultAppearance();
-	/*this.obj2.display();
-	this.translate(2.0, 0, 0);*/
-	this.translate(4, 0, 3);
-	this.obj.display();
-	this.obj2.display();
 
+	this.setDefaultAppearance();
+	
+	// ---- END Background, camera and axis setup
+
+	
+	// ---- BEGIN Geometric transformation section
+
+	// NOTE: OpenGL transformation matrices are transposed
+
+	// Translate (5, 0, 2)
+	
+    var tra = [   1.0, 0.0, 0.0, 0.0,
+                  0.0, 1.0, 0.0, 0.0,
+                  0.0, 0.0, 1.0, 0.0,
+                  5.0, 0.0, 2.0, 1.0  ];
+
+	// Rotate 30 degrees around Y
+	// These constants would normally be pre-computed at initialization time
+	// they are placed here just to simplify the example
+	
+	var deg2rad=Math.PI/180.0;
+	var a_rad=30.0*deg2rad;
+	var cos_a = Math.cos(a_rad);
+	var sin_a = Math.sin(a_rad);
+
+    var rot = [ cos_a,  0.0,  -sin_a,  0.0,
+                0.0,    1.0,   0.0,    0.0,
+                sin_a,  0.0,   cos_a,  0.0,
+                0.0,    0.0,   0.0,    1.0 ];
+
+	// Scaling by (5,2,1)
+
+    var sca = [ 5.0, 0.0, 0.0, 0.0,
+                0.0, 2.0, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 1.0  ];
+    
+	this.pushMatrix();
+    this.translate(0, 5.0, 0);
+	this.obj.display();
+	this.popMatrix();
+	this.translate(5, 0, 2);
+	this.scale(5, 2, 1);
+	//this.rotate(30.0*deg2rad, 0, 1.0, 0);
+	
+
+
+	
+	// Multiplication of the previous transformations
+	
+	//this.multMatrix(tra);     // GT = GT * tra
+	//this.multMatrix(rot);     // GT = GT * rot
+	//this.multMatrix(sca);     // GT = GT * sca
+
+
+	// ---- END Geometric transformation section
+	
+
+	// ---- BEGIN Primitive drawing section
+
+	this.obj.display();
+	
+	// ---- END Primitive drawing section
 
     this.shader.unbind();
 };
