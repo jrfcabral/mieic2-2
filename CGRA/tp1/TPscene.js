@@ -72,7 +72,7 @@ TPscene.prototype.display = function () {
 	this.setDefaultAppearance();
 	/*this.obj2.display();
 	this.translate(2.0, 0, 0);*/
-	//this.translate(4, 0, 3);
+	this.translate(4, 0, 3);
 	this.obj.display();
 	this.obj2.display();
 
