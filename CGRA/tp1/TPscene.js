@@ -22,10 +22,10 @@ TPscene.prototype.init = function (application) {
 
 	this.axis=new CGFaxis(this);
    // this.obj = new MyObject(this);
-    this.obj = new MyUnitCubeQuad(this);
-    this.obj2 = new MyUnitCube(this);
-    /*this.obj = new myTable(this);
-    this.obj2 = new myFloor(this);*/
+    /*this.obj = new MyUnitCubeQuad(this);
+    this.obj2 = new MyUnitCube(this);*/
+    this.obj = new myTable(this);
+    this.obj2 = new myFloor(this);
 
 };
 
@@ -70,11 +70,11 @@ TPscene.prototype.display = function () {
 	// Draw axis
 	this.axis.display();
 	this.setDefaultAppearance();
-	this.obj2.display();
-	this.translate(2.0, 0, 0);
+	/*this.obj2.display();
+	this.translate(2.0, 0, 0);*/
 	//this.translate(4, 0, 3);
 	this.obj.display();
-	//this.obj2.display();
+	this.obj2.display();
 
 
     this.shader.unbind();
