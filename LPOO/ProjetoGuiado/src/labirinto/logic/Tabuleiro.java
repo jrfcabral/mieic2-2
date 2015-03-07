@@ -8,9 +8,7 @@ public class Tabuleiro {
 	
 	public Tabuleiro(Terreno[][] mapa, int dimensao)
 	{
-		this.mapa = mapa;
-		
-		MazeGenerator.printRandomMaze(11);
+		this.mapa = mapa;		
 		this.dimensao = dimensao;
 	}
 	

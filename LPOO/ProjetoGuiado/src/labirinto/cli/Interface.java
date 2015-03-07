@@ -48,7 +48,7 @@ public class Interface {
 				direcao = Interface.traduzInput(input);
 			}while(direcao == Direcao.NONE);
 			
-			lab.move(direcao);
+			lab.move(direcao);			
 			
 		}while(!lab.isAcabou());
 		
@@ -66,6 +66,7 @@ public class Interface {
 		{
 			for (int y=0;y < dimensao; y++){
 				System.out.print(lab.getCellSymbol(x, y));
+				System.out.print(' ');
 				//System.out.print(' ');
 			}
 			System.out.print('\n');		

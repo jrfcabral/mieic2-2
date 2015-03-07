@@ -64,8 +64,12 @@ public class Labirinto {
 	}
 	
 	public char getCellSymbol(Posicao posicao)
-	{
-		if (heroi != null && posicao.equals(this.heroi.getPosicao())) return 'H';
+	{		
+		if (heroi != null && posicao.equals(this.heroi.getPosicao())){
+			if (heroi.isArmado())
+				return 'A';
+			return 'H';
+		}
 		else if (espada != null && dragao != null &&posicao.equals(this.espada.getPosicao()) && posicao.equals(this.dragao.getPosicao()))
 			return 'F';
 		else if (espada != null && posicao.equals(this.espada.getPosicao())) return 'E';
@@ -77,8 +81,37 @@ public class Labirinto {
 	public void move(Direcao dir)
 	{
 		movePeca(dir, heroi);
-		movePeca(Direcao.randomDirecao(), dragao);
-				
+		
+		if (heroi.isArmado() && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA)
+			acabou = true;
+		
+		if (dragao != null){
+			movePeca(Direcao.randomDirecao(), dragao);
+			
+			Posicao[] adjacentes = dragao.getPosicao().getAdjacencias();
+			
+			for (Posicao adjacente: adjacentes)
+			{
+				if (adjacente.equals(heroi.getPosicao())){
+					
+					if(!heroi.isArmado()){
+						perdeu = true;
+						acabou = true;
+					}
+					else
+						dragao = null;
+					
+					
+					break;
+				}				
+			}
+		}
+		
+		if (espada != null && heroi.getPosicao().equals(espada.getPosicao())){
+			heroi.setArmado(true);
+			espada = null;
+		}
+		
 	}
 
 	private boolean movePeca(Direcao dir, Peca peca) {
