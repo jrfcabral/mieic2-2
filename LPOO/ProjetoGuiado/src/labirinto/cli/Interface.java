@@ -23,24 +23,24 @@ public class Interface {
 		
 		do{
 			try{
-				System.out.println("Insira dimensÃ£o pretendida (deve ser um numero impar), ou -1 para o lab padrao:");
+				System.out.println("Insira dimensão pretendida (deve ser um numero impar), ou -1 para o lab padrao:");
 				dimensao = leitor.nextInt();
 			}
 			catch (Exception e){
 				leitor.nextLine();
-				System.out.println("Entrada nÃ£o vÃ¡lida. Insira um nÃºmero! :\\");
+				System.out.println("Entrada não válida. Insira um número! :\\");
 			}
 		}while(dimensao < -1 || (dimensao % 2) == 0);
 		
 		
 		do{
 			try{
-				System.out.println("Insira numero de dragoes que quer defrontar (pelo menos 1):");
+				System.out.println("Insira numero de dragões que quer defrontar (pelo menos 1):");
 				dragoes = leitor.nextInt();
 			}
 			catch (Exception e){
 				leitor.nextLine();
-				System.out.println("Entrada nÃ£o vÃ¡lida. Insira um nÃºmero! :\\");
+				System.out.println("Entrada não válida. Insira um número! :\\");
 			}
 		}while(dragoes < 1);
 		

@@ -1,7 +1,7 @@
 package labirinto.logic;
 
 import java.util.Random;
-
+import java.util.Arrays;
 
 public class Labirinto {
 	private static final char ESPACO = ' ';
@@ -113,7 +113,7 @@ public class Labirinto {
 	{
 		movePeca(dir, heroi);
 		
-		if (heroi.isArmado() && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA)
+		if (heroi.isArmado() && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && isNoDurgons(dragoes))
 			acabou = true;
 		
 		
@@ -149,7 +149,13 @@ public class Labirinto {
 	}
 	
 	
-	
+	public boolean isNoDurgons(Dragao[] durgons){
+		for(int i = 0; i < durgons.length; i++){
+			if(durgons[i] != null)
+				return false;
+		}
+		return true;
+	}
 	
 	
 
