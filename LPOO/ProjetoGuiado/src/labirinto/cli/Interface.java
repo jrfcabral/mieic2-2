@@ -102,6 +102,7 @@ public class Interface {
 		case 'a': return Direcao.ESQUERDA;
 		case 's': return Direcao.BAIXO;
 		case 'd': return Direcao.DIREITA;
+		case 't': //throw javelin?
 		default : return Direcao.NONE;
 		}
 	}
