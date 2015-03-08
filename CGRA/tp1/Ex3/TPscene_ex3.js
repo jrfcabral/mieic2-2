@@ -102,8 +102,20 @@ TPscene.prototype.display = function () {
                 0.0, 2.0, 0.0, 0.0,
                 0.0, 0.0, 1.0, 0.0,
                 0.0, 0.0, 0.0, 1.0  ];
+    
+	this.pushMatrix();
+    this.translate(0, 5.0, 0);
+	this.obj.display();
+	this.popMatrix();
+	this.translate(5, 0, 2);
+	this.scale(5, 2, 1);
+	//this.rotate(30.0*deg2rad, 0, 1.0, 0);
+	
 
+
+	
 	// Multiplication of the previous transformations
+	
 	//this.multMatrix(tra);     // GT = GT * tra
 	//this.multMatrix(rot);     // GT = GT * rot
 	//this.multMatrix(sca);     // GT = GT * sca

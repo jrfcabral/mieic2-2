@@ -52,11 +52,12 @@ public class Interface {
 			lab = new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), dragoes);		
 		
 		char input = 0;
+		printTabuleiro(lab, lab.getDimensao());
 		do
 		{
 			Direcao direcao;
 			do{			
-				if (input != '\n')
+				if (input == '\n')
 					printTabuleiro(lab, lab.getDimensao());
 				input = Interface.getInput();
 				direcao = Interface.traduzInput(input);
