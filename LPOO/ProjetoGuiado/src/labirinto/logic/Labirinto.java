@@ -1,7 +1,6 @@
 package labirinto.logic;
 
 import java.util.Random;
-import java.util.Arrays;
 
 public class Labirinto {
 	private static final char ESPACO = ' ';
@@ -95,11 +94,19 @@ public class Labirinto {
 			return 'H';
 		}
 	
-		else if (espada != null && posicao.equals(this.espada.getPosicao())) return 'E';
+		else if (espada != null && posicao.equals(this.espada.getPosicao())){
+			for(int i = 0; i < dragoes.length; i++){
+				if(dragoes[i] != null && dragoes[i].getPosicao().equals(this.espada.getPosicao())){
+					return 'F';
+				}
+			}
+			return 'E';
+		}
 		
 		for (Dragao dragao:dragoes){
 			if (dragao != null && dragao.getPosicao().equals(posicao)) return 'D';
 		}
+		
 		
 		return tabuleiro.at(posicao).toString().charAt(0);
 	}
