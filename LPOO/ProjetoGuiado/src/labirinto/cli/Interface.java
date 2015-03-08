@@ -17,6 +17,7 @@ public class Interface {
 	public static void main(String[] args) throws IOException {	
 		
 		int dimensao = 0;
+		int dragoes = -1;
 		Scanner leitor = new Scanner(System.in);
 		
 		
@@ -27,15 +28,28 @@ public class Interface {
 			}
 			catch (Exception e){
 				leitor.nextLine();
-				System.out.println("Não sei o que escrevesteis. :\\");
+				System.out.println("Entrada não válida. Insira um número! :\\");
 			}
 		}while(dimensao < -1 || (dimensao % 2) == 0);
 		
+		
+		do{
+			try{
+				System.out.println("Insira numero de dragoes que quer defrontar (pelo menos 1):");
+				dragoes = leitor.nextInt();
+			}
+			catch (Exception e){
+				leitor.nextLine();
+				System.out.println("Entrada não válida. Insira um número! :\\");
+			}
+		}while(dragoes < 1);
+		
+		
 		Labirinto lab;
 		if (dimensao != -1)
-			lab = new Labirinto(MazeGenerator.generate(dimensao), dimensao);			
+			lab = new Labirinto(MazeGenerator.generate(dimensao), dimensao, dragoes);			
 		else
-			lab = new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize());		
+			lab = new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), dragoes);		
 		
 		char input = 0;
 		do

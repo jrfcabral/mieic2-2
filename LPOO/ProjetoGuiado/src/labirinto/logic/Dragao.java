@@ -14,6 +14,6 @@ public class Dragao extends Peca {
 	public Dragao(Posicao posicao)
 	{
 		super(posicao);
-		acordado = false;
+		acordado = true;
 	}
 }
