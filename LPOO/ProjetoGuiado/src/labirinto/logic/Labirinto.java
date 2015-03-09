@@ -2,6 +2,8 @@ package labirinto.logic;
 
 import java.util.Random;
 
+import utilitarios.Hipotese;
+
 public class Labirinto {
 	private static final char ESPACO = ' ';
 
@@ -17,15 +19,20 @@ public class Labirinto {
 	
 	private static final char DARDO = 'J'; //Javelin, a falta d melhor nome
 
-	private static final char ESCUDO = 'P'; //Protecçao, a falta d melhor nome
-	//private char[][] mapa;
-	Tabuleiro tabuleiro;
+	private static final char ESCUDO = 'P'; //Protecï¿½ao, a falta d melhor nome
+	
+	private static final int NUMERO_DARDOS = 5;
+	
+	//em 10
+	private static final int CHANCE_TO_SLEEP = 5;
+	private static final int CHANCE_TO_WAKE = 5;
+
+	private Tabuleiro tabuleiro;
 	
 	private Heroi heroi;
 	private Espada espada;
 	private Dardo[] dardos;
-	private Escudo escudo;
-	
+	private Escudo escudo;	
 	private Dragao[] dragoes;
 	
 	private boolean acabou;
@@ -33,6 +40,7 @@ public class Labirinto {
 	
 	private int dimensao;
 	private int numeroDragoes;
+	private Estrategia estrategia;
 	
 	public int getDimensao() {
 		return dimensao;
@@ -46,21 +54,14 @@ public class Labirinto {
 		return acabou;
 	}
 
-	
-	/*public Labirinto(Terreno[][] formatoTabuleiro, int dimensao)
-	{
-		this.tabuleiro = new Tabuleiro(formatoTabuleiro, dimensao);		
-		this.dimensao = dimensao;
-		inicializarPecas();
-	}
-	*/
-	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes)
+	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia)
 	{
 		Random rand = new Random();
 		this.tabuleiro = new Tabuleiro(formatoTabuleiro, dimensao);		
 		this.dimensao = dimensao;
 		this.dragoes = new Dragao[dragoes];
-		this.dardos = new Dardo[rand.nextInt(5) + 1];
+		this.dardos = new Dardo[rand.nextInt(Labirinto.NUMERO_DARDOS) + 1];
+		this.estrategia = estrategia;
 		inicializarPecas();
 		
 	}
@@ -92,8 +93,6 @@ public class Labirinto {
 		
 		return getCellSymbol(new Posicao(x,y));
 	}
-	
-	
 	
 	
 	
@@ -149,7 +148,7 @@ public class Labirinto {
 		
 		
 		for (Dragao dragao:dragoes){
-			if (dragao != null && dragao.getPosicao().equals(posicao)) return 'D';
+			if (dragao != null && dragao.getPosicao().equals(posicao)) return dragao.isAcordado() ? 'D' : 'd';
 		}
 		
 		
@@ -163,36 +162,21 @@ public class Labirinto {
 	//wasd:mover heroi
 	public void move(Direcao dir)
 	{
-		movePeca(dir, heroi);
+		movePeca(dir, heroi);		
+		processaTurno();
 		
-		if (heroi.isArmado() && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && isNoDurgons(dragoes))
+	}
+
+	private void processaTurno() {
+		
+		if (heroi.isArmado() && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao(dragoes))
 			acabou = true;
 		
-		
-		for (int i = 0; i < dragoes.length; i++){
-			
-			if (dragoes[i] != null){
-				movePeca(Direcao.randomDirecao(), dragoes[i]);
-				
-				Posicao[] adjacentes = dragoes[i].getPosicao().getAdjacencias();
-				
-				for (Posicao adjacente: adjacentes){
-					if (dragoes[i].getPosicao().equals(heroi.getPosicao()) || adjacente.equals(heroi.getPosicao())){						
-						if(!heroi.isArmado()){
-							perdeu = true;
-							acabou = true;
-						}
-						else{
-							dragoes[i] = null;
-							System.out.println("Mataste um dragao!");
-						}
-							
-						
-						break;
-					}				
-				}
-			}
-		}
+		moverTodosOsDragoes();		
+		apanharEquipamento();
+	}
+
+	private void apanharEquipamento() {
 		if (espada != null && heroi.getPosicao().equals(espada.getPosicao())){
 			if(heroi.hasJavelin() == true){
 				heroi.setHasJavelin(false);
@@ -223,11 +207,52 @@ public class Labirinto {
 			heroi.setShielded(true);
 			escudo = null;
 		}
-		
+	}
+
+	private void moverTodosOsDragoes() {
+		for (int i = 0; i < dragoes.length; i++){
+			
+			if (dragoes[i] != null){
+				
+				if (estrategia == Estrategia.ALTERNADO){
+					if (dragoes[i].isAcordado()){
+						Hipotese hipotese = new Hipotese(Labirinto.CHANCE_TO_SLEEP, 10);
+						if (hipotese.successo())
+							dragoes[i].setAcordado(false);
+					}
+					else{
+						Hipotese hipotese = new Hipotese(Labirinto.CHANCE_TO_WAKE, 10);
+						if (hipotese.successo())
+							dragoes[i].setAcordado(true);
+					}					
+				}
+				
+				if (dragoes[i].isAcordado() || estrategia != Estrategia.PARADO)
+					movePeca(Direcao.randomDirecao(), dragoes[i]);
+				
+				Posicao[] adjacentes = dragoes[i].getPosicao().getAdjacencias();
+				
+				for (Posicao adjacente: adjacentes){
+					if (dragoes[i].getPosicao().equals(heroi.getPosicao()) || adjacente.equals(heroi.getPosicao())){						
+						if(!heroi.isArmado() && dragoes[i].isAcordado()){
+							perdeu = true;
+							acabou = true;
+						}
+						else if (heroi.isArmado()){
+							dragoes[i] = null;
+							System.out.println("Mataste um dragao!XD");
+						}
+							
+						
+						break;
+					}				
+				}
+			}
+		}
 	}
 	
 	
-	public boolean isNoDurgons(Dragao[] durgons){
+	public boolean nenhumDragao(Dragao[] durgons){
 		for(int i = 0; i < durgons.length; i++){
 			if(durgons[i] != null)
 				return false;

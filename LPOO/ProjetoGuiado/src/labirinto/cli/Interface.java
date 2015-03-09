@@ -18,38 +18,51 @@ public class Interface {
 		
 		int dimensao = 0;
 		int dragoes = -1;
+		int estrategia = 0;
 		Scanner leitor = new Scanner(System.in);
 		
 		
 		do{
 			try{
-				System.out.println("Insira dimens„o pretendida (deve ser um numero impar), ou -1 para o lab padrao:");
+				System.out.println("Insira dimens√£o pretendida (deve ser um numero impar), ou -1 para o lab padrao:");
 				dimensao = leitor.nextInt();
 			}
 			catch (Exception e){
 				leitor.nextLine();
-				System.out.println("Entrada n„o v·lida. Insira um n˙mero! :\\");
+				System.out.println("Entrada n√£o v√£lida. Insira um n√∫mero! :\\");
 			}
 		}while(dimensao < -1 || (dimensao % 2) == 0);
 		
 		
 		do{
 			try{
-				System.out.println("Insira numero de dragıes que quer defrontar (pelo menos 1):");
+				System.out.println("Insira numero de drag√£es que quer defrontar (pelo menos 1):");
 				dragoes = leitor.nextInt();
 			}
 			catch (Exception e){
 				leitor.nextLine();
-				System.out.println("Entrada n„o v·lida. Insira um n˙mero! :\\");
+				System.out.println("Entrada n√£o v√°lida. Insira um n√∫mero! :\\");
 			}
 		}while(dragoes < 1);
 		
 		
+		do{
+			try{
+				System.out.println("Insira a estrat√©gia a usar:");
+				estrategia = leitor.nextInt();
+			}
+			catch (Exception e){
+				leitor.nextLine();
+				System.out.println("Entrada n√£o v√°lida. Insira um n√∫mero! :\\");
+			}
+		}while(estrategia < 1 || estrategia > 3);
+		
+		
 		Labirinto lab;
 		if (dimensao != -1)
-			lab = new Labirinto(MazeGenerator.generate(dimensao), dimensao, dragoes);			
+			lab = new Labirinto(MazeGenerator.generate(dimensao), dimensao, dragoes, Estrategia.fromNumber(estrategia));			
 		else
-			lab = new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), dragoes);		
+			lab = new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), dragoes, Estrategia.fromNumber(estrategia));		
 		
 		char input = 0;
 		printTabuleiro(lab, lab.getDimensao());
