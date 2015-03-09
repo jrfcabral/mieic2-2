@@ -227,7 +227,7 @@ public class Labirinto {
 					}					
 				}
 				
-				if (dragoes[i].isAcordado() || estrategia != Estrategia.PARADO)
+				if (dragoes[i].isAcordado() && estrategia != Estrategia.PARADO)
 					movePeca(Direcao.randomDirecao(), dragoes[i]);
 				
 				Posicao[] adjacentes = dragoes[i].getPosicao().getAdjacencias();
