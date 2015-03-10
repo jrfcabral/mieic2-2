@@ -200,7 +200,7 @@ public class Labirinto {
 		for(int i = 0; i < dardos.length; i++){
 			if(dardos[i] != null && heroi.getPosicao().equals(dardos[i].getPosicao()) && heroi.hasJavelin() == false){
 				heroi.setHasJavelin(true);
-				if(heroi.getArmado()){
+				if(heroi.isArmado()){
 					heroi.setArmado(false);
 					espada = new Espada(heroi.getPosicao());
 				}

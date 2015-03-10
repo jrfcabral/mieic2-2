@@ -81,13 +81,12 @@ public class Interface {
 			dimensao = MazeGenerator.getPredefSize();
 		}
 		char input = 0;
-		InputType tipo;
+	//	InputType tipo;
 		printTabuleiro(lab, lab.getDimensao());
 		do
 		{
 			
 			input = getInput();
-			
 			switch (InputType.getType(input)){
 			case DIRECIONAL:
 				lab.move(traduzDirecao(input));
@@ -99,11 +98,11 @@ public class Interface {
 			case INSIGNIFICANTE:
 				break;
 			default:
-				System.out.println("Entrada não reconhecida ou inutil...");
+				//System.out.println("Entrada não reconhecida ou inutil...");
 				break;
 			}
 			
-			if (InputType.getType(input) != InputType.INSIGNIFICANTE)
+			if (InputType.getType(input) == InputType.INSIGNIFICANTE)
 				printTabuleiro(lab, dimensao);			
 			
 		}while(!lab.isAcabou());
