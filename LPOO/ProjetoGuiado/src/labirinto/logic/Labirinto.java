@@ -101,7 +101,7 @@ public class Labirinto {
 	{		
 		if (heroi != null && posicao.equals(this.heroi.getPosicao())){
 			if(heroi.hasShield()){
-				if(heroi.hasSword()){
+				if(heroi.isArmado()){
 					return '&';
 				}
 				else if(heroi.hasJavelin()){
@@ -109,7 +109,7 @@ public class Labirinto {
 				}
 				else return '@';
 			}
-			else if (heroi.hasSword())
+			else if (heroi.isArmado())
 				return 'A';
 			else if(heroi.hasJavelin())
 				return 'R';
@@ -175,7 +175,7 @@ public class Labirinto {
 
 	private void processaTurno() {
 		
-		if ( (heroi.hasSword() || heroi.hasJavelin()) && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao(dragoes))
+		if ( (heroi.isArmado() || heroi.hasJavelin()) && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao(dragoes))
 			acabou = true;
 		
 		moverTodosOsDragoes();		
@@ -246,11 +246,11 @@ public class Labirinto {
 				
 				for (Posicao adjacente: adjacentes){
 					if (dragoes[i].getPosicao().equals(heroi.getPosicao()) || adjacente.equals(heroi.getPosicao())){						
-						if(!heroi.hasSword() && dragoes[i].isAcordado()){
+						if(!heroi.isArmado() && dragoes[i].isAcordado()){
 							perdeu = true;
 							acabou = true;
 						}
-						else if (heroi.hasSword()){
+						else if (heroi.isArmado()){
 							dragoes[i] = null;
 							System.out.println("Mataste um dragao!");
 						}
