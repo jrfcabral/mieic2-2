@@ -1,20 +1,20 @@
 package labirinto.logic;
 
 public class Heroi extends Peca {
-	private boolean armado;
+	private boolean hasSword;
 	private boolean hasJavelin;
 	private boolean shielded;
 	
-	public boolean isArmado() {
-		return armado;
+	public boolean hasSword() {
+		return hasSword;
 	}
 
 	public void setArmado(boolean armado) {
-		this.armado = armado;
+		this.hasSword = armado;
 	}
 	
 	public boolean getArmado(){
-		return this.armado;
+		return this.hasSword;
 	}
 
 	public void setHasJavelin(boolean javelin){
@@ -35,7 +35,7 @@ public class Heroi extends Peca {
 	
 	public Heroi(Posicao posicao){
 		super(posicao);
-		armado = false;		
+		hasSword = false;		
 	}
 	
 
