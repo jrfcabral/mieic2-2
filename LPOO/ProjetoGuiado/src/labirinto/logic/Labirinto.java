@@ -175,7 +175,7 @@ public class Labirinto {
 
 	private void processaTurno() {
 		
-		if (heroi.isArmado() && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao(dragoes))
+		if ( (heroi.isArmado() || heroi.hasJavelin()) && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao(dragoes))
 			acabou = true;
 		
 		moverTodosOsDragoes();		
@@ -233,7 +233,7 @@ public class Labirinto {
 					}					
 				}
 				
-				if (dragoes[i].isAcordado() && isNaMira(dragoes[i], heroi, 3))
+				if (dragoes[i].isAcordado() && !heroi.hasShield() && isNaMira(dragoes[i], heroi, 3))
 				{
 					perdeu = true;
 					acabou = true;
