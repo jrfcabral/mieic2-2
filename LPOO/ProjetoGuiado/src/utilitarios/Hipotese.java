@@ -17,7 +17,7 @@ public class Hipotese {
 		gerador = new Random();
 	}
 	
-	public boolean successo()
+	public boolean isSucesso()
 	{
 		int tentativa = gerador.nextInt(denominador) +1;
 		if (tentativa >= numerador)

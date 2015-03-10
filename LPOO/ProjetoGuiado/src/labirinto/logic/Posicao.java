@@ -34,22 +34,26 @@ public class Posicao {
 	}
 	
 	public Posicao novaPosicao(Direcao direcao){
+		return novaPosicao(direcao, 1);
+	}
+	
+	public Posicao novaPosicao(Direcao direcao, int distancia){
 		
 		Posicao posicao = new Posicao(this);
 		
 		switch (direcao)
 		{
 		case CIMA:
-			posicao.x -= 1;
+			posicao.x -= distancia;
 			break;
 		case BAIXO:
-			posicao.x +=1;
+			posicao.x +=distancia;
 			break;
 		case ESQUERDA:
-			posicao.y -=1;
+			posicao.y -=distancia;
 			break;
 		case DIREITA:
-			posicao.y +=1;
+			posicao.y +=distancia;
 			break;
 		default:
 			break;

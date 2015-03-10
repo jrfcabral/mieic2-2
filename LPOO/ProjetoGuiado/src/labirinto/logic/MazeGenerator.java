@@ -141,7 +141,7 @@ public final class MazeGenerator {
 	
 	
 	
-	private MazeGenerator(){} //nao deve ser instanciada
+	private MazeGenerator(){} 
 
 
 
@@ -173,10 +173,15 @@ public final class MazeGenerator {
 				switch(mapa[x][y]){
 				case 'X':
 					novoMapa[x][y] = Terreno.PAREDE;
+					break;
 				case ' ' :
 					novoMapa[x][y] = Terreno.CHAO;
+					break;
 				case 'S' : 
 					novoMapa[x][y] = Terreno.SAIDA;
+					break;
+				default: 
+					break;
 				}
 			}
 				

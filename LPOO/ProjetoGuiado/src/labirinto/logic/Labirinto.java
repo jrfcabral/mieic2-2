@@ -156,8 +156,14 @@ public class Labirinto {
 	}
 	
 	
+	public void atiraDardo(Direcao dir)
+	{
+		for (int i = 0; i < dragoes.length; i++){
+			if (isNaMira(heroi, dragoes[i], dimensao, dir))
+				dragoes[i] = null;
+		}
 	
-	
+	}	
 	
 	//wasd:mover heroi
 	public void move(Direcao dir)
@@ -217,16 +223,22 @@ public class Labirinto {
 				if (estrategia == Estrategia.ALTERNADO){
 					if (dragoes[i].isAcordado()){
 						Hipotese hipotese = new Hipotese(Labirinto.CHANCE_TO_SLEEP, 10);
-						if (hipotese.successo())
+						if (hipotese.isSucesso())
 							dragoes[i].setAcordado(false);
 					}
 					else{
 						Hipotese hipotese = new Hipotese(Labirinto.CHANCE_TO_WAKE, 10);
-						if (hipotese.successo())
+						if (hipotese.isSucesso())
 							dragoes[i].setAcordado(true);
 					}					
 				}
 				
+				if (dragoes[i].isAcordado() && isNaMira(dragoes[i], heroi, 3))
+				{
+					perdeu = true;
+					acabou = true;
+				}
+						
 				if (dragoes[i].isAcordado() && estrategia != Estrategia.PARADO)
 					movePeca(Direcao.randomDirecao(), dragoes[i]);
 				
@@ -240,7 +252,7 @@ public class Labirinto {
 						}
 						else if (heroi.isArmado()){
 							dragoes[i] = null;
-							System.out.println("Mataste um dragao!XD");
+							System.out.println("Mataste um dragao!");
 						}
 							
 						
@@ -252,9 +264,9 @@ public class Labirinto {
 	}
 	
 	
-	public boolean nenhumDragao(Dragao[] durgons){
-		for(int i = 0; i < durgons.length; i++){
-			if(durgons[i] != null)
+	public boolean nenhumDragao(Dragao[] dragoes){
+		for(int i = 0; i < dragoes.length; i++){
+			if(dragoes[i] != null)
 				return false;
 		}
 		return true;
@@ -271,6 +283,46 @@ public class Labirinto {
 		return false;
 	}
 	
+	private boolean isNaMira(Peca agressor, Peca defensor, int alcance)
+	{
+		return isNaMira(agressor, defensor, alcance, Direcao.values());
+	}
 	
+	private boolean isNaMira(Peca agressor, Peca defensor, int alcance, Direcao dir)
+	{
+		for(int a = 1; a <= alcance; a++){				
+			Posicao posAtual = agressor.getPosicao().novaPosicao(dir, a);
+			Terreno terrenoAtual;
+			
+			try
+			{
+				terrenoAtual = tabuleiro.at(posAtual);
+			}
+			catch (IndexOutOfBoundsException e)
+			{
+				return false;
+			}
+			
+			if (terrenoAtual == Terreno.PAREDE)
+				return false;
+			else if (defensor.getPosicao().equals(posAtual))
+				return true;				
+		}				
+		return false;
+	}
+	
+	private boolean isNaMira(Peca agressor, Peca defensor, int alcance, Direcao[] dir){
+		
+		for (int i = 0; i < dir.length; i++){
+			if (dir[i] == Direcao.NONE)
+				continue;
+			Direcao currDir = dir[i];
+			
+			if (isNaMira(agressor, defensor, alcance, currDir))
+				return true;
+		}
+		return false;
+			
+	}
 	
 }

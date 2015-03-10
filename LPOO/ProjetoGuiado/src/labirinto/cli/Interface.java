@@ -10,6 +10,20 @@ import labirinto.logic.*;
 
 public class Interface {
 
+	private enum InputType {
+		DIRECIONAL, ATIRA_DARDO, INSIGNIFICANTE, DESCONHECIDA;
+		
+		public static InputType getType(char c)
+		{
+			switch (c){
+			case 't': return ATIRA_DARDO;
+			case 'w': case 'd': case 'a': case 's': return DIRECIONAL; 
+			case '\n': return INSIGNIFICANTE;
+			default : return DESCONHECIDA;			
+			}
+		}
+	}
+	
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -20,6 +34,7 @@ public class Interface {
 		int dragoes = -1;
 		int estrategia = 0;
 		Scanner leitor = new Scanner(System.in);
+				
 		
 		
 		do{
@@ -61,22 +76,35 @@ public class Interface {
 		Labirinto lab;
 		if (dimensao != -1)
 			lab = new Labirinto(MazeGenerator.generate(dimensao), dimensao, dragoes, Estrategia.fromNumber(estrategia));			
-		else
-			lab = new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), dragoes, Estrategia.fromNumber(estrategia));		
-		
+		else{
+			lab = new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), dragoes, Estrategia.fromNumber(estrategia));
+			dimensao = MazeGenerator.getPredefSize();
+		}
 		char input = 0;
+		InputType tipo;
 		printTabuleiro(lab, lab.getDimensao());
 		do
 		{
-			Direcao direcao;
-			do{			
-				if (input == '\n')
-					printTabuleiro(lab, lab.getDimensao());
-				input = Interface.getInput();
-				direcao = Interface.traduzInput(input);
-			}while(direcao == Direcao.NONE);
 			
-			lab.move(direcao);			
+			input = getInput();
+			
+			switch (InputType.getType(input)){
+			case DIRECIONAL:
+				lab.move(traduzDirecao(input));
+				break;
+			case ATIRA_DARDO:
+				input = getInput(InputType.DIRECIONAL);
+				lab.atiraDardo(traduzDirecao(input));				
+				break;
+			case INSIGNIFICANTE:
+				break;
+			default:
+				System.out.println("Entrada não reconhecida ou inutil...");
+				break;
+			}
+			
+			if (InputType.getType(input) != InputType.INSIGNIFICANTE)
+				printTabuleiro(lab, dimensao);			
 			
 		}while(!lab.isAcabou());
 		
@@ -106,8 +134,17 @@ public class Interface {
 		char tmp = (char) System.in.read();
 		return tmp;
 	}
+	private static char getInput(InputType tipo) throws IOException
+	{
+		char tmp = getInput();
+		if (InputType.getType(tmp) == tipo)
+			return tmp;
+		else
+		return	getInput(tipo);
+	}
 	
-	private static Direcao traduzInput(char input)
+	
+	private static Direcao traduzDirecao(char input)
 	{
 		switch (input)
 		{
@@ -115,7 +152,6 @@ public class Interface {
 		case 'a': return Direcao.ESQUERDA;
 		case 's': return Direcao.BAIXO;
 		case 'd': return Direcao.DIREITA;
-		case 't': //throw javelin?
 		default : return Direcao.NONE;
 		}
 	}
