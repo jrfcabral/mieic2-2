@@ -82,8 +82,6 @@ vec4 lighting(vec4 vertex, vec3 E, vec3 N) {
 
             vec4 Is = vec4(0.0, 0.0, 0.0, 0.0);
 
-            Id = uLight[i].diffuse * uFrontMaterial.diffuse * lambertTerm;
-
             if (lambertTerm > 0.0) {
                 vec3 R = reflect(L, N);
                 float specular = pow( max( dot(R, E), 0.0 ), uFrontMaterial.shininess);

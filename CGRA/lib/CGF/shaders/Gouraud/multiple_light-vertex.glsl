@@ -35,6 +35,8 @@ uniform bool uLightModelTwoSided;
 
 #define NUMBER_OF_LIGHTS 4
 
+uniform vec4 uGlobalAmbient;
+
 uniform lightProperties uLight[NUMBER_OF_LIGHTS];
 
 uniform materialProperties uFrontMaterial;
@@ -80,10 +82,8 @@ vec4 lighting(vec4 vertex, vec3 E, vec3 N) {
 
             vec4 Is = vec4(0.0, 0.0, 0.0, 0.0);
 
-            Id = uLight[i].diffuse * uFrontMaterial.diffuse * lambertTerm;
-
             if (lambertTerm > 0.0) {
-                vec3 R = reflect(L, N);
+                vec3 R = reflect(-L, N);
                 float specular = pow( max( dot(R, E), 0.0 ), uFrontMaterial.shininess);
 
                 Is = uLight[i].specular * uFrontMaterial.specular * specular;
@@ -96,6 +96,7 @@ vec4 lighting(vec4 vertex, vec3 E, vec3 N) {
         }
     }
 
+	result += uGlobalAmbient * uFrontMaterial.ambient;
     result = clamp(result, vec4(0.0), vec4(1.0));
 
     result.a = 1.0;
