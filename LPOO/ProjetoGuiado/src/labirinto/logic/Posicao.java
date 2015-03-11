@@ -62,9 +62,11 @@ public class Posicao {
 		return posicao;
 	}
 	
-	public boolean equals(Posicao posicao)
-	{
-		return posicao.x == this.x && posicao.y == this.y;			
+	public boolean equals(Object obj)
+	{	if(obj instanceof Posicao){
+			return ((Posicao)obj).x == this.x && ((Posicao)obj).y == this.y;
+		}
+		return false;		
 	}
 	public boolean isAdjacente(Posicao posicao)
 	{
@@ -81,5 +83,9 @@ public class Posicao {
 
 		Posicao[] adjacencias = new Posicao[] {new Posicao(x+1,y),new Posicao(x,y+1), new Posicao(x-1,y), new Posicao(x,y-1)};
 		return adjacencias;
+	}
+	
+	public String toString(){
+		return "(" + this.getX() + ", " + this.getY() + ")";
 	}
 }

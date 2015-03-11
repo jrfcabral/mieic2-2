@@ -66,8 +66,18 @@ public class Labirinto {
 		
 	}
 	
+	//for testing purposes
+	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia, Posicao heroPos, Posicao swordPos, Posicao dragonPos){
+		this(formatoTabuleiro, dimensao, dragoes, estrategia);
+		this.heroi = new Heroi(heroPos);
+		this.espada = new Espada(swordPos);
+		this.dragoes[0] = new Dragao(dragonPos);
+	}
 	
 	
+	public Heroi getHeroi(){
+		return this.heroi;
+	}
 	
 
 	private void inicializarPecas() {		
@@ -175,7 +185,7 @@ public class Labirinto {
 
 	private void processaTurno() {
 		
-		if ( (heroi.isArmado() || heroi.hasJavelin()) && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao(dragoes))
+		if ( (heroi.isArmado() || heroi.hasJavelin()) && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao())
 			acabou = true;
 		
 		moverTodosOsDragoes();		
@@ -237,6 +247,7 @@ public class Labirinto {
 				{
 					perdeu = true;
 					acabou = true;
+					System.out.println("!");
 				}
 						
 				if (dragoes[i].isAcordado() && estrategia != Estrategia.PARADO)
@@ -249,6 +260,7 @@ public class Labirinto {
 						if(!heroi.isArmado() && dragoes[i].isAcordado()){
 							perdeu = true;
 							acabou = true;
+							System.out.println("!");
 						}
 						else if (heroi.isArmado()){
 							dragoes[i] = null;
@@ -264,7 +276,7 @@ public class Labirinto {
 	}
 	
 	
-	public boolean nenhumDragao(Dragao[] dragoes){
+	public boolean nenhumDragao(){
 		for(int i = 0; i < dragoes.length; i++){
 			if(dragoes[i] != null)
 				return false;
