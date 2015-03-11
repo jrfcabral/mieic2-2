@@ -77,8 +77,8 @@ LightingScene.prototype.initLights = function() {
 	// Positions for four lights
 	this.lights[0].setPosition(4, 6.0, 1, 1);
 	this.lights[1].setPosition(10.5, 6.0, 1.0, 1.0);
-	this.lights[2].setPosition(10.5, 6.0, 5.0, 1.0);
-	this.lights[3].setPosition(4, 6.0, 5.0, 1.0);
+	this.lights[2].setPosition(10.5, 2.0, 5.0, 1.0);
+	this.lights[3].setPosition(3, 2.0, 10.0, 1.0);
 
 	this.lights[0].setAmbient(0, 0, 0, 1);
 	this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
@@ -99,7 +99,7 @@ LightingScene.prototype.initLights = function() {
 	this.lights[3].setAmbient(0, 0, 0, 1);
 	this.lights[3].setDiffuse(1.0, 1.0, 1.0, 1.0);
 	this.lights[3].setSpecular(1.0,1.0,0.0,1.0);
-	this.lights[3].setQuadraticAttenuation(0.2);
+	this.lights[3].setQuadraticAttenuation(0.1);
 	this.lights[3].setLinearAttenuation(0);
 	this.lights[3].setConstantAttenuation(0);
 	this.lights[3].enable();
