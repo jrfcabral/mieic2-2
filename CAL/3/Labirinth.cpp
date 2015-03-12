@@ -14,6 +14,7 @@ Labirinth::Labirinth(int values[10][10])
 	for (int i = 0; i < 10; i++)
 		for (int j = 0; j < 10; j++)
 			labirinth[i][j]=values[i][j];
+
 }
 
 
@@ -22,7 +23,7 @@ void Labirinth::initializeVisited(int x, int y)
 	for (int i = 0; i < 10; i++)
 		for (int a = 0; a < 10; a++)
 			visited[i][a] = false;
-	visited[y][x] = true;
+
 }
 
 
@@ -42,7 +43,32 @@ void  Labirinth::printLabirinth()
 
 bool Labirinth::findGoal(int x, int y)
 {
-	return false;
+	this->initializeVisited(x,y);
+	this->backtrack(x, y);
 }
+
+bool Labirinth::backtrack(int x, int y)
+{
+	if (labirinth[x][y] == 0 || visited[x][y])
+		return false;
+
+	visited[x][y] = 1;
+
+	if (labirinth[x][y] == 2){
+		cout << x << "," << y << endl;
+		return true;
+	}
+
+	if (backtrack(x+1,y))	return true;
+	if (backtrack(x-1, y))  return true;
+	if (backtrack (x, y+1)) return true;
+	if (backtrack(x, y-1))  return true;
+	else{
+		cout << "Não tem saida" << endl;
+		return false;
+	}
+
+}
+
 
 
