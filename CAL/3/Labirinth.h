@@ -17,6 +17,7 @@ class Labirinth {
 	bool visited[10][10];
 	void initializeVisited(int x, int y);
 	bool foundTheSolution;
+	bool backtrack(int x, int y);
 public:
 	Labirinth(int values[10][10]);
 	void printLabirinth();

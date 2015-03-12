@@ -94,9 +94,65 @@ bool Sudoku::isComplete()
  */
 bool Sudoku::solve()
 {
+	backtrack(0,1);
+}
+
+bool Sudoku::backtrack(int x, int y){
+
+	for (int n = 1; n < 10; n++)
+	{
+		if (!isPossible(x, y, n)){
+			cout << "o " << n << " nao da" << endl;
+			continue;
+		}
+		numbers[x][y] = n;
+		cout << "Tento preencher a casa " << x << ", " << y << " com o numero " << n << endl;
+		print();
+
+		if (this->isComplete()){
+			return true;
+			this->print();
+		}
+
+		else if (y >= 8){
+			cout << "avanço" << endl;
+			backtrack(x+1, y);
+		}
+		else{
+			cout << "avanço" << endl;
+			backtrack(x, y+1);
+		}
+	}
+	cout << "regresso" << endl;
 	return false;
 }
 
+bool Sudoku::isPossible(int x, int y, int n)
+{
+	for (int i = 0; i < 9; i++){
+		if (numbers[x][i] == n) return false;
+		if (numbers[i][y] == n) return false;
+	}
+
+	int i = x/3;
+	int j = y/3;
+	for (int k = 0; k < 3; k++)
+		for (int l = 0; l < 3; l++)
+			if (numbers[i+k][j+l] == n) return false;
+
+	cout << "O " << n << " dá" << endl;
+	return true;
+
+}
+
+int Sudoku::countPossible(int x, int y)
+{
+	int i = 0;
+	for (int j = i; j < 10; j++)
+		if (isPossible(x,y,j)) i++;
+
+	return i;
+}
 
 
 /**

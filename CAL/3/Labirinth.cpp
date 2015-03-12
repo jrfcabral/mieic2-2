@@ -44,7 +44,7 @@ void  Labirinth::printLabirinth()
 bool Labirinth::findGoal(int x, int y)
 {
 	this->initializeVisited(x,y);
-	this->backtrack(x, y);
+	return this->backtrack(x, y);
 }
 
 bool Labirinth::backtrack(int x, int y)
@@ -53,9 +53,10 @@ bool Labirinth::backtrack(int x, int y)
 		return false;
 
 	visited[x][y] = 1;
+	cout << "visitei " << x << " , " << y << endl;
 
 	if (labirinth[x][y] == 2){
-		cout << x << "," << y << endl;
+		cout << "A saida estava em " << x << "," << y << endl;
 		return true;
 	}
 
@@ -64,9 +65,10 @@ bool Labirinth::backtrack(int x, int y)
 	if (backtrack (x, y+1)) return true;
 	if (backtrack(x, y-1))  return true;
 	else{
-		cout << "Não tem saida" << endl;
+		cout << "por aqui não deu " << x << ", " << y << endl;
 		return false;
 	}
+
 
 }
 
