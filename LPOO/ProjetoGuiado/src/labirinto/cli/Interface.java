@@ -78,7 +78,7 @@ public class Interface {
 			lab = new Labirinto(MazeGenerator.generate(dimensao), dimensao, dragoes, Estrategia.fromNumber(estrategia));			
 		else{
 			lab = new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), dragoes, Estrategia.fromNumber(estrategia));
-			dimensao = MazeGenerator.getPredefSize();
+			dimensao = MazeGenerator.getPredefSize(); 
 		}
 		char input = 0;
 	//	InputType tipo;

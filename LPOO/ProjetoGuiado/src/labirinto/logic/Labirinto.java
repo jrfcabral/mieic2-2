@@ -5,7 +5,7 @@ import java.util.Random;
 import utilitarios.Hipotese;
 
 public class Labirinto {
-	private static final char ESPACO = ' ';
+	/*private static final char ESPACO = ' ';
 
 	private static final char HEROI_ARMADO = 'A';
 
@@ -19,7 +19,7 @@ public class Labirinto {
 	
 	private static final char DARDO = 'J'; //Javelin, a falta d melhor nome
 
-	private static final char ESCUDO = 'P'; //Protec�ao, a falta d melhor nome
+	private static final char ESCUDO = 'P'; //Protec�ao, a falta d melhor nome*/
 	
 	private static final int NUMERO_DARDOS = 5;
 	
@@ -29,11 +29,11 @@ public class Labirinto {
 
 	private Tabuleiro tabuleiro;
 	
-	private Heroi heroi;
-	private Espada espada;
+	protected Heroi heroi;
+	protected Espada espada;
 	private Dardo[] dardos;
 	private Escudo escudo;	
-	private Dragao[] dragoes;
+	protected Dragao[] dragoes;
 	
 	private boolean acabou;
 	private boolean perdeu;
@@ -53,6 +53,10 @@ public class Labirinto {
 	public boolean isAcabou() {
 		return acabou;
 	}
+	
+	public Labirinto(){
+		this(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), 1, Estrategia.PARADO);
+	}
 
 	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia)
 	{
@@ -65,21 +69,6 @@ public class Labirinto {
 		inicializarPecas();
 		
 	}
-	
-	//for testing purposes
-	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia, Posicao heroPos, Posicao swordPos, Posicao dragonPos){
-		this(formatoTabuleiro, dimensao, dragoes, estrategia);
-		this.heroi = new Heroi(heroPos);
-		this.espada = new Espada(swordPos);
-		this.dragoes[0] = new Dragao(dragonPos);
-	}
-	
-	
-	public Heroi getHeroi(){
-		return this.heroi;
-	}
-	
-
 	private void inicializarPecas() {		
 		
 		heroi = new Heroi(tabuleiro.getFreeCell());		
@@ -130,7 +119,7 @@ public class Labirinto {
 			for(int i = 0; i < dragoes.length; i++){
 				if(dragoes[i] != null && dragoes[i].getPosicao().equals(this.espada.getPosicao())){
 					return 'F';
-				}
+				} 
 			}
 			return 'E';
 		}
@@ -172,6 +161,7 @@ public class Labirinto {
 			if (isNaMira(heroi, dragoes[i], dimensao, dir))
 				dragoes[i] = null;
 		}
+		heroi.setHasJavelin(false);
 	
 	}	
 	
@@ -335,6 +325,24 @@ public class Labirinto {
 		}
 		return false;
 			
+	}
+	
+	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia, Posicao heroPos, Posicao swordPos, Posicao dragonPos, Posicao shieldPos, Posicao javPos){
+		this(formatoTabuleiro, dimensao, dragoes, estrategia);
+		this.heroi = new Heroi(heroPos);
+		this.espada = new Espada(swordPos);
+		this.escudo = new Escudo(shieldPos);
+		this.dragoes[0] = new Dragao(dragonPos);
+		this.dardos[0] = new Dardo(javPos);
+	}
+	
+	
+	public Heroi getHeroi(){
+		return this.heroi;
+	}
+	
+	public Dragao[] getDragoes(){
+		return this.dragoes;
 	}
 	
 }
