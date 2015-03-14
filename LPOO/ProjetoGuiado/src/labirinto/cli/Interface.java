@@ -20,7 +20,7 @@ public class Interface {
 			case 'w': case 'd': case 'a': case 's': return DIRECIONAL; 
 			case '\n': return INSIGNIFICANTE;
 			default : return DESCONHECIDA;			
-			}
+			} 
 		}
 	}
 	
@@ -33,13 +33,40 @@ public class Interface {
 		int dimensao = 0;
 		int dragoes = -1;
 		int estrategia = 0;
+		int option = 0;
 		Scanner leitor = new Scanner(System.in);
 				
+		
+		printTitle();
+		System.out.print("\n\nPress ENTER to continue");
+		leitor.nextLine();
+		System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		
+		
+		while(option != 1){
+		
+			System.out.print("1. Começar jogo\n2. Tutorial\n3. Sair\n");
+			do{
+				try{
+					System.out.print("Insira uma opção: ");
+					option = leitor.nextInt();
+				}
+				catch(Exception e){
+					System.out.print("Entrada não válida. Insira um número.");
+				}
+			}while(option < 1 || option > 3);
+			
+			if(option == 3)
+				return;
+			else if(option == 2){
+				tutorial();
+			}
+		}
 		
 		
 		do{
 			try{
-				System.out.println("Insira dimensÃ£o pretendida (deve ser um numero impar), ou -1 para o lab padrao:");
+				System.out.println("\n\n\nInsira dimensÃ£o pretendida para o labirinto (deve ser um numero impar), ou -1 para o labirinto padrao:");
 				dimensao = leitor.nextInt();
 			}
 			catch (Exception e){
@@ -60,6 +87,8 @@ public class Interface {
 			}
 		}while(dragoes < 1);
 		
+		System.out.println("Este jogo tem à sua disposição vários modos relativos ao comportamento dos dragoes. São eles: \n"
+				+ "1. Dragão sempre acordado\n2. Dragão sempre parado\n3. Dragão adormece ocasionalmente\n");
 		
 		do{
 			try{
@@ -154,4 +183,23 @@ public class Interface {
 		default : return Direcao.NONE;
 		}
 	}
+	
+	private static void printTitle(){
+		System.out.print("_________          _______    _______  _______  _______  _______ \n");
+		System.out.print("\\__   __/|\\     /|(  ____ \\  (       )(  ___  )/ ___   )(  ____ \\\n");
+		System.out.print("   ) (   | )   ( || (    \\/  | () () || (   ) |\\/   )  || (    \\/\n");
+		System.out.print("   | |   | (___) || (__      | || || || (___) |    /   )| (__    \n");
+		System.out.print("   | |   |  ___  ||  __)     | |(_)| ||  ___  |   /   / |  __)   \n");
+		System.out.print("   | |   | (   ) || (        | |   | || (   ) |  /   /  | (      \n");
+		System.out.print("   | |   | )   ( || (____/\\  | )   ( || )   ( | /   (_/\\| (____/\\\n");
+		System.out.print("   )_(   |/     \\|(_______/  |/     \\||/     \\|(_______/(_______/\n");
+	}
+	
+	private static void tutorial(){
+		System.out.print("Comandos: \nW - Cima\nA - Esquerda\nS - Baixo\nD - Direita\nT - Atirar dardo (deve ser seguido de uma das direcções acima)\n\n"
+				+"O objectivo do herói (H) é chegar à saída do labirinto (S) após ter matado todos os dragões (D).\n" + 
+				"Para matar dragões, o herói necessita de uma espada (E) ou dardo (J) e do escudo (P), que podem ser encontrados espalhados pelo labirinto.\n"+
+				"O heói só pode ter um dardo ou uma espada em qualquer momento." + "Se o herói chegar perto de um dragão sem o escudo, será instantaneamente comido, ou esturricado.\n\n\n");
+	}
+	
 }
