@@ -333,6 +333,9 @@ public class Labirinto {
 		this.espada = new Espada(swordPos);
 		this.escudo = new Escudo(shieldPos);
 		this.dragoes[0] = new Dragao(dragonPos);
+		for( int i = 0; i < dardos.length; i++){
+			this.dardos[i] = null;
+		}
 		this.dardos[0] = new Dardo(javPos);
 	}
 	

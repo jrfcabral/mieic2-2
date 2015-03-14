@@ -8,8 +8,7 @@ import org.junit.Test;
 public class TestLabirinto{
 	
 	private Labirinto testLab;
-	
-	
+
 	public Labirinto mazeSetup(Posicao heroPos, Posicao swordPos, Posicao dragonPos, int dragonnum, Posicao shieldPos, Posicao javPos){
 		return new Labirinto(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), dragonnum, Estrategia.PARADO, heroPos, swordPos, dragonPos, shieldPos, javPos);
 	}
