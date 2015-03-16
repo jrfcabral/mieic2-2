@@ -32,25 +32,29 @@
  	this.normals = [];
  	var ang = 2*Math.PI/this.slices;
 
- 	for(var i = 0; i < this.slices; i++){
+ 	for(var i = 0; i < this.slices*this.stacks; i++){
+ 		var x = Math.cos(ang*i);
+ 		var y = Math.sin(ang*i); 		
+
+ 		this.vertices.push(x);
+ 		this.vertices.push(y);
+ 		this.vertices.push(Math.floor(i/this.slices));
+
+ 		this.vertices.push(x);
+ 		this.vertices.push(y);
+ 		this.vertices.push(Math.floor(i/this.slices)+1);
+
+ 		var x = Math.cos(ang*(i+1));
+ 		var y = Math.sin(ang*(i+1));
+
+ 		this.vertices.push(x);
+ 		this.vertices.push(y);
+ 		this.vertices.push(Math.floor(i/this.slices));
+
  		
- 		this.vertices.push(Math.cos(ang*i));
- 		this.vertices.push(Math.sin(ang*i));
- 		this.vertices.push(0);
-
- 		this.vertices.push(Math.cos(ang*i));
- 		this.vertices.push(Math.sin(ang*i));
- 		this.vertices.push(1);
-
-
- 		this.vertices.push(Math.cos(ang*(i+1)));
- 		this.vertices.push(Math.sin(ang*(i+1)));
- 		this.vertices.push(0);
-
- 		
- 		this.vertices.push(Math.cos(ang*(i+1)));
- 		this.vertices.push(Math.sin(ang*(i+1)));
- 		this.vertices.push(1);
+ 		this.vertices.push(x);
+ 		this.vertices.push(y);
+ 		this.vertices.push(Math.floor(i/this.slices)+1);
 
  		this.indices.push(i*4+0);
  		this.indices.push(i*4+2);

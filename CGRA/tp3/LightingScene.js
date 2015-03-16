@@ -23,7 +23,7 @@ LightingScene.prototype.init = function(application) {
 	this.axis = new CGFaxis(this);
 
 	// Scene elements
-	this.prism = new MyPrism(this, 8, 1);
+	this.prism = new MyPrism(this, 8, 2);
 
 	// Materials
 	this.materialDefault = new CGFappearance(this);
