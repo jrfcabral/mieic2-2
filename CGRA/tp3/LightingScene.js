@@ -21,9 +21,10 @@ LightingScene.prototype.init = function(application) {
 	this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis = new CGFaxis(this);
-
+	this.pushMatrix();
 	// Scene elements
-	this.prism = new MyPrism(this, 8, 2);
+	this.prism = new MyPrism(this, 8, 20);
+	this.cylinder = new MyCylinder(this, 8, 20);
 
 	// Materials
 	this.materialDefault = new CGFappearance(this);
@@ -93,7 +94,18 @@ LightingScene.prototype.display = function() {
 	// ---- BEGIN Primitive drawing section
 
 	// Prism
+	this.pushMatrix();
+	this.rotate(-90.0*degToRad, 1, 0, 0);
 	this.prism.display();
+	this.popMatrix();
+
+	//Cylinder
+	this.pushMatrix();
+	this.translate(4.0, 0, 0);
+	this.rotate(-90*degToRad, 1, 0, 0);
+	//this.translate(0, 0, -8);
+	this.cylinder.display();
+	this.popMatrix();
 
 	// ---- END Primitive drawing section
 
