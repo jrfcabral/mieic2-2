@@ -11,6 +11,7 @@ function myTable(scene) {
 	this.materialTop.setDiffuse(0.5,0.2,0,1);
 	this.materialTop.setAmbient(0.5,0.2,0,1);
 	this.materialTop.setSpecular(0.05,0.025,0,1);
+	this.materialTop.loadTexture("../resources/images/table.png");
 
 	//metal
 	this.materialLegs.setShininess(200);
