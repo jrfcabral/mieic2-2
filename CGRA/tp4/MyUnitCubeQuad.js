@@ -1,7 +1,7 @@
 function MyUnitCubeQuad(scene) {
 	CGFobject.call(this,scene);
 	
-	this.plane = new MyQuad(this.scene);
+	this.plane = new MyQuad(this.scene,0,0.5,0,0.5);
 	
 	
 	//this.scene.initBuffers();

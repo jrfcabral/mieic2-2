@@ -3,8 +3,19 @@
  * @param gl {WebGLRenderingContext}
  * @constructor
  */
-function MyQuad(scene) {
+function MyQuad(scene, minS, maxS, minT, maxT) {
 	CGFobject.call(this,scene);
+	if (arguments.length < 2){
+		this.minS = 0;
+		this.maxS = 1;
+		this.minT = 0;
+		this.maxT = 1;}
+	else{
+		this.minS = minS;
+		this.minT = minT;
+		this.maxT = maxT;
+		this.maxS = maxS;
+	}
 
 	this.initBuffers();
 };
@@ -34,10 +45,10 @@ this.vertices = [
     ];
 
     this.texCoords = [
-    0,1,
-    1,1,
-    0,0,
-    1,0
+    this.minS,this.maxT,
+    this.maxS,this.maxT,
+    this.minS, this.minT,
+    this.maxS,this.minT
     ];
 		
 	this.primitiveType=this.scene.gl.TRIANGLES;

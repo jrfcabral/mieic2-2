@@ -31,7 +31,9 @@ LightingScene.prototype.init = function(application) {
 
 	// Scene elements
 	this.table = new myTable(this);
-	this.wall = new Plane(this, 1); //alterado para que a iluminaçao especular nas paredes seja mais notório
+	this.floor = new MyQuad(this,0,10,0,12);
+	this.leftwall = new MyQuad(this,-1,2,-0.5,1.5);
+	this.planewall = new Plane(this, 100);
 	this.boardA = new Plane(this, BOARD_A_DIVISIONS);
 	this.boardB = new Plane(this, BOARD_B_DIVISIONS);
 
@@ -52,9 +54,17 @@ LightingScene.prototype.init = function(application) {
 
 	this.materialWalls = new CGFappearance(this);
 	this.materialWalls.setAmbient(0.2,0.03,0,1);
-	this.materialWalls.setDiffuse(0.2,0.3,0.0,1);
+	this.materialWalls.setDiffuse(0.2,0.3,0.27,1);
 	this.materialWalls.setSpecular(0.01,0.01,0.01,1);	
 	this.materialWalls.setShininess(10);
+
+	this.materialLeftWall = new CGFappearance(this);
+	this.materialLeftWall.setAmbient(0.2,0.03,0,1);
+	this.materialLeftWall.setDiffuse(0.2,0.3,0.27,1);
+	this.materialLeftWall.setSpecular(0.01,0.01,0.01,1);	
+	this.materialLeftWall.setShininess(10);
+	this.materialLeftWall.loadTexture("../resources/images/window.png");
+	this.materialLeftWall.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
 
 	//madeira
 	this.materialFloor = new CGFappearance(this);
@@ -62,6 +72,7 @@ LightingScene.prototype.init = function(application) {
 	this.materialFloor.setDiffuse(0.1,0.03,0,1);
 	this.materialFloor.setAmbient(0,1,0.03,0,1);
 	this.materialFloor.setSpecular(0.05,0.025,0,1);
+	this.materialFloor.loadTexture("../resources/images/floor.png");
 
 	
 };
@@ -79,7 +90,8 @@ LightingScene.prototype.initLights = function() {
 	this.lights[0].setPosition(4, 6.0, 1, 1);
 	this.lights[1].setPosition(10.5, 6.0, 1.0, 1.0);
 	this.lights[2].setPosition(10.5, 2.0, 5.0, 1.0);
-	this.lights[3].setPosition(3, 2.0, 10.0, 1.0);
+	this.lights[3].setPosition(0, 4.0, 7.5, 1.0);
+
 
 	this.lights[0].setAmbient(0, 0, 0, 1);
 	this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
@@ -99,11 +111,14 @@ LightingScene.prototype.initLights = function() {
 
 	this.lights[3].setAmbient(0, 0, 0, 1);
 	this.lights[3].setDiffuse(1.0, 1.0, 1.0, 1.0);
-	this.lights[3].setSpecular(1.0,1.0,0.0,1.0);
-	this.lights[3].setQuadraticAttenuation(0.1);
-	this.lights[3].setLinearAttenuation(0);
-	this.lights[3].setConstantAttenuation(0);
+	this.lights[3].setSpecular(1.0,1.0,1.0,1.0);
+	this.lights[3].setQuadraticAttenuation(0);
+	this.lights[3].setLinearAttenuation(0.5);
+	this.lights[3].setConstantAttenuation(0.2);
+	this.lights[3].setVisible(true);
 	this.lights[3].enable();
+
+	
 
 	this.shader.unbind();
 };
@@ -155,23 +170,24 @@ LightingScene.prototype.display = function() {
 		this.translate(7.5, 0, 7.5);
 		this.rotate(-90 * degToRad, 1, 0, 0);
 		this.scale(15, 15, 0.2);
-		this.wall.display();
+		this.floor.display();
 	this.popMatrix();
 
-	this.materialWalls.apply();
+	this.materialLeftWall.apply();
 	// Left Wall
 	this.pushMatrix();
 		this.translate(0, 4, 7.5);
 		this.rotate(90 * degToRad, 0, 1, 0);
 		this.scale(15, 8, 0.2);
-		this.wall.display();
+		this.leftwall.display();
 	this.popMatrix();
 
+	this.materialWalls.apply();
 	// Plane Wall
 	this.pushMatrix();
 		this.translate(7.5, 4, 0);
 		this.scale(15, 8, 0.2);
-		this.wall.display();
+		this.planewall.display();
 	this.popMatrix();
 
 	// First Table
