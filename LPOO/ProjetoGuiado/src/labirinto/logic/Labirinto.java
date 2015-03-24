@@ -250,11 +250,11 @@ public class Labirinto {
 						if(!heroi.isArmado() && dragoes[i].isAcordado()){
 							perdeu = true;
 							acabou = true;
-							System.out.println("!");
+							
 						}
 						else if (heroi.isArmado()){
 							dragoes[i] = null;
-							System.out.println("Mataste um dragao!");
+							
 						}
 							
 						
