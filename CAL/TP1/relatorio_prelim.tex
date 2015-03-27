@@ -11,9 +11,10 @@
 
 \title{Relatório preliminar de Conceção e Análise de Algoritmos}
 \date{março 2015}
-\author{Francisco Veiga, up201201604@fe.up.pt
- \and João Mota, up201303462@fe.up.pt
- \and João Cabral, up201304395@fe.up.pt \linebreak
+\author{Francisco Veiga, 201201604@fe.up.pt
+ \and João Cabral, up201304395@fe.up.pt
+ \and  João Mota, 201303462@fe.up.pt\linebreak
+
  \and Faculdade de Engenharia da Universidade do Porto}
 %\input{./title_page_1.tex}
 \maketitle
@@ -39,9 +40,9 @@ Numa segunda fase é solicitado que a aplicação alargue o raio de ação de co
 \item Um vértice $s:s\in V$.
 \end{itemize}
 
-\subsection*{Outputs}
+\subsubsection*{Outputs}
 \begin{itemize}
-\item Um grafo $G_T = ( V_T,E_T )$ tal que se verifique a condição\cite[p.~643]{intro_algo}
+\item Um grafo $G_T = ( V_T,E_T )$ tal que se verifique a condição\cite[p.~643]{intro_algo}:
 $$ \forall v \in V(\delta(s,v) \leq l \biconditional v \in V_T)$$
 $$\delta(s,v) = 
 \begin{cases}
@@ -50,8 +51,8 @@ $$\delta(s,v) =
 \end{cases}$$
 \end{itemize}
 
-\subsection*{Função Objetivo}
-Seja $$x(u,v) = \begin{cases}
+\subsubsection*{Função Objetivo}
+Seja $$x(u,v) = \begin{cases}	
 1 & \text{se a aresta} (u,v) \in E_T\\
 0 & \text{caso contrário} 
 \end{cases}$$
@@ -66,17 +67,17 @@ $$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \quad \forall S \subseteq  V_T$$
 \subsection{2º problema/fase}
 \subsubsection*{Inputs}
 \begin{itemize}
-\item Um grafo  $G= ( V, E ) $ desconexo, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligações e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$\cite[p.~624]{intro_algo};
+\item Um grafo  $G= ( V, E ) $, desconexo ou não, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligações e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$\cite[p.~624]{intro_algo};
 \end{itemize}
 
-\subsection*{Outputs}
+\subsubsection*{Outputs}
 \begin{itemize}
 \item Um grafo $G_T = ( V_T,E_T )$;
 \item Um conjunto de grafos $D \subseteq G_T = \{d(V_D,E_D): \forall d,e \in D(\nexists v \in V_T(v \in d \land v \in e)) \land \nexists d,e\in D(\exists(u,v) \in E_T(u \in d \land v \in e)) \}$
 \item Um conjunto $S = \{s : \exists! d \in D(s \in d)\}$.
 \end{itemize}
 
-\subsection*{Função Objetivo}
+\subsubsection*{Função Objetivo}
 Seja $$x(u,v) = \begin{cases}
 1 & \text{se a aresta} (u,v) \in E_T\\
 0 & \text{caso contrário} 
@@ -88,12 +89,15 @@ $$\min \sum_{(u,v)\in E} w(u,v)x(u,v)$$
 com as restrições 
 $$\sum_{(u,v)\in E} x(u,v) = |V_T| - 1$$
 $$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \quad \forall S \subseteq V_T$$
-
+\linebreak
+\linebreak
+\linebreak
+\linebreak
 \section{Ideias de solução}
 \subsection{1º problema/fase}
 Aplicar o \emph{algoritmo de Dijkstra}, um algoritmo ganancioso, para calcular o caminho mais curto para todos os pontos do grafo a partir da central de forma a aferir os vértices do grafo que se encontram dentro do raio de cobertura pretendido. Excluir do grafo todos os pontos cuja distância à central seja superior ao raio desejado.
 
-De seguida usar o \emph{algoritmo de Prim}, também ele pertencente à família dos algoritmos gananciosos, para calcular uma árvore de expansão mínima do grafo resultante da operação anterior, resultando numa distância ótima de cabo a utilizar.
+De seguida usar o \emph{algoritmo de Prim}, também ele um algoritmo ganancioso, para calcular uma árvore de expansão mínima do grafo resultante da operação anterior, resultando numa distância ótima de cabo a utilizar.
 
 \subsection{2º problema/fase}
 Para a segunda fase prevê-se um aumento do raio de abrangência para a central. Isto pode levar à existência de sub-grafos desconexos. É da nossa interpretação que a cada grafo desconexo se deve acrescentar uma central. O \emph{algoritmo de Prim} só permite chegar à árvore de expansão mínima de um dos sub-grafos desconexos de $G$ por cada vez que é corrido. Embora existam algoritmos que permitem calcular árvores de expansão mínima em grafos desconexos, gerando uma árvore em cada sub-grafo, o cálculo do conjunto $D$ essencial para obter $S$ implica necessariamente uma determinação destes subgrafos.
@@ -102,7 +106,7 @@ Para a segunda fase prevê-se um aumento do raio de abrangência para a central.
 
 
 \section{Métricas de avaliação}
-Para obter uma métrica da eficiência espacial e temporal dos algoritmos pretende-se aplicar chamadas às funções do sistema operativo que permitem obter informações acerca do tempo de execução e da ocupação de memória de um determinado código. Se no caso da eficiência temporal esta informação é de aplicação mais direta, podendo ser obtida imediatamente antes e depois da execução do algoritmo cuja eficiência se pretende medir, no caso da eficiência espacial torna-se essencial escolher pontos relevantes para efetuar a medição, dado que ao longo da vida de um algoritmo a sua ocupação em memória pode variar drasticamente.
+Para obter uma métrica da eficiência espacial e temporal dos algoritmos pretende-se aplicar chamadas às funções do sistema operativo que permitem obter informações acerca do tempo de execução e da ocupação de memória de um determinado código. Se no caso da eficiência temporal esta informação é de aplicação mais direta, podendo ser obtida imediatamente antes e depois da execução do algoritmo cuja eficiência se pretende medir, no caso da eficiência espacial torna-se essencial escolher pontos relevantes para efetuar a medição, dado que ao longo da execução de um programa a sua ocupação em memória pode variar drasticamente.
  
 É ainda importante ter em conta para a medição do tempo de execução de um processo que as chamadas ao sistema que permitem obter a sua ocupação em memória têm um tempo de execução não nulo, pelo que convém efetuar as duas medições separadamente.
 \subsection{Variação das entradas}
