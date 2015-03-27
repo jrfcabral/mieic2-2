@@ -23,18 +23,13 @@ Numa primeira fase é solicitada uma aplicação que receba como dados de entrad
  
 Numa segunda fase é solicitado que a aplicação alargue o raio de ação de cobertura da rede de fibra ótica, procurando abranger uma maior área, sendo contudo necessário que a aplicação seja capaz de detetar áreas onde a cobertura providenciada por uma única central se revele insuficiente e seja capaz de indicar a necessidade de existirem novas centrais de distribuição da rede.
 
-
+\newpage
 \section*{Formalização do problema}
-\subsection*{Estruturas de dados a utilizar}
-\begin{itemize}
-\item Grafos
-\item Filas de prioridade
-\end{itemize}
 
 \subsection*{1º problema/fase}
 \subsubsection*{Inputs}
 \begin{itemize}
-\item Um grafo  $G= ( V, E ) $, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligaçoes e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$;
+\item Um grafo  $G= ( V, E ) $ conexo, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligaçoes e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$;
 \item Uma distancia $l:l > 0$;
 \item Um vértice $s:s\in V$.
 \end{itemize}
@@ -61,8 +56,33 @@ $$\min \sum_{(u,v)\in E} w(u,v)x(u,v)$$
 
 com as restrições 
 $$\sum_{(u,v)\in E} x(u,v) = |V_T| - 1$$
-$$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \forall S \subseteq V_T$$
+$$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \quad \forall S \subseteq  V_T$$
 
+\subsection*{2º problema/fase}
+\subsubsection*{Inputs}
+\begin{itemize}
+\item Um grafo  $G= ( V, E ) $ desconexo, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligaçoes e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$;
+\end{itemize}
+
+\subsection*{Outputs}
+\begin{itemize}
+\item Um grafo $G_T = ( V_T,E_T )$;
+\item Um conjunto de grafos $D \subseteq G_T = \{d(V_D,E_D): \forall d,e \in D(\nexists v \in V_T(v \in d \land v \in e)) \land \nexists d,e\in D(\exists(u,v) \in E_T(u \in d \land v \in e)) \}$
+\item Um conjunto $S = \{s : \exists! d \in D(s \in d)\}$.
+\end{itemize}
+
+\subsection*{Função Objetivo}
+Seja $$x(u,v) = \begin{cases}
+1 & \text{se a aresta} (u,v) \in E_T\\
+0 & \text{caso contrário} 
+\end{cases}$$
+
+A função objetivo é
+$$\min \sum_{(u,v)\in E} w(u,v)x(u,v)$$
+
+com as restrições 
+$$\sum_{(u,v)\in E} x(u,v) = |V_T| - 1$$
+$$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \quad \forall S \subseteq V_T$$
 
 
 
