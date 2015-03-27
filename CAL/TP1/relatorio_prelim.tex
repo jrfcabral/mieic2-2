@@ -72,7 +72,7 @@ $$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \quad \forall S \subseteq  V_T$$
 \subsection*{Outputs}
 \begin{itemize}
 \item Um grafo $G_T = ( V_T,E_T )$;
-\item Um conjunto de grafos $D \subseteq G_T = \{d(V_D,E_D): \forall d,e \in D(\nexists v \in V_T(v \in d \land v \in e) \lor e=v) \land \nexists d,e\in D(\exists(u,v) \in E_T(u \in d \land v \in e)) \land u\neq v \}$
+\item Um conjunto de grafos $D \subseteq G_T = \{d(V_D,E_D): \forall d,e \in D(\nexists v \in V_T(v \in d \land v \in e) \lor e=v) \land \nexists d,e\in D(\exists(u,v) \in E_T(u \in d \land v \in e)) \land d\neq e \}$
 \item Um conjunto $S = \{s : \exists! d \in D(s \in d)\}$.
 \end{itemize}
 
