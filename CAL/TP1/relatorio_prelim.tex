@@ -87,6 +87,31 @@ com as restrições
 $$\sum_{(u,v)\in E} x(u,v) = |V_T| - 1$$
 $$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \quad \forall S \subseteq V_T$$
 
+\section{Ideias de solução}
+\subsection{1º problema/fase}
+Aplicar o \emph{algoritmo de Dijkstra}, um algoritmo ganancioso, para calcular o caminho mais curto para todos os pontos do grafo a partir da central de forma a aferir os vértices do grafo que se encontram dentro do raio de cobertura pretendido. Excluir do grafo todos os pontos cuja distância à central seja superior ao raio desejado.
+
+De seguida usar o \emph{algoritmo de Prim}, também ele pertencente à família dos algoritmos gananciosos, para calcular uma árvore de expansão mínima do grafo resultante da operação anterior, resultando numa distância ótima de cabo a utilizar.
+
+\subsection{2º problema/fase}
+Para a segunda fase prevê-se um aumento do raio de abrangência para a central. Isto pode levar à existência de subgrafos desconexos. É da nossa interpretação que a cada grafo desconexo se deve acrescentar uma central. O \emph{algoritmo de Prim} só permite chegar à árvore de expansão mínima de um dos subgrafos desconexos de $G$ por cada vez que é corrido. Embora existam algoritmos que permitem calcular árvores de expansão mínima em grafos desconexos, gerando uma árvore em cada subgrafo, o cálculo do conjunto $D$ essencial para obter $S$ implica necessariamente uma determinação destes subgrafos.
+
+
+
+
+\section{Métricas de avaliação}
+Para obter uma métrica da eficiência espacial e temporal dos algoritmos pretende-se aplicar chamadas às funções do sistema operativo que permitem obter informações acerca do tempo de execução e da ocupação de memória de um determinado código. Se no caso da eficiência temporal esta informação é de aplicação mais direta, podendo ser obtida imediatamente antes e depois da execução do algoritmo cuja eficiência se pretende medir, no caso da eficiência espacial torna-se essencial escolher pontos relevantes para efetuar a medição, dado que ao longo da vida de um algoritmo a sua ocupação em memória pode variar drasticamente.
+ 
+É ainda importante ter em conta para a medição do tempo de execução de um processo que as chamadas ao sistema que permitem obter a sua ocupação em memória têm um tempo de execução não nulo, pelo que convém efetuar as duas medições separadamente.
+\subsection{Variação das entradas}
+\subsubsection{1º problema/fase}
+Torna-se importante variar o número de nós do grafo bem como o seu número de arestas separadamente, para aferir do impacto de cada uma das variáveis no tempo de execução de cada um dos algoritmos aplicados. Torna-se também importante variar o número de arestas a serem excluídas pela aplicação do algoritmo de Dijkstra antes do cálculo da árvore de expansão mínima. 
+\subsubsection{2º problema/fase}
+Aplica-se a mesma necessidade de variar o número de grafos e o número de nós que se verifica na 1ª fase. Torna-se também importante variar a conectividade dos grafos, testando os algoritmos com um número variável de subgrafos desconexos, para avaliar o impacto que isso tem na performance de cada um.
+
+
+
+
 \newpage
 \bibliographystyle{plain}
 \bibliography{cal}
