@@ -5,9 +5,10 @@
 \usepackage{mathtools}
 \usepackage{amssymb}
 \usepackage{amsmath}
-
+\usepackage{url}
 \let\biconditional\leftrightarrow
 \begin{document}
+
 \title{Relatório preliminar de Conceção e Análise de Algoritmos}
 \date{março 2015}
 \author{Francisco Veiga, up201304395@fe.up.pt
@@ -31,14 +32,14 @@ Numa segunda fase é solicitado que a aplicação alargue o raio de ação de co
 \subsection{1º problema/fase}
 \subsubsection*{Inputs}
 \begin{itemize}
-\item Um grafo  $G= ( V, E ) $ conexo, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligaçoes e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$;
+\item Um grafo  $G= ( V, E ) $ conexo, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligaçoes e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$\cite[p.~624]{intro_algo};
 \item Uma distancia $l:l > 0$;
 \item Um vértice $s:s\in V$.
 \end{itemize}
 
 \subsection*{Outputs}
 \begin{itemize}
-\item Um grafo $G_T = ( V_T,E_T )$ tal que se verifique a condição
+\item Um grafo $G_T = ( V_T,E_T )$ tal que se verifique a condição\cite[p.~643]{intro_algo}
 $$ \forall v \in V(\delta(s,v) \leq l \biconditional v \in V_T)$$
 $$\delta(s,v) = 
 \begin{cases}
@@ -53,7 +54,7 @@ Seja $$x(u,v) = \begin{cases}
 0 & \text{caso contrário} 
 \end{cases}$$
 
-A função objetivo é
+A função objetivo é\cite{ieor_mst}
 $$\min \sum_{(u,v)\in E} w(u,v)x(u,v)$$
 
 com as restrições 
@@ -63,7 +64,7 @@ $$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \quad \forall S \subseteq  V_T$$
 \subsection{2º problema/fase}
 \subsubsection*{Inputs}
 \begin{itemize}
-\item Um grafo  $G= ( V, E ) $ desconexo, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligaçoes e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$;
+\item Um grafo  $G= ( V, E ) $ desconexo, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligaçoes e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$\cite[p.~624]{intro_algo};
 \end{itemize}
 
 \subsection*{Outputs}
@@ -79,14 +80,16 @@ Seja $$x(u,v) = \begin{cases}
 0 & \text{caso contrário} 
 \end{cases}$$
 
-A função objetivo é
+A função objetivo é\cite{ieor_mst}
 $$\min \sum_{(u,v)\in E} w(u,v)x(u,v)$$
 
 com as restrições 
 $$\sum_{(u,v)\in E} x(u,v) = |V_T| - 1$$
 $$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \quad \forall S \subseteq V_T$$
 
-
+\newpage
+\bibliographystyle{plain}
+\bibliography{cal}
 
 
 \end{document}
