@@ -1,0 +1,69 @@
+\documentclass[a4paper,12pt,titlepage]{article}
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\let\biconditional\leftrightarrow
+\begin{document}
+\title{Relatório preliminar de Conceção e Análise de Algoritmos}
+\date{março 2015}
+\author{Francisco Veiga, up201304395@fe.up.pt
+ \and João Mota, up201304395@fe.up.pt
+ \and João Cabral, up201304395@fe.up.pt}
+\maketitle
+
+\section*{Introdução}
+
+No contexto da unidade curricular de Conceção e Análise de Algoritmos foi solicitada a resolução de um problema relacionado com a distribuição de uma rede de fibra ótica pela rede habitacional de um determinado agregado populacional.
+
+\section*{Problemas a abordar} 
+Numa primeira fase é solicitada uma aplicação que receba como dados de entrada um mapa do referido agregado populacional e produza como saída uma representação gráfica, sob a forma de um gráfico, de uma distribuição ideal da rede de fibra ótica, minimizando o comprimento das ligações utilizadas. Estabelece-se ainda como restrição adicional que cada uma das casas cobertas não pode situar-se fora de uma determinada área a ser definida por uma distância máxima à central de onde parte a rede de fibra ótica.
+ 
+Numa segunda fase é solicitado que a aplicação alargue o raio de ação de cobertura da rede de fibra ótica, procurando abranger uma maior área, sendo contudo necessário que a aplicação seja capaz de detetar áreas onde a cobertura providenciada por uma única central se revele insuficiente e seja capaz de indicar a necessidade de existirem novas centrais de distribuição da rede.
+
+
+\section*{Formalização do problema}
+\subsection*{Estruturas de dados a utilizar}
+\begin{itemize}
+\item Grafos
+\item Filas de prioridade
+\end{itemize}
+
+\subsection*{1º problema/fase}
+\subsubsection*{Inputs}
+\begin{itemize}
+\item Um grafo  $G= ( V, E ) $, onde $V$ é o conjunto das casas e $E$ o conjunto das suas ligaçoes e para cada aresta $(u,v)\in E$ temos $w(u,v)$ representando a distância entre as arestas $u$ e $v$ e $d(p)$ como sendo a distância de um caminho $p = \langle v_0,v_1,\ldots , v_k\rangle$;
+\item Uma distancia $l:l > 0$;
+\item Um vértice $s:s\in V$.
+\end{itemize}
+
+\subsection*{Outputs}
+\begin{itemize}
+\item Um grafo $G_T = ( V_T,E_T )$ tal que se verifique a condição
+$$ \forall v \in V(\delta(s,v) \leq l \biconditional v \in V_T)$$
+$$\delta(s,v) = 
+\begin{cases}
+\min \{d(p): s \leadsto^p v\} & \text{se existe caminho entre s e v}\\
+\infty & \text{caso contrário} 
+\end{cases}$$
+\end{itemize}
+
+\subsection*{Função Objetivo}
+Seja $$x(u,v) = \begin{cases}
+1 & \text{se a aresta} (u,v) \in E_T\\
+0 & \text{caso contrário} 
+\end{cases}$$
+
+A função objetivo é
+$$\min \sum_{(u,v)\in E} w(u,v)x(u,v)$$
+
+com as restrições 
+$$\sum_{(u,v)\in E} x(u,v) = |V_T| - 1$$
+$$\sum_{(u,v)\in (S,S)} x(u,v) \leq |S| - 1 \forall S \subseteq V_T$$
+
+
+
+
+\end{document}
