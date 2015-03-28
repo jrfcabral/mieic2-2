@@ -30,9 +30,12 @@ LightingScene.prototype.init = function(application) {
 
 	// Scene elements
 	this.table = new myTable(this);
-	this.wall = new Plane(this, 100); //alterado para que a iluminaçao especular nas paredes seja mais notório
+	this.wall = new Plane(this, 10); //alterado para que a iluminaçao especular nas paredes seja mais notório
 	this.boardA = new Plane(this, BOARD_A_DIVISIONS);
 	this.boardB = new Plane(this, BOARD_B_DIVISIONS);
+	this.prism = new MyPrism(this, 8, 20);
+	this.cylinder = new MyCylinder(this, 8, 20);
+	this.lamp = new MyLamp(this, 8, 20);
 
 	// Materials
 	this.materialDefault = new CGFappearance(this);
@@ -203,6 +206,21 @@ LightingScene.prototype.display = function() {
 		this.boardB.display();
 	this.popMatrix();
 
+	//Prism and Cylinder
+	this.pushMatrix();
+		this.translate(1, 0, 12);
+		this.rotate(-90*degToRad, 1, 0, 0);
+		this.prism.display();
+		this.translate(12, 0, 0);
+		this.cylinder.display();
+	this.popMatrix();
+
+	//"Lamp"
+	this.pushMatrix();
+		this.translate(8, 8, 8);
+		this.rotate(90*degToRad, 1, 0, 0);
+		this.lamp.display();
+	this.popMatrix();
 	// ---- END Primitive drawing section
 
 	this.shader.unbind();
