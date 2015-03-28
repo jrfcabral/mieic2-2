@@ -25,6 +25,7 @@ LightingScene.prototype.init = function(application) {
 	// Scene elements
 	this.prism = new MyPrism(this, 8, 20);
 	this.cylinder = new MyCylinder(this, 8, 20);
+	this.sSphere = new MyLamp(this, 8, 200);
 
 	// Materials
 	this.materialDefault = new CGFappearance(this);
@@ -46,6 +47,9 @@ LightingScene.prototype.initLights = function() {
 	this.lights[1].setPosition(-5, 5, 5, 1);
 	this.lights[1].setVisible(true);
 
+	this.lights[2].setPosition(0, 5, -5, 1);
+	this.lights[2].setVisible(true);
+
 	this.lights[0].setAmbient(0, 0, 0, 1);
 	this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
 	this.lights[0].setSpecular(1.0, 1.0, 1.0, 1.0);
@@ -55,6 +59,11 @@ LightingScene.prototype.initLights = function() {
 	this.lights[1].setDiffuse(1.0, 1.0, 1.0, 1.0);
 	this.lights[1].setSpecular(1.0, 1.0, 1.0, 1.0);
 	this.lights[1].enable();
+
+	this.lights[2].setAmbient(0, 0, 0, 1);
+	this.lights[2].setDiffuse(1.0, 1.0, 1.0, 1.0);
+	this.lights[2].setSpecular(1.0, 1.0, 1.0, 1.0);
+	this.lights[2].enable();
 
 	this.shader.unbind();
 };
@@ -93,7 +102,7 @@ LightingScene.prototype.display = function() {
 
 	// ---- BEGIN Primitive drawing section
 
-	// Prism
+	/*// Prism
 	this.pushMatrix();
 	this.rotate(-90.0*degToRad, 1, 0, 0);
 	this.prism.display();
@@ -105,7 +114,12 @@ LightingScene.prototype.display = function() {
 	this.rotate(-90*degToRad, 1, 0, 0);
 	//this.translate(0, 0, -8);
 	this.cylinder.display();
-	this.popMatrix();
+	this.popMatrix();*/
+
+	//Lamp
+	this.pushMatrix();
+	//this.rotate(90*degToRad, 1, 0, 0);
+	this.sSphere.display();
 
 	// ---- END Primitive drawing section
 
