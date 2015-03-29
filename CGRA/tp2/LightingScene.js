@@ -80,7 +80,7 @@ LightingScene.prototype.initLights = function() {
 	// Positions for four lights
 	this.lights[0].setPosition(4, 6.0, 1, 1);
 	this.lights[1].setPosition(10.5, 6.0, 1.0, 1.0);
-	this.lights[2].setPosition(10.5, 2.0, 5.0, 1.0);
+	this.lights[2].setPosition(8, 6, 8, 1.0);
 	this.lights[3].setPosition(3, 2.0, 10.0, 1.0);
 
 	this.lights[0].setAmbient(0, 0, 0, 1);
@@ -218,7 +218,7 @@ LightingScene.prototype.display = function() {
 	//"Lamp"
 	this.pushMatrix();
 		this.translate(8, 8, 8);
-		this.rotate(90*degToRad, 1, 0, 0);
+		this.rotate(-90*degToRad, 1, 0, 0);
 		this.lamp.display();
 	this.popMatrix();
 	// ---- END Primitive drawing section
