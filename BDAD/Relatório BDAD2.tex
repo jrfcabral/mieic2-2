@@ -1,0 +1,35 @@
+\documentclass{article}
+
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+
+\title{Relatório BDAD}
+\date{31-3-2015}
+\author{João Cabral, up20130495\\
+	   João Mota, up201303462\\
+	   Luís Morais, up2013xxxxx}
+
+\begin{document}
+
+\maketitle
+\pagenumbering{gobble}
+\newpage
+\pagenumbering{arabic}
+
+\section{Esquema Relacional}
+
+Prisioneiro(\underline{número}, nome $\rightarrow$ Pessoa, data de entrada, data de saída, cela $\rightarrow$ Cela)\\
+Funcionário(\underline{IDFuncionário}, nome $\rightarrow$ Pessoa, cargo, hora de entrada, hora de saída)\\
+Tempo de Recreio(\underline{motivo $\rightarrow$ Recompensa}, duração, prisioneiro $\rightarrow$ Prisioneiro)\\
+Objeto Pessoal(\underline{motivo $\rightarrow$ Recompensa}, duração, prisioneiro $\rightarrow$ Prisioneiro)\\
+Local(\underline{nome}, função)\\
+Cela(\underline{número}, nome $\rightarrow$ local)\\
+Pena(\underline{IDPena}, data de sentença, motivo, prisioneiro $\rightarrow$ Prisioneiro)\\
+Incidente(\underline{IDIncidente}, descrição, data, local $\rightarrow$ Local, relator $\rightarrow$ Funcionário )\\
+PrisioneiroIncidente(prisioneiro $\rightarrow$ Prisioneiro, incidente $\rightarrow$ Incidente)\\
+
+
+%Cmo se faz pra classes d atribuição?
+
+
+\end{document}
