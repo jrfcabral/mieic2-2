@@ -1,4 +1,6 @@
-.project
-.classpath
-.class
+*.project
+*.classpath
+*.class
 a.out
+*.o
+*.d
