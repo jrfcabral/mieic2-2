@@ -45,14 +45,14 @@ public class Interface {
 		
 		while(option != 1){
 		
-			System.out.print("1. Começar jogo\n2. Tutorial\n3. Sair\n");
+			System.out.print("1. Comeï¿½ar jogo\n2. Tutorial\n3. Sair\n");
 			do{
 				try{
-					System.out.print("Insira uma opção: ");
+					System.out.print("Insira uma opï¿½ï¿½o: ");
 					option = leitor.nextInt();
 				}
 				catch(Exception e){
-					System.out.print("Entrada não válida. Insira um número.");
+					System.out.print("Entrada nï¿½o vï¿½lida. Insira um nï¿½mero.");
 				}
 			}while(option < 1 || option > 3);
 			
@@ -87,8 +87,8 @@ public class Interface {
 			}
 		}while(dragoes < 1);
 		
-		System.out.println("Este jogo tem à sua disposição vários modos relativos ao comportamento dos dragoes. São eles: \n"
-				+ "1. Dragão sempre acordado\n2. Dragão sempre parado\n3. Dragão adormece ocasionalmente\n");
+		System.out.println("Este jogo tem ï¿½ sua disposiï¿½ï¿½o vï¿½rios modos relativos ao comportamento dos dragoes. Sï¿½o eles: \n"
+				+ "1. Dragï¿½o sempre acordado\n2. Dragï¿½o sempre parado\n3. Dragï¿½o adormece ocasionalmente\n");
 		
 		do{
 			try{
@@ -126,8 +126,7 @@ public class Interface {
 				break;
 			case INSIGNIFICANTE:
 				break;
-			default:
-				//System.out.println("Entrada nÃ£o reconhecida ou inutil...");
+			default:				
 				break;
 			}
 			
@@ -196,10 +195,10 @@ public class Interface {
 	}
 	
 	private static void tutorial(){
-		System.out.print("Comandos: \nW - Cima\nA - Esquerda\nS - Baixo\nD - Direita\nT - Atirar dardo (deve ser seguido de uma das direcções acima)\n\n"
-				+"O objectivo do herói (H) é chegar à saída do labirinto (S) após ter matado todos os dragões (D).\n" + 
-				"Para matar dragões, o herói necessita de uma espada (E) ou dardo (J) e do escudo (P), que podem ser encontrados espalhados pelo labirinto.\n"+
-				"O heói só pode ter um dardo ou uma espada em qualquer momento." + "Se o herói chegar perto de um dragão sem o escudo, será instantaneamente comido, ou esturricado.\n\n\n");
+		System.out.print("Comandos: \nW - Cima\nA - Esquerda\nS - Baixo\nD - Direita\nT - Atirar dardo (deve ser seguido de uma das direcï¿½ï¿½es acima)\n\n"
+				+"O objectivo do herï¿½i (H) ï¿½ chegar ï¿½ saï¿½da do labirinto (S) apï¿½s ter matado todos os dragï¿½es (D).\n" + 
+				"Para matar dragï¿½es, o herï¿½i necessita de uma espada (E) ou dardo (J) e do escudo (P), que podem ser encontrados espalhados pelo labirinto.\n"+
+				"O heï¿½i sï¿½ pode ter um dardo ou uma espada em qualquer momento." + "Se o herï¿½i chegar perto de um dragï¿½o sem o escudo, serï¿½ instantaneamente esturricado.\n\n\n");
 	}
 	
 }
