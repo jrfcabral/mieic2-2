@@ -11,46 +11,49 @@ int main(int argc, char **argv){
 		printf("Usage: %s file\n", argv[0]);
 		exit(-1);	
 	}
-		
 	
-	char *fpath = "res_";
-	strcat(fpath, argv[1]);
-		
-		
-	int words, file, search_res;
-	words = open("words.txt", O_RDONLY);
-	if(words < 0){
+	FILE *words;
+	words = fopen("words.txt", "r");
+	if(words == NULL){
 		perror(argv[1]);
 		exit(-1);	
-	}
+	}	
 	
-	puts("!!!");
-	
-	file = open(argv[1], O_RDONLY);
-	if(file < 0){
-		perror(argv[1]);
-		exit(-1);	
-	}
+	char *name = (char *)malloc(strlen(argv[1])*sizeof(char));
+	strcpy(name, argv[1]);
+	int i;
+	for(i = strlen(name); i > 0; i--){
+		if(name[i] == '.'){
+			name[i] = '\0';			
+		}
+	}	
+	char *fpath = (char *)malloc((4+strlen(name)+4)*sizeof(char));
+	strcpy(fpath, "res_");
+	strcat(fpath, name);
+	puts(fpath);	
+	strcat(fpath, ".txt");
+	//puts(name);
+	//puts(fpath);
+		
+	int search_res;
 
-	puts("!!!");	
-	
 	search_res = open(fpath, (O_CREAT | O_WRONLY | O_TRUNC), 0777);
 	if(search_res< 0){
 		perror(argv[1]);
 		exit(-1);	
 	}
-
 		
 
 	pid_t pid;
-	char *word;
-	int std = dup(STDOUT_FILENO), n_read;
-	dup2(search_res, STDOUT_FILENO);
-	
-	while((n_read = read(words, word, 256))){
-		//pid = fork();
+	char *word = (char *)malloc(256*sizeof(char));
+	int std = dup(STDOUT_FILENO);
+	while(!feof(words)){
+		fgets(word, 256, words);
+		word[strlen(word) - 1] = '\0';
 		puts(word);
-		/*if(pid == 0){
+		pid = fork();
+		dup2(search_res, STDOUT_FILENO);
+		if(pid == 0){
 			execlp("grep", "grep", "-n", word, argv[1], NULL);
 			printf("Command not executed.\n");
 			exit(-1);
@@ -59,9 +62,9 @@ int main(int argc, char **argv){
 			int n;
 			wait(&n);
 		}		
-		dup2(std, STDOUT_FILENO);*/
+		dup2(std, STDOUT_FILENO);
 	}
 	
-
+	dup2(std, STDOUT_FILENO);
 	
 }

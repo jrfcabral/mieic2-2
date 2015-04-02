@@ -67,7 +67,11 @@ int main(int argc, char **argv){
 			continue;
 		}
 		else if(S_ISREG(ent_stat.st_mode)){
-			puts("Launch sw...");
+			pid_t pid = fork();
+			if(pid == 0){
+				execlp("./sw", "./sw", src_ent->d_name, NULL);
+				printf("Fodeu...\n");
+			}		
 		}
 	}
 
