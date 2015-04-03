@@ -30,6 +30,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import labirinto.logic.Estrategia;
 import labirinto.logic.Labirinto;
 import labirinto.logic.MazeGenerator;
 
@@ -41,8 +42,8 @@ public class Interface {
 	private static final String TUTORIAL = "Tutorial";
 	
 	private JFrame frame;
-	private JPanel menu;
-	private JPanel labirinto;
+	private JPanel mainMenu;
+	private JPanel playMenu;
 	private JPanel editor;
 	
 	private Labirinto labirintoLogic;
@@ -77,6 +78,16 @@ public class Interface {
 			super.insertString(fb, offset, string, attr);
 			
 		}
+		
+		@Override
+		public void replace(FilterBypass fb, int offset, int length, String string, javax.swing.text.AttributeSet attr) throws BadLocationException
+		{			
+			int dimension;
+			try{
+				dimension = Integer.parseInt(string);
+			}catch (NumberFormatException e){return;}
+			super.replace(fb, offset, length, string, attr);
+		}
 	}
 
 	/**
@@ -86,8 +97,8 @@ public class Interface {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Interface window = new Interface();
-					window.frame.setVisible(true);
+					JogoFrame window = new JogoFrame();
+					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -108,8 +119,8 @@ public class Interface {
 	private void initialize() {
 		initApplicationFrame();		
 		initMenu();	
-		initLabirinto();
-		DocumentFilter jd = new DocumentFilter();
+		initPlayMenu();
+		
 		
 	}
 
@@ -131,53 +142,27 @@ public class Interface {
 	/**
 	 * Initialize the Labyrinth
 	 */
-	private void initLabirinto() {
-		labirinto = new JPanel();
-		labirinto.setLayout(new CardLayout(0,0));
+	private void initPlayMenu() {
+		playMenu = new JPanel();
+		playMenu.setLayout(new BorderLayout());
 		
-		JPanel createPanel = new JPanel();
-		createPanel.setLayout(new FlowLayout());
 		
-		JLabel dimensionLabel = new JLabel("Dimensão da masmorra: ");
-		JFormattedTextField dimensionField = new JFormattedTextField(java.text.NumberFormat.getIntegerInstance());
-		dimensionField.setColumns(3);
-		((PlainDocument)dimensionField.getDocument()).setDocumentFilter(new PositiveIntegerFilter());
-		JButton playButton = new JButton("Play");
-		playButton.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				labirintoLogic = new Labirinto();
-				
-			}
-			
-		});
 		
-		createPanel.add(dimensionLabel);
-		createPanel.add(dimensionField);		
-		labirinto.add(createPanel, "CREATE");
 		
-		JPanel labirintoPanel = new JPanel();
-		labirintoPanel.setLayout(new GridLayout());
-		
-		if(labirintoLogic != null)
-			((CardLayout)labirinto.getLayout()).show(labirinto, "PLAY");
-		
-		frame.add(labirinto, PLAY);
-		
+		frame.getContentPane().add(playMenu, PLAY);		
 	}
 	
 	/**
 	 * Initialize the menu
 	 */
 	private void initMenu() {
-		menu = new JPanel();
-		menu.setLayout(new BorderLayout());
+		mainMenu = new JPanel();
+		mainMenu.setLayout(new BorderLayout());
 		JLabel mazelbl = new JLabel();
 		mazelbl.setText("Bem vindo à masmorra");
 		mazelbl.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		menu.add(mazelbl, BorderLayout.CENTER);
+		mainMenu.add(mazelbl, BorderLayout.CENTER);
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
@@ -195,8 +180,8 @@ public class Interface {
 		buttonPanel.add(buttonBuild);
 		buttonPanel.add(buttonTutorial);
 		buttonPanel.add(buttonPlay);
-		menu.add(buttonPanel, BorderLayout.SOUTH);
+		mainMenu.add(buttonPanel, BorderLayout.SOUTH);
 		
-		frame.add(menu, MAIN_MENU);
+		frame.add(mainMenu, MAIN_MENU);
 	}
 }

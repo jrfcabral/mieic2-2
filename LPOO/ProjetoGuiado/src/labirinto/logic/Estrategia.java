@@ -16,4 +16,17 @@ public enum Estrategia {
 			throw new IllegalArgumentException("Estratégia não existe!");
 		}
 	}
+	
+	@Override public String toString(){
+		switch(this){
+		case PARADO:
+			return "Sempre parados";
+		case ALTERNADO:
+			return "Alternar dormir com acordar";
+		case SEMPRE_ACORDADO:
+			return "Nunca dormir";
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
 }
