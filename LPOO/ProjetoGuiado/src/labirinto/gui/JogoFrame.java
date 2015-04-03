@@ -68,6 +68,7 @@ public class JogoFrame extends JFrame {
 		}
 		public void change(String mode){
 			if (mode == PLAY){
+				refazLabirinto();
 				criaPlayPanel();
 				JogoFrame.this.novoJogoButton.setEnabled(false);
 			}
