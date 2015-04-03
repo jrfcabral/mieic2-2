@@ -146,7 +146,7 @@ public class JogoFrame extends JFrame {
 			for (int j = 0; j < dimensaoSlider.getValue(); j++)
 				for (int i = 0; i < dimensaoSlider.getValue(); i++){
 					JPanel cell = new JPanel();
-					cell.setPreferredSize(new Dimension(50, 50));
+					cell.setPreferredSize(new Dimension(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue()));
 					cell.setOpaque(true);
 					char cellSymbol = labirinto.getCellSymbol(new Posicao(i, j));
 					
@@ -159,6 +159,23 @@ public class JogoFrame extends JFrame {
 						break;
 					case 'S':
 						cell.setBackground(Color.GREEN);
+						break;
+					case 'D':
+						cell.setBackground(Color.RED);
+						break;
+					case 'H': cell.setToolTipText("Heroi");cell.setBackground(Color.ORANGE);break;
+					case '@': cell.setToolTipText("Heroi com escudo");cell.setBackground(Color.ORANGE);break;
+					case 'A': cell.setToolTipText("Heroi com espada");cell.setBackground(Color.ORANGE);break;
+					case 'R': cell.setToolTipText("Heroi com dardo");cell.setBackground(Color.ORANGE);break;
+					case '$': cell.setToolTipText("Heroi com dardo e escudo");cell.setBackground(Color.ORANGE);break;
+					case '&': cell.setToolTipText("Heroi com espada e escudo");cell.setBackground(Color.ORANGE);break;
+						
+					case 'J':
+						cell.setBackground(Color.darkGray);
+					case 'E':
+						cell.setBackground(Color.YELLOW);
+					case 'P':
+						cell.setBackground(Color.PINK);
 					}
 					
 					playPanel.add(cell);
