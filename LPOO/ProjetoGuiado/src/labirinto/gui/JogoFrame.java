@@ -5,10 +5,17 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,6 +32,9 @@ import labirinto.logic.Labirinto;
 import labirinto.logic.MazeGenerator;
 import labirinto.logic.Posicao;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 public class JogoFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,9 +44,6 @@ public class JogoFrame extends JFrame {
 	private JButton sairButton;
 	
 	private JogoPanel jogoPanel;
-	
-	
-	
 	
 	
 	class JogoPanel extends JPanel{
@@ -60,13 +67,39 @@ public class JogoFrame extends JFrame {
 		private JLabel estrategiaLabel;
 		private JComboBox<Estrategia> estrategiaBox;
 		
+		private BufferedImage floorTile;
+		private BufferedImage heroTile;
+		private BufferedImage dragonTile;
+		private BufferedImage swordTile;
+		private BufferedImage shieldTile;
+		private BufferedImage javTile;
 		
-		public JogoPanel(){
+		public class ImagePanel extends JPanel{
+
+			private static final long serialVersionUID = 1L;
+			private Image tile;
+			
+			public ImagePanel(){
+				super();
+			}
+			
+			protected void paintComponent(Graphics g){
+				super.paintComponent(g);
+				g.drawImage(tile, 0, 0, null);
+			}
+			
+			public void setImg(Image img){
+				tile = img;
+			}
+		}
+		
+		
+		public JogoPanel() throws IOException{
 			super();
 			setLayout(new CardLayout());
 			criaPanels();			
 		}
-		public void change(String mode){
+		public void change(String mode) throws IOException{
 			if (mode == PLAY){
 				refazLabirinto();
 				criaPlayPanel();
@@ -78,7 +111,7 @@ public class JogoFrame extends JFrame {
 			JogoFrame.this.pack();
 		}
 
-		private void criaPanels() {
+		private void criaPanels() throws IOException {
 			emptyPanel = new JPanel();
 			add(emptyPanel, EMPTY);
 			criaOpcoesPanel();
@@ -140,12 +173,30 @@ public class JogoFrame extends JFrame {
 			labirinto = new Labirinto(MazeGenerator.generate(dimensaoSlider.getValue()), dimensaoSlider.getValue(), dragoesSlider.getValue(), (Estrategia)estrategiaBox.getSelectedItem());
 				
 		}
-		private void criaPlayPanel() {
+		private void criaPlayPanel() throws IOException {
+			
+			floorTile = ImageIO.read(new File("\\floortile3.png"));
+			dragonTile = ImageIO.read(new File("\\dragontile.png"));
+			heroTile = ImageIO.read(new File("\\herotile.png"));
+			shieldTile = ImageIO.read(new File("\\shieldtile.png"));
+			swordTile = ImageIO.read(new File("\\swordtile.png"));
+			javTile = ImageIO.read(new File("\\javtile.png"));
+			
 			playPanel = new JPanel();
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
+			drawMaze();
+			
+			
+			JogoFrame.this.pack();
+			
+			this.add(playPanel, PLAY);
+			
+		}
+		
+		public void drawMaze(){
 			for (int j = 0; j < dimensaoSlider.getValue(); j++)
 				for (int i = 0; i < dimensaoSlider.getValue(); i++){
-					JPanel cell = new JPanel();
+					ImagePanel cell = new ImagePanel();
 					cell.setPreferredSize(new Dimension(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue()));
 					cell.setOpaque(true);
 					char cellSymbol = labirinto.getCellSymbol(new Posicao(i, j));
@@ -155,50 +206,45 @@ public class JogoFrame extends JFrame {
 						cell.setBackground(Color.BLACK);
 						break;
 					case ' ':
-						cell.setBackground(Color.CYAN);
+						cell.setImg(floorTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
 						break;
 					case 'S':
 						cell.setBackground(Color.GREEN);
 						break;
 					case 'D':
-						cell.setBackground(Color.RED);
+						cell.setImg(dragonTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
 						break;
-					case 'H': cell.setToolTipText("Heroi");cell.setBackground(Color.ORANGE);break;
-					case '@': cell.setToolTipText("Heroi com escudo");cell.setBackground(Color.ORANGE);break;
-					case 'A': cell.setToolTipText("Heroi com espada");cell.setBackground(Color.ORANGE);break;
-					case 'R': cell.setToolTipText("Heroi com dardo");cell.setBackground(Color.ORANGE);break;
-					case '$': cell.setToolTipText("Heroi com dardo e escudo");cell.setBackground(Color.ORANGE);break;
-					case '&': cell.setToolTipText("Heroi com espada e escudo");cell.setBackground(Color.ORANGE);break;
+					case 'H': cell.setToolTipText("Heroi");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
+					case '@': cell.setToolTipText("Heroi com escudo");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
+					case 'A': cell.setToolTipText("Heroi com espada");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
+					case 'R': cell.setToolTipText("Heroi com dardo");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
+					case '$': cell.setToolTipText("Heroi com dardo e escudo");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
+					case '&': cell.setToolTipText("Heroi com espada e escudo");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
 						
 					case 'J':
-						cell.setBackground(Color.darkGray);
+						cell.setImg(javTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
+						break;
 					case 'E':
-						cell.setBackground(Color.YELLOW);
+						cell.setImg(swordTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
+						break;
 					case 'P':
-						cell.setBackground(Color.PINK);
+						cell.setImg(shieldTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
+						break;
 					}
 					
 					playPanel.add(cell);
 				}
-			
-			
-			
-			JogoFrame.this.pack();
-			
-			this.add(playPanel, PLAY);
-			
 		}
-		
 	}
 	
 	
-	public JogoFrame()
+	public JogoFrame() throws IOException
 	{
 		setTitle("As Aventuras de Sir McMataDragalhões");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 100);
 		setResizable(false);
-		setLayout(new BorderLayout());
+		getContentPane().setLayout(new BorderLayout());
 		
 		criaButoesPanel();
 		criaButoes();
@@ -207,9 +253,9 @@ public class JogoFrame extends JFrame {
 		
 	}
 	
-	private void criaJogoPanel() {
+	private void criaJogoPanel() throws IOException {
 		jogoPanel = new JogoPanel();
-		add(jogoPanel, BorderLayout.CENTER);
+		getContentPane().add(jogoPanel, BorderLayout.CENTER);
 		
 	}
 
@@ -222,7 +268,12 @@ public class JogoFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jogoPanel.change(JogoPanel.OPCOES);
+				try {
+					jogoPanel.change(JogoPanel.OPCOES);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 			}
 			
@@ -232,7 +283,12 @@ public class JogoFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jogoPanel.change(JogoPanel.PLAY);
+				try {
+					jogoPanel.change(JogoPanel.PLAY);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 			}
 			
@@ -258,7 +314,7 @@ public class JogoFrame extends JFrame {
 	{
 		botoesPanel = new JPanel();
 		botoesPanel.setLayout(new FlowLayout());
-		this.add(botoesPanel, BorderLayout.SOUTH);
+		getContentPane().add(botoesPanel, BorderLayout.SOUTH);
 	}
 	
 }
