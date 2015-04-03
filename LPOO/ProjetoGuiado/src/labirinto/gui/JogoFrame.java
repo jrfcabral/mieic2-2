@@ -2,11 +2,14 @@ package labirinto.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -20,6 +23,7 @@ import javax.swing.event.ChangeListener;
 import labirinto.logic.Estrategia;
 import labirinto.logic.Labirinto;
 import labirinto.logic.MazeGenerator;
+import labirinto.logic.Posicao;
 
 public class JogoFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -63,6 +67,12 @@ public class JogoFrame extends JFrame {
 			criaPanels();			
 		}
 		public void change(String mode){
+			if (mode == PLAY){
+				criaPlayPanel();
+				JogoFrame.this.novoJogoButton.setEnabled(false);
+			}
+			else
+				JogoFrame.this.novoJogoButton.setEnabled(true);
 			((CardLayout)getLayout()).show(this, mode);
 			JogoFrame.this.pack();
 		}
@@ -70,8 +80,9 @@ public class JogoFrame extends JFrame {
 		private void criaPanels() {
 			emptyPanel = new JPanel();
 			add(emptyPanel, EMPTY);
-			criaPlayPanel();
 			criaOpcoesPanel();
+			refazLabirinto();
+			criaPlayPanel();
 		}
 
 		
@@ -88,7 +99,7 @@ public class JogoFrame extends JFrame {
 			dimensaoSlider.setMaximum(41);
 			dimensaoSlider.setMajorTickSpacing(5);
 			dimensaoSlider.setMinorTickSpacing(2);
-			dimensaoSlider.setValue(9);
+			dimensaoSlider.setValue(15);
 			dimensaoSlider.setSnapToTicks(true);
 			dimensaoSlider.setPaintLabels(true);
 			dimensaoPanel.add(dimensaoLabel);
@@ -130,7 +141,33 @@ public class JogoFrame extends JFrame {
 		}
 		private void criaPlayPanel() {
 			playPanel = new JPanel();
-			playPanel.setLayout(new GridLayout());
+			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
+			for (int j = 0; j < dimensaoSlider.getValue(); j++)
+				for (int i = 0; i < dimensaoSlider.getValue(); i++){
+					JPanel cell = new JPanel();
+					cell.setPreferredSize(new Dimension(50, 50));
+					cell.setOpaque(true);
+					char cellSymbol = labirinto.getCellSymbol(new Posicao(i, j));
+					
+					switch (cellSymbol){
+					case 'X':
+						cell.setBackground(Color.BLACK);
+						break;
+					case ' ':
+						cell.setBackground(Color.CYAN);
+						break;
+					case 'S':
+						cell.setBackground(Color.GREEN);
+					}
+					
+					playPanel.add(cell);
+				}
+			
+			
+			
+			JogoFrame.this.pack();
+			
+			this.add(playPanel, PLAY);
 			
 		}
 		
