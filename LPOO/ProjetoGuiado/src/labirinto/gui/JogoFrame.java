@@ -110,7 +110,7 @@ public class JogoFrame extends JFrame {
 			
 			criaPanels();			
 		}
-		public void change(String mode) throws IOException{
+		public void change(String mode) {
 			if (mode == PLAY){
 				refazLabirinto();
 				criaPlayPanel();
@@ -213,14 +213,19 @@ public class JogoFrame extends JFrame {
 			labirinto = new Labirinto(MazeGenerator.generate(dimensaoSlider.getValue()), dimensaoSlider.getValue(), dragoesSlider.getValue(), (Estrategia)estrategiaBox.getSelectedItem());
 				
 		}
-		private void criaPlayPanel() throws IOException {
-			
+		private void criaPlayPanel() {
+			try{
 			floorTile = ImageIO.read(new File("bin/labirinto/resources/images/floortile3.png").getCanonicalFile());
 			dragonTile = ImageIO.read(new File("bin/labirinto/resources/images/dragontile.png").getCanonicalFile());
 			heroTile = ImageIO.read(new File("bin/labirinto/resources/images/herotile.png").getCanonicalFile());
 			shieldTile = ImageIO.read(new File("bin/labirinto/resources/images/shieldtile.png").getCanonicalFile());
 			swordTile = ImageIO.read(new File("bin/labirinto/resources/images/swordtile.png").getCanonicalFile());
 			javTile = ImageIO.read(new File("bin/labirinto/resources/images/javtile.png").getCanonicalFile());
+			}
+			catch(IOException e){
+				e.printStackTrace();
+				System.exit(-1);
+			}
 			
 			playPanel = new JPanel();
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
@@ -308,12 +313,7 @@ public class JogoFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					jogoPanel.change(JogoPanel.OPCOES);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				jogoPanel.change(JogoPanel.OPCOES);
 				
 			}
 			
@@ -323,12 +323,7 @@ public class JogoFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					jogoPanel.change(JogoPanel.PLAY);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				jogoPanel.change(JogoPanel.PLAY);
 				
 			}
 			
