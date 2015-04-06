@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,16 +27,18 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import labirinto.logic.Direcao;
 import labirinto.logic.Estrategia;
 import labirinto.logic.Labirinto;
 import labirinto.logic.MazeGenerator;
 import labirinto.logic.Posicao;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class JogoFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -46,7 +51,7 @@ public class JogoFrame extends JFrame {
 	private JogoPanel jogoPanel;
 	
 	
-	class JogoPanel extends JPanel{
+	private class JogoPanel extends JPanel{
 
 		private static final long serialVersionUID = 573437742923541828L;
 		
@@ -54,18 +59,26 @@ public class JogoFrame extends JFrame {
 		public static final String PLAY = "PLAY";
 		public static final String EMPTY = "EMPTY";
 		
-		private Labirinto labirinto;
+		private Labirinto masmorra;		
 		
 		private JPanel emptyPanel;
-		private JPanel playPanel;
-		
+		private JPanel playPanel;		
 		private JPanel opcoesPanel;
+		
 		private JLabel dimensaoLabel;
 		private JSlider dimensaoSlider;
 		private JLabel dragoesLabel;
 		private JSlider dragoesSlider;
 		private JLabel estrategiaLabel;
 		private JComboBox<Estrategia> estrategiaBox;
+		private JTextField moveCimaField;
+		private JTextField moveBaixoField;
+		private JTextField moveEsquerdaField;
+		private JTextField moveDireitaField;
+		private JTextField atiraCimaField;
+		private JTextField atiraBaixoField;
+		private JTextField atiraEsquerdaField;
+		private JTextField atiraDireitaField;
 		
 		private BufferedImage floorTile;
 		private BufferedImage heroTile;
@@ -73,6 +86,25 @@ public class JogoFrame extends JFrame {
 		private BufferedImage swordTile;
 		private BufferedImage shieldTile;
 		private BufferedImage javTile;
+		
+		class LabirintoMoveAction extends AbstractAction{
+
+			private Direcao direcao;
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(e.getActionCommand());
+				JogoPanel.this.masmorra.move(direcao);							
+				JogoPanel.this.criaPlayPanel();				
+				((CardLayout)JogoPanel.this.getLayout()).show(JogoPanel.this, PLAY);
+
+			}
+			public LabirintoMoveAction(Direcao dir){
+				super();
+				direcao = dir;
+			}
+			
+		}
 		
 		public class ImagePanel extends JPanel{
 
@@ -97,9 +129,10 @@ public class JogoFrame extends JFrame {
 		public JogoPanel() throws IOException{
 			super();
 			setLayout(new CardLayout());
+			
 			criaPanels();			
 		}
-		public void change(String mode) throws IOException{
+		public void change(String mode) {
 			if (mode == PLAY){
 				refazLabirinto();
 				criaPlayPanel();
@@ -165,25 +198,67 @@ public class JogoFrame extends JFrame {
 			estrategiaPanel.add(estrategiaBox);
 			opcoesPanel.add(estrategiaPanel);
 			
+			JLabel teclasLabel = new JLabel("Teclas");						
+			teclasLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			opcoesPanel.add(teclasLabel);
+			
+			
+			JPanel teclasPanel = new JPanel();
+			teclasPanel.setLayout(new GridLayout(4,2));
+			teclasPanel.setPreferredSize(new Dimension(20, 20));
+			
+			moveCimaField = new JTextField("w");
+			moveBaixoField = new JTextField("s");
+			moveEsquerdaField = new JTextField("a");
+			moveDireitaField = new JTextField("d");
+			teclasPanel.add(moveCimaField);
+			teclasPanel.add(moveBaixoField);
+			teclasPanel.add(moveEsquerdaField);
+			teclasPanel.add(moveDireitaField);
+			
+			atiraCimaField = new JTextField("u");
+			atiraBaixoField = new JTextField("j");
+			atiraEsquerdaField = new JTextField("h");
+			atiraDireitaField = new JTextField("k");
+			teclasPanel.add(atiraCimaField);
+			teclasPanel.add(atiraBaixoField);
+			teclasPanel.add(atiraEsquerdaField);
+			teclasPanel.add(atiraDireitaField);
+			
+			opcoesPanel.add(teclasPanel);
+			
 			add(opcoesPanel, OPCOES);			
 			
 		}
 
 		protected void refazLabirinto() {
-			labirinto = new Labirinto(MazeGenerator.generate(dimensaoSlider.getValue()), dimensaoSlider.getValue(), dragoesSlider.getValue(), (Estrategia)estrategiaBox.getSelectedItem());
+			masmorra = new Labirinto(MazeGenerator.generate(dimensaoSlider.getValue()), dimensaoSlider.getValue(), dragoesSlider.getValue(), (Estrategia)estrategiaBox.getSelectedItem());
 				
 		}
-		private void criaPlayPanel() throws IOException {
-			
+		private void criaPlayPanel() {
+			try{
 			floorTile = ImageIO.read(new File("bin/labirinto/resources/images/floortile3.png").getCanonicalFile());
 			dragonTile = ImageIO.read(new File("bin/labirinto/resources/images/dragontile.png").getCanonicalFile());
 			heroTile = ImageIO.read(new File("bin/labirinto/resources/images/herotile.png").getCanonicalFile());
 			shieldTile = ImageIO.read(new File("bin/labirinto/resources/images/shieldtile.png").getCanonicalFile());
 			swordTile = ImageIO.read(new File("bin/labirinto/resources/images/swordtile.png").getCanonicalFile());
 			javTile = ImageIO.read(new File("bin/labirinto/resources/images/javtile.png").getCanonicalFile());
+			}
+			catch(IOException e){
+				e.printStackTrace();
+				System.exit(-1);
+			}
 			
 			playPanel = new JPanel();
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveCimaField.getText().toUpperCase()), "movecima");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveBaixoField.getText().toUpperCase()), "movebaixo");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveEsquerdaField.getText().toUpperCase()), "moveesquerda");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveDireitaField.getText().toUpperCase()), "movedireita");
+			playPanel.getActionMap().put("movecima", new LabirintoMoveAction(Direcao.CIMA));
+			playPanel.getActionMap().put("movebaixo", new LabirintoMoveAction(Direcao.BAIXO));
+			playPanel.getActionMap().put("moveesquerda", new LabirintoMoveAction(Direcao.ESQUERDA));
+			playPanel.getActionMap().put("movedireita", new LabirintoMoveAction(Direcao.DIREITA));
 			drawMaze();
 			
 			
@@ -199,7 +274,7 @@ public class JogoFrame extends JFrame {
 					ImagePanel cell = new ImagePanel();
 					cell.setPreferredSize(new Dimension(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue()));
 					cell.setOpaque(true);
-					char cellSymbol = labirinto.getCellSymbol(new Posicao(i, j));
+					char cellSymbol = masmorra.getCellSymbol(new Posicao(j, i));
 					
 					switch (cellSymbol){
 					case 'X':
@@ -234,7 +309,9 @@ public class JogoFrame extends JFrame {
 					
 					playPanel.add(cell);
 				}
+			
 		}
+
 	}
 	
 	
@@ -243,12 +320,13 @@ public class JogoFrame extends JFrame {
 		setTitle("As Aventuras de Sir McMataDragalhões");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 100);
-		setResizable(false);
+		setResizable(false);		
+		setFocusable(true);
 		getContentPane().setLayout(new BorderLayout());
 		
-		criaButoesPanel();
-		criaButoes();
 		
+		criaButoesPanel();
+		criaButoes();		
 		criaJogoPanel();
 		
 	}
@@ -268,12 +346,7 @@ public class JogoFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					jogoPanel.change(JogoPanel.OPCOES);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				jogoPanel.change(JogoPanel.OPCOES);
 				
 			}
 			
@@ -283,12 +356,7 @@ public class JogoFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					jogoPanel.change(JogoPanel.PLAY);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				jogoPanel.change(JogoPanel.PLAY);
 				
 			}
 			
