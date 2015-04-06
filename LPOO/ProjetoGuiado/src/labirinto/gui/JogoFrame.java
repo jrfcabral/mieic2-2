@@ -24,16 +24,18 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import labirinto.logic.Direcao;
 import labirinto.logic.Estrategia;
 import labirinto.logic.Labirinto;
 import labirinto.logic.MazeGenerator;
 import labirinto.logic.Posicao;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class JogoFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -46,7 +48,7 @@ public class JogoFrame extends JFrame {
 	private JogoPanel jogoPanel;
 	
 	
-	class JogoPanel extends JPanel{
+	private class JogoPanel extends JPanel{
 
 		private static final long serialVersionUID = 573437742923541828L;
 		
@@ -66,6 +68,14 @@ public class JogoFrame extends JFrame {
 		private JSlider dragoesSlider;
 		private JLabel estrategiaLabel;
 		private JComboBox<Estrategia> estrategiaBox;
+		private JTextField moveCimaField;
+		private JTextField moveBaixoField;
+		private JTextField moveEsquerdaField;
+		private JTextField moveDireitaField;
+		private JTextField atiraCimaField;
+		private JTextField atiraBaixoField;
+		private JTextField atiraEsquerdaField;
+		private JTextField atiraDireitaField;
 		
 		private BufferedImage floorTile;
 		private BufferedImage heroTile;
@@ -97,6 +107,7 @@ public class JogoFrame extends JFrame {
 		public JogoPanel() throws IOException{
 			super();
 			setLayout(new CardLayout());
+			
 			criaPanels();			
 		}
 		public void change(String mode) throws IOException{
@@ -164,6 +175,35 @@ public class JogoFrame extends JFrame {
 			estrategiaPanel.add(estrategiaLabel);
 			estrategiaPanel.add(estrategiaBox);
 			opcoesPanel.add(estrategiaPanel);
+			
+			JLabel teclasLabel = new JLabel("Teclas");						
+			teclasLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			opcoesPanel.add(teclasLabel);
+			
+			
+			JPanel teclasPanel = new JPanel();
+			teclasPanel.setLayout(new GridLayout(4,2));
+			teclasPanel.setPreferredSize(new Dimension(20, 20));
+			
+			moveCimaField = new JTextField("w");
+			moveBaixoField = new JTextField("s");
+			moveEsquerdaField = new JTextField("a");
+			moveDireitaField = new JTextField("d");
+			teclasPanel.add(moveCimaField);
+			teclasPanel.add(moveBaixoField);
+			teclasPanel.add(moveEsquerdaField);
+			teclasPanel.add(moveDireitaField);
+			
+			atiraCimaField = new JTextField("u");
+			atiraBaixoField = new JTextField("j");
+			atiraEsquerdaField = new JTextField("h");
+			atiraDireitaField = new JTextField("k");
+			teclasPanel.add(atiraCimaField);
+			teclasPanel.add(atiraBaixoField);
+			teclasPanel.add(atiraEsquerdaField);
+			teclasPanel.add(atiraDireitaField);
+			
+			opcoesPanel.add(teclasPanel);
 			
 			add(opcoesPanel, OPCOES);			
 			
@@ -243,12 +283,12 @@ public class JogoFrame extends JFrame {
 		setTitle("As Aventuras de Sir McMataDragalhões");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 100);
-		setResizable(false);
+		setResizable(false);		
 		getContentPane().setLayout(new BorderLayout());
 		
-		criaButoesPanel();
-		criaButoes();
 		
+		criaButoesPanel();
+		criaButoes();		
 		criaJogoPanel();
 		
 	}
