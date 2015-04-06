@@ -307,7 +307,7 @@ public class Labirinto {
 			
 			if (terrenoAtual == Terreno.PAREDE)
 				return false;
-			else if (defensor.getPosicao().equals(posAtual))
+			else if (defensor != null && defensor.getPosicao().equals(posAtual))
 				return true;				
 		}				
 		return false;
