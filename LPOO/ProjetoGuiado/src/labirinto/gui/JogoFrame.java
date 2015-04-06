@@ -276,7 +276,7 @@ public class JogoFrame extends JFrame {
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
 
 			drawMaze();
-			
+			atualizaKeybindings();
 			
 			JogoFrame.this.pack();
 			
