@@ -144,7 +144,7 @@ public class Interface {
 		leitor.close();
 	}
 
-	private static void printTabuleiro(Labirinto lab, int dimensao) {
+	public static void printTabuleiro(Labirinto lab, int dimensao) {
 		for (int x=0; x <dimensao;x++)
 		{
 			for (int y=0;y < dimensao; y++){
