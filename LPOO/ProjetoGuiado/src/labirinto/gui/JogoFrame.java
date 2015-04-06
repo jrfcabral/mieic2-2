@@ -87,7 +87,7 @@ public class JogoFrame extends JFrame {
 		private BufferedImage shieldTile;
 		private BufferedImage javTile;
 		
-		class LabirintoMoveAction extends AbstractAction{
+		private class LabirintoMoveAction extends AbstractAction{
 
 			private Direcao direcao;
 			
@@ -100,6 +100,25 @@ public class JogoFrame extends JFrame {
 
 			}
 			public LabirintoMoveAction(Direcao dir){
+				super();
+				direcao = dir;
+			}
+			
+		}
+		
+		private class LabirintoAtiraAction extends AbstractAction{
+
+			private Direcao direcao;
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				JogoPanel.this.masmorra.atiraDardo(direcao);						
+				JogoPanel.this.criaPlayPanel();				
+				((CardLayout)JogoPanel.this.getLayout()).show(JogoPanel.this, PLAY);
+
+			}
+			public LabirintoAtiraAction(Direcao dir){
 				super();
 				direcao = dir;
 			}
@@ -251,6 +270,17 @@ public class JogoFrame extends JFrame {
 			
 			playPanel = new JPanel();
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
+			
+			atualizaKeybindings();
+			drawMaze();
+			
+			
+			JogoFrame.this.pack();
+			
+			this.add(playPanel, PLAY);
+			
+		}
+		private void atualizaKeybindings() {
 			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveCimaField.getText().toUpperCase()), "movecima");
 			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveBaixoField.getText().toUpperCase()), "movebaixo");
 			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveEsquerdaField.getText().toUpperCase()), "moveesquerda");
@@ -259,13 +289,16 @@ public class JogoFrame extends JFrame {
 			playPanel.getActionMap().put("movebaixo", new LabirintoMoveAction(Direcao.BAIXO));
 			playPanel.getActionMap().put("moveesquerda", new LabirintoMoveAction(Direcao.ESQUERDA));
 			playPanel.getActionMap().put("movedireita", new LabirintoMoveAction(Direcao.DIREITA));
-			drawMaze();
 			
 			
-			JogoFrame.this.pack();
-			
-			this.add(playPanel, PLAY);
-			
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(atiraCimaField.getText().toUpperCase()), "atiracima");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(atiraBaixoField.getText().toUpperCase()), "atirabaixo");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(atiraEsquerdaField.getText().toUpperCase()), "atiraesquerda");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(atiraDireitaField.getText().toUpperCase()), "atiradireita");
+			playPanel.getActionMap().put("atiracima", new LabirintoAtiraAction(Direcao.CIMA));
+			playPanel.getActionMap().put("atirabaixo", new LabirintoAtiraAction(Direcao.BAIXO));
+			playPanel.getActionMap().put("atiraesquerda", new LabirintoAtiraAction(Direcao.ESQUERDA));
+			playPanel.getActionMap().put("atiradireita", new LabirintoAtiraAction(Direcao.DIREITA));
 		}
 		
 		public void drawMaze(){
