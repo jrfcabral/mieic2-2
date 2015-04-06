@@ -175,12 +175,12 @@ public class JogoFrame extends JFrame {
 		}
 		private void criaPlayPanel() throws IOException {
 			
-			floorTile = ImageIO.read(new File("\\floortile3.png"));
-			dragonTile = ImageIO.read(new File("\\dragontile.png"));
-			heroTile = ImageIO.read(new File("\\herotile.png"));
-			shieldTile = ImageIO.read(new File("\\shieldtile.png"));
-			swordTile = ImageIO.read(new File("\\swordtile.png"));
-			javTile = ImageIO.read(new File("\\javtile.png"));
+			floorTile = ImageIO.read(new File("bin/labirinto/resources/images/floortile3.png").getCanonicalFile());
+			dragonTile = ImageIO.read(new File("bin/labirinto/resources/images/dragontile.png").getCanonicalFile());
+			heroTile = ImageIO.read(new File("bin/labirinto/resources/images/herotile.png").getCanonicalFile());
+			shieldTile = ImageIO.read(new File("bin/labirinto/resources/images/shieldtile.png").getCanonicalFile());
+			swordTile = ImageIO.read(new File("bin/labirinto/resources/images/swordtile.png").getCanonicalFile());
+			javTile = ImageIO.read(new File("bin/labirinto/resources/images/javtile.png").getCanonicalFile());
 			
 			playPanel = new JPanel();
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
