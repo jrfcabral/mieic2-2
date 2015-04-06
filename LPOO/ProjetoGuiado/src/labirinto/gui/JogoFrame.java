@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -56,12 +59,12 @@ public class JogoFrame extends JFrame {
 		public static final String PLAY = "PLAY";
 		public static final String EMPTY = "EMPTY";
 		
-		private Labirinto labirinto;
+		private Labirinto masmorra;		
 		
 		private JPanel emptyPanel;
-		private JPanel playPanel;
-		
+		private JPanel playPanel;		
 		private JPanel opcoesPanel;
+		
 		private JLabel dimensaoLabel;
 		private JSlider dimensaoSlider;
 		private JLabel dragoesLabel;
@@ -83,6 +86,25 @@ public class JogoFrame extends JFrame {
 		private BufferedImage swordTile;
 		private BufferedImage shieldTile;
 		private BufferedImage javTile;
+		
+		class LabirintoMoveAction extends AbstractAction{
+
+			private Direcao direcao;
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(e.getActionCommand());
+				JogoPanel.this.masmorra.move(direcao);							
+				JogoPanel.this.criaPlayPanel();				
+				((CardLayout)JogoPanel.this.getLayout()).show(JogoPanel.this, PLAY);
+
+			}
+			public LabirintoMoveAction(Direcao dir){
+				super();
+				direcao = dir;
+			}
+			
+		}
 		
 		public class ImagePanel extends JPanel{
 
@@ -210,7 +232,7 @@ public class JogoFrame extends JFrame {
 		}
 
 		protected void refazLabirinto() {
-			labirinto = new Labirinto(MazeGenerator.generate(dimensaoSlider.getValue()), dimensaoSlider.getValue(), dragoesSlider.getValue(), (Estrategia)estrategiaBox.getSelectedItem());
+			masmorra = new Labirinto(MazeGenerator.generate(dimensaoSlider.getValue()), dimensaoSlider.getValue(), dragoesSlider.getValue(), (Estrategia)estrategiaBox.getSelectedItem());
 				
 		}
 		private void criaPlayPanel() {
@@ -229,6 +251,14 @@ public class JogoFrame extends JFrame {
 			
 			playPanel = new JPanel();
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveCimaField.getText().toUpperCase()), "movecima");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveBaixoField.getText().toUpperCase()), "movebaixo");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveEsquerdaField.getText().toUpperCase()), "moveesquerda");
+			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveDireitaField.getText().toUpperCase()), "movedireita");
+			playPanel.getActionMap().put("movecima", new LabirintoMoveAction(Direcao.CIMA));
+			playPanel.getActionMap().put("movebaixo", new LabirintoMoveAction(Direcao.BAIXO));
+			playPanel.getActionMap().put("moveesquerda", new LabirintoMoveAction(Direcao.ESQUERDA));
+			playPanel.getActionMap().put("movedireita", new LabirintoMoveAction(Direcao.DIREITA));
 			drawMaze();
 			
 			
@@ -244,7 +274,7 @@ public class JogoFrame extends JFrame {
 					ImagePanel cell = new ImagePanel();
 					cell.setPreferredSize(new Dimension(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue()));
 					cell.setOpaque(true);
-					char cellSymbol = labirinto.getCellSymbol(new Posicao(i, j));
+					char cellSymbol = masmorra.getCellSymbol(new Posicao(j, i));
 					
 					switch (cellSymbol){
 					case 'X':
@@ -279,7 +309,9 @@ public class JogoFrame extends JFrame {
 					
 					playPanel.add(cell);
 				}
+			
 		}
+
 	}
 	
 	
@@ -289,6 +321,7 @@ public class JogoFrame extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 100);
 		setResizable(false);		
+		setFocusable(true);
 		getContentPane().setLayout(new BorderLayout());
 		
 		
