@@ -93,7 +93,7 @@ public class JogoFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(e.getActionCommand());
+				
 				JogoPanel.this.masmorra.move(direcao);							
 				JogoPanel.this.criaPlayPanel();				
 				((CardLayout)JogoPanel.this.getLayout()).show(JogoPanel.this, PLAY);
