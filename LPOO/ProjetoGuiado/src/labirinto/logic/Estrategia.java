@@ -17,6 +17,18 @@ public enum Estrategia {
 		}
 	}
 	
+	public int toNumber(){
+		switch (this){
+			case SEMPRE_ACORDADO:
+				return 1;
+			case PARADO:
+				return 2;
+			case ALTERNADO:
+				return 3;
+		}
+		return 0;
+	}
+	
 	@Override public String toString(){
 		switch(this){
 		case PARADO:
@@ -28,5 +40,14 @@ public enum Estrategia {
 		default:
 			throw new IllegalArgumentException();
 		}
+	}
+	
+	public boolean equals(Estrategia obj){
+		//if(obj instanceof Estrategia){
+			if(this.toNumber() == obj.toNumber()){
+				return true;
+			}
+		//}
+		return false;
 	}
 }

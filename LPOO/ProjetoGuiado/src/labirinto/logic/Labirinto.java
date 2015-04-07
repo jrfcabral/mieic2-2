@@ -356,23 +356,21 @@ public class Labirinto implements Serializable{
 		return this.dragoes;
 	}
 	
-	public void saveState(Object obj, String filename) throws FileNotFoundException, IOException{
-		if(obj instanceof Labirinto){
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
-			try{
-				out.writeObject(obj);
-			}
-			catch(Exception e){
-				System.out.print(e.getMessage());
-			}
-			finally{
-				if(out != null){ out.close();}
-			}
+	public void saveState(String filename) throws FileNotFoundException, IOException{
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
+		try{
+			out.writeObject(this);
+		}
+		catch(Exception e){
+			System.out.print(e.getMessage());
+		}
+		finally{
+			if(out != null){ out.close();}
 		}
 		
 	}
 	
-	public Object loadState(String filename) throws FileNotFoundException, IOException, ClassNotFoundException{
+	public static Object loadState(String filename) throws FileNotFoundException, IOException, ClassNotFoundException{
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
 		Object obj = null;
 		try{
@@ -385,6 +383,18 @@ public class Labirinto implements Serializable{
 			if(in != null){in.close();}
 		}
 		return obj;
+	}
+	
+	public boolean equals(Object obj){
+		if(obj instanceof Labirinto){
+			if((this.acabou == ((Labirinto) obj).isAcabou()) &&
+				(this.perdeu == ((Labirinto) obj).isPerdeu()) && 
+				(this.dimensao == ((Labirinto) obj).getDimensao()) &&
+				(this.estrategia.equals(((Labirinto)obj).estrategia))){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

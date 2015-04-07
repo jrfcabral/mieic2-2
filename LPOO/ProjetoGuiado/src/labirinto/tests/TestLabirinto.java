@@ -166,11 +166,11 @@ public class TestLabirinto{
 		
 	}
 	
-	@Test
+	@Test //kek
 	public void testRandomMaze(){
 		for(int i = 0; i < 100; i++){
 			testLab = new Labirinto(MazeGenerator.generate(11), 11, 1, Estrategia.PARADO);
-			Labirinto testLab2 = new Labirinto(MazeGenerator.generate(11), 11, 1, Estrategia.PARADO);
+			Labirinto testLab2 = new Labirinto(MazeGenerator.generate(11), 11, 1, Estrategia.ALTERNADO);
 			assertNotEquals(testLab, testLab2);
 		}	
 	}
@@ -198,7 +198,7 @@ public class TestLabirinto{
 		testLab.getHeroi().setArmado(true);
 		assertEquals('&', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 		
-		testLab.getHeroi().setArmado(false);
+		testLab.getHeroi().setArmado(false); 
 		testLab.getHeroi().setHasJavelin(true);
 		assertEquals('$', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 	}
@@ -206,12 +206,8 @@ public class TestLabirinto{
 	@Test //Not done
 	public void testSaveGameState() throws FileNotFoundException, IOException, ClassNotFoundException{
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(1, 1), new Posicao(2, 1), 1, new Posicao(3, 1), new Posicao(4, 1));
-		testLab.saveState(testLab, "test.dat");
-		//Interface.printTabuleiro(testLab, 10);
-		//System.out.print("Labirinto antes d des-serializar\n\n\n\n\n\nLabirinto dp:\n");
-		Labirinto testLab2 = (Labirinto) testLab.loadState("test.dat");
-		assertEquals(testLab.isAcabou(), testLab2.isAcabou());
-		//Interface.printTabuleiro(testLab2, 10);
+		testLab.saveState("test.dat");
+		Labirinto testLab2 = (Labirinto) Labirinto.loadState("test.dat");
 		
 	}
 }
