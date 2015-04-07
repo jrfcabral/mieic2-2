@@ -133,10 +133,37 @@ public class JogoFrame extends JFrame {
 		
 		public JogoPanel() throws IOException{
 			super();
-			setLayout(new CardLayout());
 			
+			setLayout(new CardLayout());			
+			carregaImagens();			
 			criaPanels();			
 		}
+
+
+		/**
+		 * <p>Loads the necessary images to memory.</p><p> Aborts execution if the images can't be read.</p>
+		 */
+		private void carregaImagens() {
+			try{
+				floorTile = ImageIO.read(new File("bin/labirinto/resources/images/floortile3.png").getCanonicalFile());
+				dragonTile = ImageIO.read(new File("bin/labirinto/resources/images/dragontile.png").getCanonicalFile());
+				heroTile = ImageIO.read(new File("bin/labirinto/resources/images/herotile.png").getCanonicalFile());
+				shieldTile = ImageIO.read(new File("bin/labirinto/resources/images/shieldtile.png").getCanonicalFile());
+				swordTile = ImageIO.read(new File("bin/labirinto/resources/images/swordtile.png").getCanonicalFile());
+				javTile = ImageIO.read(new File("bin/labirinto/resources/images/javtile.png").getCanonicalFile());
+				}
+				catch(IOException e){
+					e.printStackTrace();
+					System.exit(-1);
+				}
+		}
+		
+		
+		/**
+		 * <p>Changes the current panel being show to that of given by mode. 
+		 * Enables or disables all context-sensitive interface functionality.</p>
+		 * @param mode the new application mode to be shown. Can be <code>PLAY</code>, <code>OPCOES</code>, <code>EMPTY</code> or <code>BUILDER</code> 
+		 */
 		public void change(String mode) {
 			if (mode == PLAY){
 				refazLabirinto();
@@ -154,7 +181,11 @@ public class JogoFrame extends JFrame {
 			JogoFrame.this.pack();
 		}
 
-		private void criaPanels() throws IOException {
+		
+		/**
+		 * <p>Initializes all of the panels that comprise the JogoPanel interface</p>		 
+		 */
+		private void criaPanels() {
 			emptyPanel = new JPanel();
 			add(emptyPanel, EMPTY);
 			criaOpcoesPanel();
@@ -164,6 +195,9 @@ public class JogoFrame extends JFrame {
 
 		
 
+		/**
+		 * <p>Initializes and configures all the elements of the interface that allow the user to customize the game.</p>
+		 */
 		private void criaOpcoesPanel() {
 			opcoesPanel = new JPanel();
 			opcoesPanel.setLayout(new GridLayout(0, 1));
@@ -241,23 +275,18 @@ public class JogoFrame extends JFrame {
 			
 		}
 
+		/**
+		 * <p>Initializes the maze according to the currently selected user options.</p>
+		 */
 		protected void refazLabirinto() {
 			masmorra = new Labirinto(MazeGenerator.generate(dimensaoSlider.getValue()), dimensaoSlider.getValue(), dragoesSlider.getValue(), (Estrategia)estrategiaBox.getSelectedItem());
 				
 		}
-		private void criaPlayPanel() {
-			try{
-			floorTile = ImageIO.read(new File("bin/labirinto/resources/images/floortile3.png").getCanonicalFile());
-			dragonTile = ImageIO.read(new File("bin/labirinto/resources/images/dragontile.png").getCanonicalFile());
-			heroTile = ImageIO.read(new File("bin/labirinto/resources/images/herotile.png").getCanonicalFile());
-			shieldTile = ImageIO.read(new File("bin/labirinto/resources/images/shieldtile.png").getCanonicalFile());
-			swordTile = ImageIO.read(new File("bin/labirinto/resources/images/swordtile.png").getCanonicalFile());
-			javTile = ImageIO.read(new File("bin/labirinto/resources/images/javtile.png").getCanonicalFile());
-			}
-			catch(IOException e){
-				e.printStackTrace();
-				System.exit(-1);
-			}
+		
+		/**
+		 * Prepares the grid display of the labirinth 
+		 */
+		private void criaPlayPanel() {			
 			
 			playPanel = new JPanel();
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
@@ -270,6 +299,10 @@ public class JogoFrame extends JFrame {
 			this.add(playPanel, PLAY);
 			
 		}
+		
+		/**
+		 * <p>Sets up keybindings according to user selected options.</p> <p>Subsequent calls refresh said keybindings</p> 
+		 */
 		private void atualizaKeybindings() {
 			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveCimaField.getText().toUpperCase()), "movecima");
 			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveBaixoField.getText().toUpperCase()), "movebaixo");
@@ -427,7 +460,7 @@ public class JogoFrame extends JFrame {
 						JogoFrame.this.jogoPanel.criaPlayPanel();
 					} catch ( IOException e1) {						
 						e1.printStackTrace();
-						JOptionPane.showMessageDialog(JogoFrame.this, "Erro ao carregar o labirinto atual!");
+						JOptionPane.showMessageDialog(JogoFrame.this, "O ficheiro selecionado não existe ou não pode ser escrito!");
 					}
 					
 				
