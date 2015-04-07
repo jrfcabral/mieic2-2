@@ -1,12 +1,19 @@
 package labirinto.gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import labirinto.logic.*;
+import labirinto.logic.Direcao;
+import labirinto.logic.Estrategia;
+import labirinto.logic.Labirinto;
+import labirinto.logic.MazeGenerator;
+import labirinto.logic.Posicao;
 
 
 public class JogoFrame extends JFrame {
