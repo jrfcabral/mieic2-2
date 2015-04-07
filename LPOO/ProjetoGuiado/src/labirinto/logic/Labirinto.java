@@ -238,8 +238,7 @@ public class Labirinto {
 				if (dragoes[i].isAcordado() && !heroi.hasShield() && isNaMira(dragoes[i], heroi, 3))
 				{
 					perdeu = true;
-					acabou = true;
-					System.out.println("!");
+					acabou = true;					
 				}
 						
 				if (dragoes[i].isAcordado() && estrategia != Estrategia.PARADO)

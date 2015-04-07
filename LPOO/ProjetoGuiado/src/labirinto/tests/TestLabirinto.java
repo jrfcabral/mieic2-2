@@ -156,14 +156,12 @@ public class TestLabirinto{
 		assertFalse(testLab.getHeroi().hasJavelin());
 		testLab.getHeroi().setHasJavelin(true);
 		testLab.atiraDardo(Direcao.CIMA);
-		assertTrue(testLab.nenhumDragao());
-		
-		
+		assertTrue(testLab.nenhumDragao());		
 	}
 	
 	@Test
 	public void testRandomMaze(){
-		for(int i = 0; i < 100; i++){
+		for(int i = 0; i < 10000; i++){
 			testLab = new Labirinto(MazeGenerator.generate(11), 11, 1, Estrategia.PARADO);
 			Labirinto testLab2 = new Labirinto(MazeGenerator.generate(11), 11, 1, Estrategia.PARADO);
 			assertNotEquals(testLab, testLab2);

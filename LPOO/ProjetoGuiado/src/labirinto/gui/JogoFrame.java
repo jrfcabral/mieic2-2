@@ -65,7 +65,7 @@ public class JogoFrame extends JFrame {
 
 		private class LabirintoMoveAction extends AbstractAction{
 
-
+			private static final long serialVersionUID = 7244590807255937010L;
 			private Direcao direcao;
 			
 			@Override
@@ -87,6 +87,8 @@ public class JogoFrame extends JFrame {
 
 		private class LabirintoAtiraAction extends AbstractAction{
 
+			
+			private static final long serialVersionUID = 3131845997347731773L;
 			private Direcao direcao;
 			
 			@Override
