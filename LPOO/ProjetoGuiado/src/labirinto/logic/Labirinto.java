@@ -373,7 +373,7 @@ public class Labirinto implements Serializable{
 		
 	}
 	
-	public Labirinto loadState(String filename) throws FileNotFoundException, IOException {
+	public static Labirinto loadState(String filename) throws FileNotFoundException, IOException {
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
 		Object obj = null;
 		try{
