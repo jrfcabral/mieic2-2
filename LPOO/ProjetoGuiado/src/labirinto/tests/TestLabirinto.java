@@ -204,7 +204,7 @@ public class TestLabirinto{
 	@Test //Not done
 	public void testSaveGameState() throws FileNotFoundException, IOException, ClassNotFoundException{
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(1, 1), new Posicao(2, 1), 1, new Posicao(3, 1), new Posicao(4, 1));
-		testLab.saveState(testLab, "test.dat");
+		testLab.saveState("test.dat");
 		//Interface.printTabuleiro(testLab, 10);
 		//System.out.print("Labirinto antes d des-serializar\n\n\n\n\n\nLabirinto dp:\n");
 		Labirinto testLab2 = (Labirinto) testLab.loadState("test.dat");

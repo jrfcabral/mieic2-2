@@ -357,23 +357,23 @@ public class Labirinto implements Serializable{
 		return this.dragoes;
 	}
 	
-	public void saveState(Object obj, String filename) throws FileNotFoundException, IOException{
-		if(obj instanceof Labirinto){
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
-			try{
-				out.writeObject(obj);
-			}
-			catch(Exception e){
-				System.out.print(e.getMessage());
-			}
-			finally{
-				if(out != null){ out.close();}
-			}
+	public void saveState(String filename) throws FileNotFoundException, IOException{
+		
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
+		try{
+			out.writeObject(this);
 		}
+		catch(Exception e){
+			System.out.print(e.getMessage());
+		}
+		finally{
+			if(out != null){ out.close();}
+		}
+		
 		
 	}
 	
-	public Object loadState(String filename) throws FileNotFoundException, IOException, ClassNotFoundException{
+	public Labirinto loadState(String filename) throws FileNotFoundException, IOException {
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
 		Object obj = null;
 		try{
@@ -385,7 +385,7 @@ public class Labirinto implements Serializable{
 		finally{
 			if(in != null){in.close();}
 		}
-		return obj;
+		return (Labirinto) obj;
 	}
 	
 }

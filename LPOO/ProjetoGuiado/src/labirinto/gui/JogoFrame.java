@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -25,6 +26,7 @@ public class JogoFrame extends JFrame {
 	private JButton sairButton;
 	private JButton saveButton;
 	private JButton loadButton;
+	private JFileChooser fileChooser;
 	
 	private JogoPanel jogoPanel;
 	
@@ -345,7 +347,7 @@ public class JogoFrame extends JFrame {
 		setFocusable(true);
 		getContentPane().setLayout(new BorderLayout());
 		
-		
+		fileChooser = new JFileChooser();		
 		criaButoesPanel();
 		criaButoes();		
 		criaJogoPanel();
@@ -397,7 +399,41 @@ public class JogoFrame extends JFrame {
 			
 		});
 		
+		saveButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int returnVal = fileChooser.showSaveDialog(JogoFrame.this);
+				
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+					try {
+						JogoFrame.this.jogoPanel.masmorra.saveState(fileChooser.getSelectedFile().getCanonicalPath());
+					} catch (IOException e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(JogoFrame.this, "Erro ao guardar o labirinto atual!");
+					}				
+			}			
+		});
 		
+		loadButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int returnVal = fileChooser.showOpenDialog(JogoFrame.this);
+				
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+					try {
+						JogoFrame.this.jogoPanel.masmorra = JogoFrame.this.jogoPanel.masmorra.loadState(fileChooser.getSelectedFile().getCanonicalPath());
+						JogoFrame.this.jogoPanel.criaPlayPanel();
+					} catch ( IOException e1) {						
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(JogoFrame.this, "Erro ao carregar o labirinto atual!");
+					}
+					
+				
+			}
+			
+		});
 		botoesPanel.add(novoJogoButton);
 		botoesPanel.add(opcoesButton);		
 		botoesPanel.add(sairButton);
