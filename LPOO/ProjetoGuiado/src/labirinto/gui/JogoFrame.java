@@ -23,6 +23,8 @@ public class JogoFrame extends JFrame {
 	private JButton opcoesButton;
 	private JButton novoJogoButton;
 	private JButton sairButton;
+	private JButton saveButton;
+	private JButton loadButton;
 	
 	private JogoPanel jogoPanel;
 	
@@ -138,9 +140,14 @@ public class JogoFrame extends JFrame {
 				refazLabirinto();
 				criaPlayPanel();
 				JogoFrame.this.novoJogoButton.setEnabled(false);
+				JogoFrame.this.saveButton.setEnabled(true);
+				JogoFrame.this.loadButton.setEnabled(true);
 			}
-			else
+			else{
 				JogoFrame.this.novoJogoButton.setEnabled(true);
+				JogoFrame.this.saveButton.setEnabled(false);
+				JogoFrame.this.loadButton.setEnabled(false);
+			}
 			((CardLayout)getLayout()).show(this, mode);
 			JogoFrame.this.pack();
 		}
@@ -355,6 +362,10 @@ public class JogoFrame extends JFrame {
 		opcoesButton = new JButton("Opções");
 		novoJogoButton = new JButton("Novo Jogo");
 		sairButton = new JButton("Sair");
+		saveButton = new JButton("Save");
+		saveButton.setEnabled(false);
+		loadButton = new JButton("Load");
+		loadButton.setEnabled(false);
 		
 		opcoesButton.addActionListener(new ActionListener(){
 
@@ -390,6 +401,8 @@ public class JogoFrame extends JFrame {
 		botoesPanel.add(novoJogoButton);
 		botoesPanel.add(opcoesButton);		
 		botoesPanel.add(sairButton);
+		botoesPanel.add(saveButton);
+		botoesPanel.add(loadButton);
 	}
 
 	private void criaButoesPanel()
