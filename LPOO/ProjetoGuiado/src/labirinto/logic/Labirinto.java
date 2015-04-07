@@ -138,7 +138,7 @@ public class Labirinto {
 				if(dardos[i] != null && dragoes[j] != null && dardos[i].getPosicao().equals(dragoes[j].getPosicao()) && posicao.equals(this.dardos[i].getPosicao())){
 					return 'F';
 				}
-				else if(dardos[i] != null && dragoes[j] != null && posicao.equals(this.dardos[i].getPosicao())){
+				else if(dardos[i] != null && posicao.equals(this.dardos[i].getPosicao())){
 					return 'J';
 				}
 			}
@@ -157,10 +157,12 @@ public class Labirinto {
 	
 	public void atiraDardo(Direcao dir)
 	{
-		for (int i = 0; i < dragoes.length; i++){
-			if (isNaMira(heroi, dragoes[i], dimensao, dir))
-				dragoes[i] = null;
-		}
+		if (heroi.hasJavelin())
+			for (int i = 0; i < dragoes.length; i++){
+				if (isNaMira(heroi, dragoes[i], dimensao, dir))
+					dragoes[i] = null;
+			}
+		
 		heroi.setHasJavelin(false);
 	
 	}	
