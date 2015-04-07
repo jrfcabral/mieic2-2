@@ -165,10 +165,12 @@ public class Labirinto implements Serializable{
 	
 	public void atiraDardo(Direcao dir)
 	{
-		for (int i = 0; i < dragoes.length; i++){
-			if (isNaMira(heroi, dragoes[i], dimensao, dir))
-				dragoes[i] = null;
-		}
+		if (heroi.hasJavelin())
+			for (int i = 0; i < dragoes.length; i++){
+				if (isNaMira(heroi, dragoes[i], dimensao, dir))
+					dragoes[i] = null;
+			}
+		
 		heroi.setHasJavelin(false);
 	
 	}	
@@ -244,8 +246,7 @@ public class Labirinto implements Serializable{
 				if (dragoes[i].isAcordado() && !heroi.hasShield() && isNaMira(dragoes[i], heroi, 3))
 				{
 					perdeu = true;
-					acabou = true;
-					System.out.println("!");
+					acabou = true;					
 				}
 						
 				if (dragoes[i].isAcordado() && estrategia != Estrategia.PARADO)
@@ -357,6 +358,7 @@ public class Labirinto implements Serializable{
 	}
 	
 	public void saveState(String filename) throws FileNotFoundException, IOException{
+
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
 		try{
 			out.writeObject(this);
@@ -368,9 +370,10 @@ public class Labirinto implements Serializable{
 			if(out != null){ out.close();}
 		}
 		
+		
 	}
 	
-	public static Object loadState(String filename) throws FileNotFoundException, IOException, ClassNotFoundException{
+	public Labirinto loadState(String filename) throws FileNotFoundException, IOException {
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
 		Object obj = null;
 		try{
@@ -382,7 +385,7 @@ public class Labirinto implements Serializable{
 		finally{
 			if(in != null){in.close();}
 		}
-		return obj;
+		return (Labirinto) obj;
 	}
 	
 	public boolean equals(Object obj){

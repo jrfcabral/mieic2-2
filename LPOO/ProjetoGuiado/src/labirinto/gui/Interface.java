@@ -126,7 +126,7 @@ public class Interface {
 
 	
 	/**
-	 * Initialized the application frame
+	 * Initialize the application frame
 	 */
 	private void initApplicationFrame() {
 		frame = new JFrame();

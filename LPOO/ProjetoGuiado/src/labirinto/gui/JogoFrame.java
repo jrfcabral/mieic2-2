@@ -1,38 +1,15 @@
 package labirinto.gui;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
+import javax.swing.*;
 import labirinto.logic.Direcao;
 import labirinto.logic.Estrategia;
 import labirinto.logic.Labirinto;
@@ -47,6 +24,9 @@ public class JogoFrame extends JFrame {
 	private JButton opcoesButton;
 	private JButton novoJogoButton;
 	private JButton sairButton;
+	private JButton saveButton;
+	private JButton loadButton;
+	private JFileChooser fileChooser;
 	
 	private JogoPanel jogoPanel;
 	
@@ -89,7 +69,7 @@ public class JogoFrame extends JFrame {
 
 		private class LabirintoMoveAction extends AbstractAction{
 
-
+			private static final long serialVersionUID = 7244590807255937010L;
 			private Direcao direcao;
 			
 			@Override
@@ -111,6 +91,8 @@ public class JogoFrame extends JFrame {
 
 		private class LabirintoAtiraAction extends AbstractAction{
 
+			
+			private static final long serialVersionUID = 3131845997347731773L;
 			private Direcao direcao;
 			
 			@Override
@@ -151,23 +133,59 @@ public class JogoFrame extends JFrame {
 		
 		public JogoPanel() throws IOException{
 			super();
-			setLayout(new CardLayout());
 			
+			setLayout(new CardLayout());			
+			carregaImagens();			
 			criaPanels();			
 		}
+
+
+		/**
+		 * <p>Loads the necessary images to memory.</p><p> Aborts execution if the images can't be read.</p>
+		 */
+		private void carregaImagens() {
+			try{
+				floorTile = ImageIO.read(new File("bin/labirinto/resources/images/floortile3.png").getCanonicalFile());
+				dragonTile = ImageIO.read(new File("bin/labirinto/resources/images/dragontile.png").getCanonicalFile());
+				heroTile = ImageIO.read(new File("bin/labirinto/resources/images/herotile.png").getCanonicalFile());
+				shieldTile = ImageIO.read(new File("bin/labirinto/resources/images/shieldtile.png").getCanonicalFile());
+				swordTile = ImageIO.read(new File("bin/labirinto/resources/images/swordtile.png").getCanonicalFile());
+				javTile = ImageIO.read(new File("bin/labirinto/resources/images/javtile.png").getCanonicalFile());
+				}
+				catch(IOException e){
+					e.printStackTrace();
+					System.exit(-1);
+				}
+		}
+		
+		
+		/**
+		 * <p>Changes the current panel being show to that of given by mode. 
+		 * Enables or disables all context-sensitive interface functionality.</p>
+		 * @param mode the new application mode to be shown. Can be <code>PLAY</code>, <code>OPCOES</code>, <code>EMPTY</code> or <code>BUILDER</code> 
+		 */
 		public void change(String mode) {
 			if (mode == PLAY){
 				refazLabirinto();
 				criaPlayPanel();
 				JogoFrame.this.novoJogoButton.setEnabled(false);
+				JogoFrame.this.saveButton.setEnabled(true);
+				JogoFrame.this.loadButton.setEnabled(true);
 			}
-			else
+			else{
 				JogoFrame.this.novoJogoButton.setEnabled(true);
+				JogoFrame.this.saveButton.setEnabled(false);
+				JogoFrame.this.loadButton.setEnabled(false);
+			}
 			((CardLayout)getLayout()).show(this, mode);
 			JogoFrame.this.pack();
 		}
 
-		private void criaPanels() throws IOException {
+		
+		/**
+		 * <p>Initializes all of the panels that comprise the JogoPanel interface</p>		 
+		 */
+		private void criaPanels() {
 			emptyPanel = new JPanel();
 			add(emptyPanel, EMPTY);
 			criaOpcoesPanel();
@@ -177,6 +195,9 @@ public class JogoFrame extends JFrame {
 
 		
 
+		/**
+		 * <p>Initializes and configures all the elements of the interface that allow the user to customize the game.</p>
+		 */
 		private void criaOpcoesPanel() {
 			opcoesPanel = new JPanel();
 			opcoesPanel.setLayout(new GridLayout(0, 1));
@@ -254,23 +275,18 @@ public class JogoFrame extends JFrame {
 			
 		}
 
+		/**
+		 * <p>Initializes the maze according to the currently selected user options.</p>
+		 */
 		protected void refazLabirinto() {
 			masmorra = new Labirinto(MazeGenerator.generate(dimensaoSlider.getValue()), dimensaoSlider.getValue(), dragoesSlider.getValue(), (Estrategia)estrategiaBox.getSelectedItem());
 				
 		}
-		private void criaPlayPanel() {
-			try{
-			floorTile = ImageIO.read(new File("bin/labirinto/resources/images/floortile3.png").getCanonicalFile());
-			dragonTile = ImageIO.read(new File("bin/labirinto/resources/images/dragontile.png").getCanonicalFile());
-			heroTile = ImageIO.read(new File("bin/labirinto/resources/images/herotile.png").getCanonicalFile());
-			shieldTile = ImageIO.read(new File("bin/labirinto/resources/images/shieldtile.png").getCanonicalFile());
-			swordTile = ImageIO.read(new File("bin/labirinto/resources/images/swordtile.png").getCanonicalFile());
-			javTile = ImageIO.read(new File("bin/labirinto/resources/images/javtile.png").getCanonicalFile());
-			}
-			catch(IOException e){
-				e.printStackTrace();
-				System.exit(-1);
-			}
+		
+		/**
+		 * Prepares the grid display of the labirinth 
+		 */
+		private void criaPlayPanel() {			
 			
 			playPanel = new JPanel();
 			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
@@ -283,6 +299,10 @@ public class JogoFrame extends JFrame {
 			this.add(playPanel, PLAY);
 			
 		}
+		
+		/**
+		 * <p>Sets up keybindings according to user selected options.</p> <p>Subsequent calls refresh said keybindings</p> 
+		 */
 		private void atualizaKeybindings() {
 			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveCimaField.getText().toUpperCase()), "movecima");
 			playPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(moveBaixoField.getText().toUpperCase()), "movebaixo");
@@ -360,7 +380,7 @@ public class JogoFrame extends JFrame {
 		setFocusable(true);
 		getContentPane().setLayout(new BorderLayout());
 		
-		
+		fileChooser = new JFileChooser();		
 		criaButoesPanel();
 		criaButoes();		
 		criaJogoPanel();
@@ -377,6 +397,10 @@ public class JogoFrame extends JFrame {
 		opcoesButton = new JButton("Opções");
 		novoJogoButton = new JButton("Novo Jogo");
 		sairButton = new JButton("Sair");
+		saveButton = new JButton("Save");
+		saveButton.setEnabled(false);
+		loadButton = new JButton("Load");
+		loadButton.setEnabled(false);
 		
 		opcoesButton.addActionListener(new ActionListener(){
 
@@ -408,10 +432,46 @@ public class JogoFrame extends JFrame {
 			
 		});
 		
+		saveButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int returnVal = fileChooser.showSaveDialog(JogoFrame.this);
+				
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+					try {
+						JogoFrame.this.jogoPanel.masmorra.saveState(fileChooser.getSelectedFile().getCanonicalPath());
+					} catch (IOException e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(JogoFrame.this, "Erro ao guardar o labirinto atual!");
+					}				
+			}			
+		});
 		
+		loadButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int returnVal = fileChooser.showOpenDialog(JogoFrame.this);
+				
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+					try {
+						JogoFrame.this.jogoPanel.masmorra = JogoFrame.this.jogoPanel.masmorra.loadState(fileChooser.getSelectedFile().getCanonicalPath());
+						JogoFrame.this.jogoPanel.criaPlayPanel();
+					} catch ( IOException e1) {						
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(JogoFrame.this, "O ficheiro selecionado não existe ou não pode ser escrito!");
+					}
+					
+				
+			}
+			
+		});
 		botoesPanel.add(novoJogoButton);
 		botoesPanel.add(opcoesButton);		
 		botoesPanel.add(sairButton);
+		botoesPanel.add(saveButton);
+		botoesPanel.add(loadButton);
 	}
 
 	private void criaButoesPanel()
