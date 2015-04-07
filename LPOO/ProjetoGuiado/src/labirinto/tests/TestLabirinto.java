@@ -1,6 +1,11 @@
 package labirinto.tests;
 
 import static org.junit.Assert.*;
+import labirinto.cli.*;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import labirinto.logic.*;
 
 import org.junit.Test;
@@ -16,7 +21,7 @@ public class TestLabirinto{
 	@Test
 	public void testMoveDown() {
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(0, 0), new Posicao(0, 0), 1, new Posicao(0, 0), new Posicao(0, 0));
-		testLab.move(Direcao.BAIXO);
+		testLab.move(Direcao.BAIXO); 
 		assertEquals(new Posicao(6, 4), testLab.getHeroi().getPosicao());
 	}
 	
@@ -194,5 +199,17 @@ public class TestLabirinto{
 		testLab.getHeroi().setArmado(false);
 		testLab.getHeroi().setHasJavelin(true);
 		assertEquals('$', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+	}
+	
+	@Test //Not done
+	public void testSaveGameState() throws FileNotFoundException, IOException, ClassNotFoundException{
+		testLab = mazeSetup(new Posicao(5, 4), new Posicao(1, 1), new Posicao(2, 1), 1, new Posicao(3, 1), new Posicao(4, 1));
+		testLab.saveState(testLab, "test.dat");
+		//Interface.printTabuleiro(testLab, 10);
+		//System.out.print("Labirinto antes d des-serializar\n\n\n\n\n\nLabirinto dp:\n");
+		Labirinto testLab2 = (Labirinto) testLab.loadState("test.dat");
+		assertEquals(testLab.isAcabou(), testLab2.isAcabou());
+		//Interface.printTabuleiro(testLab2, 10);
+		
 	}
 }

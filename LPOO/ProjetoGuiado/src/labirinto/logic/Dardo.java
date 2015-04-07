@@ -1,6 +1,8 @@
 package labirinto.logic;
 
-public class Dardo extends Peca{
+import java.io.Serializable;
+
+public class Dardo extends Peca implements Serializable{
 	public Dardo(Posicao posicao){
 		super(posicao);
 	}
