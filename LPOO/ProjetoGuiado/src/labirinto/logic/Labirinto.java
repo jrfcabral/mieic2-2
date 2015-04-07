@@ -1,10 +1,18 @@
 package labirinto.logic;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Random;
 
 import utilitarios.Hipotese;
 
-public class Labirinto {
+public class Labirinto implements Serializable{
 	/*private static final char ESPACO = ' ';
 
 	private static final char HEROI_ARMADO = 'A';
@@ -39,7 +47,7 @@ public class Labirinto {
 	private boolean perdeu;
 	
 	private int dimensao;
-	private int numeroDragoes;
+//	private int numeroDragoes;
 	private Estrategia estrategia;
 	
 	public int getDimensao() {
@@ -138,7 +146,7 @@ public class Labirinto {
 				if(dardos[i] != null && dragoes[j] != null && dardos[i].getPosicao().equals(dragoes[j].getPosicao()) && posicao.equals(this.dardos[i].getPosicao())){
 					return 'F';
 				}
-				else if(dardos[i] != null && dragoes[j] != null && posicao.equals(this.dardos[i].getPosicao())){
+				else if(dardos[i] != null && posicao.equals(this.dardos[i].getPosicao())){
 					return 'J';
 				}
 			}
@@ -346,6 +354,37 @@ public class Labirinto {
 	
 	public Dragao[] getDragoes(){
 		return this.dragoes;
+	}
+	
+	public void saveState(Object obj, String filename) throws FileNotFoundException, IOException{
+		if(obj instanceof Labirinto){
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
+			try{
+				out.writeObject(obj);
+			}
+			catch(Exception e){
+				System.out.print(e.getMessage());
+			}
+			finally{
+				if(out != null){ out.close();}
+			}
+		}
+		
+	}
+	
+	public Object loadState(String filename) throws FileNotFoundException, IOException, ClassNotFoundException{
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
+		Object obj = null;
+		try{
+			obj = in.readObject();
+		}
+		catch(Exception e){
+			System.out.print(e.getMessage());
+		}
+		finally{
+			if(in != null){in.close();}
+		}
+		return obj;
 	}
 	
 }

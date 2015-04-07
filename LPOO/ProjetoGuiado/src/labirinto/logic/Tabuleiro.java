@@ -1,8 +1,9 @@
 package labirinto.logic;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Tabuleiro {
+public class Tabuleiro implements Serializable{
 	private Terreno[][] mapa;
 	int dimensao;
 	

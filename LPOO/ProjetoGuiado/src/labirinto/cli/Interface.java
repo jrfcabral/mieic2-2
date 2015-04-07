@@ -101,7 +101,7 @@ public class Interface {
 			}
 		}while(estrategia < 1 || estrategia > 3);
 		
-		
+		 
 		Labirinto lab;
 		if (dimensao != -1)
 			lab = new Labirinto(MazeGenerator.generate(dimensao), dimensao, dragoes, Estrategia.fromNumber(estrategia));			

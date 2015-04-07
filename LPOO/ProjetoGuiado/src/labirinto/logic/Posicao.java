@@ -1,8 +1,10 @@
 package labirinto.logic;
 
+import java.io.Serializable;
+
 import labirinto.logic.Direcao;
 
-public class Posicao {
+public class Posicao implements Serializable{
 	private int x, y;
 	
 	public int getX() {
