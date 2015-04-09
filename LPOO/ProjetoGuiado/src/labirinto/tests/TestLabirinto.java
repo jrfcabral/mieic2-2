@@ -11,7 +11,7 @@ import labirinto.logic.*;
 import org.junit.Test;
 
 /**
- * @author João
+ * Class responsible for all the project's tests.
  *
  */
 
