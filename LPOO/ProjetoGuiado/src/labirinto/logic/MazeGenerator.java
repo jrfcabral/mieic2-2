@@ -2,6 +2,10 @@ package labirinto.logic;
 import java.util.Random;
 import java.util.Stack;
 
+/**
+ * Class responsible for generating the random mazes used within the game.
+ *
+ */
 public final class MazeGenerator {
 	
 /*
