@@ -6,14 +6,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-//A MERDA DO S_ISREG N DISTINGUIA UM FICHEIRO DUM DIRETORIO
-//NEM Q O CABRAO O TIVESSE A VIOLAR COM UM GARFO
-//Srsly tho eu tenho um programa em q uso S_ISREG e funciona bem (quase).
-//Neste (cujo processo do S_ISREG foi copy-pasted desse) 
-//so e ficheiro as terças, entre as 10 e as 16, excepto almoço
-
-
-//N tou a usar system calls em tudo (ainda)
 int main(int argc, char **argv){
 	if(argc != 2){
 		printf("\nUsage: %s dir\n\n", argv[0]);
@@ -70,7 +62,7 @@ int main(int argc, char **argv){
 			pid_t pid = fork();
 			if(pid == 0){
 				execlp("./sw", "./sw", src_ent->d_name, NULL);
-				printf("Fodeu...\n");
+				printf("Erro...\n");
 			}		
 		}
 	}

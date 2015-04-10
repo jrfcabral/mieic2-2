@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-//Cagando nas system calls...
+
 
 int main(int argc, char **argv){
 	if(argc != 2){
@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 	char *fpath = (char *)malloc((4+strlen(name)+4)*sizeof(char));
 	strcpy(fpath, "res_");
 	strcat(fpath, name);
-	puts(fpath);	
+	//puts(fpath);	
 	strcat(fpath, ".txt");
 	//puts(name);
 	//puts(fpath);
@@ -48,21 +48,30 @@ int main(int argc, char **argv){
 	char *word = (char *)malloc(256*sizeof(char));
 	int std = dup(STDOUT_FILENO);
 	while(!feof(words)){
+		int fd[2];
+		pipe(fd);
 		fgets(word, 256, words);
 		word[strlen(word) - 1] = '\0';
-		puts(word);
 		pid = fork();
-		dup2(search_res, STDOUT_FILENO);
 		if(pid == 0){
-			execlp("grep", "grep", "-n", word, argv[1], NULL);
+			close(fd[0]);
+			dup2(fd[1], STDOUT_FILENO);
+			execlp("grep", "grep", "-no", word, argv[1], NULL);
 			printf("Command not executed.\n");
 			exit(-1);
 		}
 		else{
+			close(fd[1]);
 			int n;
 			wait(&n);
+			char result[10000];
+			n = read(fd[0], result, 10000);
+			fgets(result, 1000, );
+			result[n] = '\0';
+			puts(result);
+			
 		}		
-		dup2(std, STDOUT_FILENO);
+		
 	}
 	
 	dup2(std, STDOUT_FILENO);
