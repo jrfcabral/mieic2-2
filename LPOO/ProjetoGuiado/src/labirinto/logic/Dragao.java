@@ -3,6 +3,10 @@ package labirinto.logic;
 import java.io.Serializable;
 
 public class Dragao extends Peca {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6506962757701472451L;
 	boolean acordado;
 	
 	public boolean isAcordado() {

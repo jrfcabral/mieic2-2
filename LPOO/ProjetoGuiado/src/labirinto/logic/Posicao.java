@@ -5,6 +5,10 @@ import java.io.Serializable;
 import labirinto.logic.Direcao;
 
 public class Posicao implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6358062872403103908L;
 	private int x, y;
 	
 	public int getX() {

@@ -212,7 +212,7 @@ public class JogoFrame extends JFrame {
 			mazeBuilderPanel.updateGrid();
 			mazeBuilderPanel.paintImmediately(0,0,mazeBuilderPanel.getWidth(), mazeBuilderPanel.getHeight());
 			setPreferredSize(new Dimension(800,800));
-			mazeBuilderPanel.setComponentMap(labirintoImages);
+			mazeBuilderPanel.setImageMap(labirintoImages);
 			mazeBuilderPanel.setCellBorder(BorderFactory.createLineBorder(Color.WHITE));
 			add(mazeBuilderPanel, BUILDER);
 		}
@@ -313,7 +313,7 @@ public class JogoFrame extends JFrame {
 		private void criaPlayPanel() {			
 			
 			playPanel = new GridPanel<Character>(masmorra);
-			playPanel.setComponentMap(labirintoImages);
+			playPanel.setImageMap(labirintoImages);
 			playPanel.updateGrid();
 			
 			

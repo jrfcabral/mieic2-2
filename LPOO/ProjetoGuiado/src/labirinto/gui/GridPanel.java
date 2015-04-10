@@ -1,11 +1,9 @@
 package labirinto.gui;
 
 import java.awt.*;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 
-import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import labirinto.logic.GridQueryable;
@@ -18,11 +16,8 @@ public class GridPanel<T> extends JPanel {
 	private static final long serialVersionUID = 5796328570279197459L;
 	private GridQueryable<T> grid;
 	private Border cellBorder;
-	public void setGrid(GridQueryable<T> grid) {
-		this.grid = grid;
-	}
 
-	private ConcurrentHashMap<T, Image> componentMap;
+	private ConcurrentHashMap<T, Image> imageMap;
 	private ImagePanel[][] gridElements;	
 
 	public GridPanel(GridQueryable<T> grid){
@@ -33,9 +28,9 @@ public class GridPanel<T> extends JPanel {
 			throw new IllegalArgumentException();
 		
 		this.grid = grid;
-		this.componentMap = new ConcurrentHashMap<T, Image>();
+		this.imageMap = new ConcurrentHashMap<T, Image>();
 		this.gridElements = new ImagePanel[grid.getDimensao()][grid.getDimensao()];
-		this.setCellBorder(BorderFactory.createEmptyBorder());
+		this.setCellBorder(BorderFactory.createEmptyBorder());		
 		updateGrid();
 	}
 	
@@ -47,13 +42,13 @@ public class GridPanel<T> extends JPanel {
 		int dimensao = grid.getDimensao();
 		
 		this.setLayout(new GridLayout(dimensao, dimensao,0,0));
-		gridElements = new ImagePanel[dimensao][dimensao];
+		gridElements = new PlayCell[dimensao][dimensao];
 		this.removeAll();
 		for (int i = 0; i < dimensao; i++)
 			for (int j = 0; j < dimensao; j++){
-				gridElements[i][j] = new ImagePanel();
-				if (componentMap.get(grid.getCellSymbol(i, j)) != null)
-					gridElements[i][j].setImg(componentMap.get(grid.getCellSymbol(i, j)).getScaledInstance(800/dimensao, 800/dimensao, Image.SCALE_SMOOTH));
+				gridElements[i][j] = new PlayCell();
+				if (imageMap.get(grid.getCellSymbol(i, j)) != null)
+					gridElements[i][j].setImage(imageMap.get(grid.getCellSymbol(i, j)).getScaledInstance(800/dimensao, 800/dimensao, Image.SCALE_FAST));
 				gridElements[i][j].setBorder(cellBorder);
 				gridElements[i][j].setPreferredSize(new Dimension(800/dimensao, 800/dimensao));
 				gridElements[i][j].setBackground(Color.BLACK);
@@ -61,18 +56,19 @@ public class GridPanel<T> extends JPanel {
 			}		
 	}
 		
-	public ConcurrentHashMap<T, Image> getComponentMap() {
-		return componentMap;
+	/**
+	 * @return the map that transofrms each of the elements of the grid into an image
+	 */
+	public ConcurrentHashMap<T, Image> getImageMap() {
+		return imageMap;
 	}
 
 	/**
-	 * @param componentMap map of the image that the elements outputted by the underlying grid should translate to.
+	 * @param imageMap map of the image that the elements outputted by the underlying grid should translate to.
 	 */
-	public void setComponentMap(ConcurrentHashMap<T, Image> componentMap) {
-		this.componentMap = componentMap;
-	}
-
-	
+	public void setImageMap(ConcurrentHashMap<T, Image> imageMap) {
+		this.imageMap = imageMap;
+	}	
 
 	/**
 	 * @param cellBorder The border all cells of this grid should have
@@ -81,5 +77,10 @@ public class GridPanel<T> extends JPanel {
 		this.cellBorder = cellBorder;
 	}
 	
-	
+	/**
+	 * @param grid the grid this object should display
+	 */
+	public void setGrid(GridQueryable<T> grid) {
+		this.grid = grid;
+	}
 }

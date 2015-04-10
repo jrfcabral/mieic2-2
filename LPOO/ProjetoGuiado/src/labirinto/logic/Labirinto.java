@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -29,6 +28,11 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 
 	private static final char ESCUDO = 'P'; //Protec�ao, a falta d melhor nome*/
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6678642295421935384L;
+
 	private static final int NUMERO_DARDOS = 5;
 	
 	//em 10
@@ -389,7 +393,7 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	}
 	
 	public boolean equals(Object obj){
-		if(obj instanceof Labirinto){
+		if(obj != null && obj instanceof Labirinto){
 			if((this.acabou == ((Labirinto) obj).isAcabou()) &&
 				(this.perdeu == ((Labirinto) obj).isPerdeu()) && 
 				(this.dimensao == ((Labirinto) obj).getDimensao()) &&
@@ -400,4 +404,11 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		return false;
 	}
 	
+	public void setTerreno(Terreno terreno, Posicao pos){
+		
+	}
+	
+	public void setTerreno(Terreno terreno, int x, int y){
+		setTerreno (terreno, new Posicao(x,y));
+	}
 }

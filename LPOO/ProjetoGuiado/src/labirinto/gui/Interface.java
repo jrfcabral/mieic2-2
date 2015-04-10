@@ -1,38 +1,21 @@
 package labirinto.gui;
 
-import java.awt.EventQueue;
-
-import javax.print.attribute.AttributeSet;
-import javax.swing.JFrame;
-
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.CardLayout;
 import java.awt.BorderLayout;
-
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
-import javax.swing.text.PlainDocument;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.CardLayout;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import labirinto.logic.Estrategia;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+
 import labirinto.logic.Labirinto;
-import labirinto.logic.MazeGenerator;
 
 public class Interface {
 

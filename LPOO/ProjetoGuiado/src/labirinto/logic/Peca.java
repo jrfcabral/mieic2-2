@@ -3,6 +3,10 @@ package labirinto.logic;
 import java.io.Serializable;
 
 public class Peca implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7375703138176095836L;
 	private Posicao posicao;
 	public Posicao getPosicao() {
 		return posicao;

@@ -1,6 +1,10 @@
 package labirinto.logic;
 
 public class Heroi extends Peca {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1442317230032553310L;
 	private boolean armado;
 	private boolean hasJavelin;
 	private boolean shielded;
