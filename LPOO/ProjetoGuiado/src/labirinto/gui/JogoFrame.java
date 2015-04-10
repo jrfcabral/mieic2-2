@@ -40,7 +40,7 @@ public class JogoFrame extends JFrame {
 		private Labirinto masmorra;		
 		
 		private JPanel emptyPanel;
-		private JPanel playPanel;		
+		private GridPanel<Character> playPanel;		
 		private JPanel opcoesPanel;
 		private GridPanel<Character> mazeBuilderPanel;
 		
@@ -151,6 +151,15 @@ public class JogoFrame extends JFrame {
 			labirintoImages.put('J', javTile);
 			labirintoImages.put('P', shieldTile);
 			
+			BufferedImage greenImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D ig2 = greenImage.createGraphics();
+			ig2.setBackground(Color.GREEN);
+			ig2.clearRect(0, 0, 1, 1);
+			
+			labirintoImages.put('S', greenImage);
+
+			
+			
 		}
 		
 		
@@ -199,12 +208,13 @@ public class JogoFrame extends JFrame {
 		
 
 		private void criaMazeBuilderPanel() {
-			this.mazeBuilderPanel = new GridPanel<Character>(this.masmorra);
-			this.mazeBuilderPanel.updateGrid();
-			this.mazeBuilderPanel.paintImmediately(0,0,mazeBuilderPanel.getWidth(), mazeBuilderPanel.getHeight());
-			this.setPreferredSize(new Dimension(800,800));
-			this.mazeBuilderPanel.setComponentMap(labirintoImages);
-			this.add(mazeBuilderPanel, BUILDER);
+			mazeBuilderPanel = new GridPanel<Character>( masmorra);
+			mazeBuilderPanel.updateGrid();
+			mazeBuilderPanel.paintImmediately(0,0,mazeBuilderPanel.getWidth(), mazeBuilderPanel.getHeight());
+			setPreferredSize(new Dimension(800,800));
+			mazeBuilderPanel.setComponentMap(labirintoImages);
+			mazeBuilderPanel.setCellBorder(BorderFactory.createLineBorder(Color.WHITE));
+			add(mazeBuilderPanel, BUILDER);
 		}
 
 
@@ -302,10 +312,11 @@ public class JogoFrame extends JFrame {
 		 */
 		private void criaPlayPanel() {			
 			
-			playPanel = new JPanel();
-			playPanel.setLayout(new GridLayout(dimensaoSlider.getValue(), dimensaoSlider.getValue()));
-
-			drawMaze();
+			playPanel = new GridPanel<Character>(masmorra);
+			playPanel.setComponentMap(labirintoImages);
+			playPanel.updateGrid();
+			
+			
 			atualizaKeybindings();
 			
 			JogoFrame.this.pack();
@@ -336,52 +347,8 @@ public class JogoFrame extends JFrame {
 			playPanel.getActionMap().put("atirabaixo", new LabirintoAtiraAction(Direcao.BAIXO));
 			playPanel.getActionMap().put("atiraesquerda", new LabirintoAtiraAction(Direcao.ESQUERDA));
 			playPanel.getActionMap().put("atiradireita", new LabirintoAtiraAction(Direcao.DIREITA));
-		}
+		}		
 		
-		public void drawMaze(){
-			for (int j = 0; j < dimensaoSlider.getValue(); j++)
-				for (int i = 0; i < dimensaoSlider.getValue(); i++){
-					ImagePanel cell = new ImagePanel();
-					cell.setPreferredSize(new Dimension(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue()));
-					cell.setOpaque(true);
-					char cellSymbol = masmorra.getCellSymbol(new Posicao(j, i));
-					
-					switch (cellSymbol){
-					case 'X':
-						cell.setBackground(Color.BLACK);
-						break;
-					case ' ':
-						cell.setImg(floorTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
-						break;
-					case 'S':
-						cell.setBackground(Color.GREEN);
-						break;
-					case 'D':
-						cell.setImg(dragonTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
-						break;
-					case 'H': cell.setToolTipText("Heroi");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
-					case '@': cell.setToolTipText("Heroi com escudo");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
-					case 'A': cell.setToolTipText("Heroi com espada");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
-					case 'R': cell.setToolTipText("Heroi com dardo");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
-					case '$': cell.setToolTipText("Heroi com dardo e escudo");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
-					case '&': cell.setToolTipText("Heroi com espada e escudo");cell.setImg(heroTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));break;
-						
-					case 'J':
-						cell.setImg(javTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
-						break;
-					case 'E':
-						cell.setImg(swordTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
-						break;
-					case 'P':
-						cell.setImg(shieldTile.getScaledInstance(800/dimensaoSlider.getValue(), 800/dimensaoSlider.getValue(), Image.SCALE_SMOOTH));
-						break;
-					}
-					
-					playPanel.add(cell);
-				}
-			
-		}
-
 	}
 	
 	

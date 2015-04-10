@@ -1,8 +1,11 @@
 package labirinto.gui;
 
 import java.awt.*;
-import javax.swing.*;
 
+import javax.swing.*;
+import javax.swing.border.Border;
+
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import labirinto.logic.GridQueryable;
@@ -14,6 +17,7 @@ public class GridPanel<T> extends JPanel {
 	
 	private static final long serialVersionUID = 5796328570279197459L;
 	private GridQueryable<T> grid;
+	private Border cellBorder;
 	public void setGrid(GridQueryable<T> grid) {
 		this.grid = grid;
 	}
@@ -31,7 +35,7 @@ public class GridPanel<T> extends JPanel {
 		this.grid = grid;
 		this.componentMap = new ConcurrentHashMap<T, Image>();
 		this.gridElements = new ImagePanel[grid.getDimensao()][grid.getDimensao()];
-		resizeImages();
+		this.setCellBorder(BorderFactory.createEmptyBorder());
 		updateGrid();
 	}
 	
@@ -41,6 +45,7 @@ public class GridPanel<T> extends JPanel {
 	 */
 	public void updateGrid() {
 		int dimensao = grid.getDimensao();
+		
 		this.setLayout(new GridLayout(dimensao, dimensao,0,0));
 		gridElements = new ImagePanel[dimensao][dimensao];
 		this.removeAll();
@@ -48,8 +53,8 @@ public class GridPanel<T> extends JPanel {
 			for (int j = 0; j < dimensao; j++){
 				gridElements[i][j] = new ImagePanel();
 				if (componentMap.get(grid.getCellSymbol(i, j)) != null)
-					gridElements[i][j].setImg(componentMap.get(grid.getCellSymbol(i, j)));//.getScaledInstance(800/dimensao, 800/dimensao, Image.SCALE_SMOOTH));
-				gridElements[i][j].setBorder(BorderFactory.createLineBorder(Color.WHITE));
+					gridElements[i][j].setImg(componentMap.get(grid.getCellSymbol(i, j)).getScaledInstance(800/dimensao, 800/dimensao, Image.SCALE_SMOOTH));
+				gridElements[i][j].setBorder(cellBorder);
 				gridElements[i][j].setPreferredSize(new Dimension(800/dimensao, 800/dimensao));
 				gridElements[i][j].setBackground(Color.BLACK);
 				this.add(gridElements[i][j]);				
@@ -60,12 +65,21 @@ public class GridPanel<T> extends JPanel {
 		return componentMap;
 	}
 
+	/**
+	 * @param componentMap map of the image that the elements outputted by the underlying grid should translate to.
+	 */
 	public void setComponentMap(ConcurrentHashMap<T, Image> componentMap) {
 		this.componentMap = componentMap;
 	}
+
 	
-	private void resizeImages(){
-		int dimensao = grid.getDimensao();
-		componentMap.forEach( (T t, Image i)->i.getScaledInstance(800/dimensao, 800/dimensao, Image.SCALE_SMOOTH) );
+
+	/**
+	 * @param cellBorder The border all cells of this grid should have
+	 */
+	public void setCellBorder(Border cellBorder) {
+		this.cellBorder = cellBorder;
 	}
+	
+	
 }
