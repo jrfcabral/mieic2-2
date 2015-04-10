@@ -1,7 +1,5 @@
 package labirinto.logic;
 
-import java.io.Serializable;
-
 public class Dragao extends Peca {
 	/**
 	 * 

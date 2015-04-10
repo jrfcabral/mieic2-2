@@ -1,8 +1,6 @@
 package labirinto.tests;
 
 import static org.junit.Assert.*;
-import labirinto.cli.*;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -70,10 +68,10 @@ public class TestLabirinto{
 	public void testPickUpSword(){
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(6, 4), new Posicao(0, 0), 1, new Posicao(0, 0), new Posicao(0, 0));
 		assertFalse(testLab.getHeroi().isArmado());
-		assertEquals('H', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+		assertEquals(Character.valueOf('H'), testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 		testLab.move(Direcao.BAIXO);
 		assertTrue(testLab.getHeroi().isArmado());	
-		assertEquals('A', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+		assertEquals(Character.valueOf('A'), testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 	}
 	
 	@Test
@@ -120,7 +118,7 @@ public class TestLabirinto{
 		assertTrue(testLab.getDragoes()[0].isAcordado());
 		testLab.getDragoes()[0].setAcordado(false);
 		assertFalse(testLab.getDragoes()[0].isAcordado());
-		assertEquals('d', testLab.getCellSymbol(5, 2));
+		assertEquals(Character.valueOf('d'), testLab.getCellSymbol(5, 2));
 		testLab.move(Direcao.ESQUERDA);
 		assertFalse(testLab.isPerdeu());
 		testLab.move(Direcao.ESQUERDA);
@@ -140,7 +138,7 @@ public class TestLabirinto{
 		assertFalse(testLab.getHeroi().hasShield());
 		testLab.move(Direcao.CIMA);
 		assertTrue(testLab.getHeroi().hasShield());
-		assertEquals('@', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+		assertEquals(Character.valueOf('@'), testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 	}
 	
 	@Test
@@ -149,7 +147,7 @@ public class TestLabirinto{
 		assertFalse(testLab.getHeroi().hasJavelin());
 		testLab.move(Direcao.CIMA);
 		assertTrue(testLab.getHeroi().hasJavelin());
-		assertEquals('R', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+		assertEquals(Character.valueOf('R'), testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 	}
 	
 	@Test
@@ -176,29 +174,29 @@ public class TestLabirinto{
 	@Test
 	public void testOverlapPositions(){
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(3, 4), new Posicao(3, 4), 1, new Posicao(0, 0), new Posicao(0, 0));
-		assertEquals('F', testLab.getCellSymbol(3,  4));
+		assertEquals(Character.valueOf('F'), testLab.getCellSymbol(3,  4));
 		
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(0, 0), new Posicao(3, 4), 1, new Posicao(3, 4), new Posicao(0, 0));
-		assertEquals('F', testLab.getCellSymbol(3,  4));
+		assertEquals(Character.valueOf('F'), testLab.getCellSymbol(3,  4));
 		
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(0, 0), new Posicao(3, 4), 1, new Posicao(0, 0), new Posicao(3, 4));
-		assertEquals('F', testLab.getCellSymbol(3,  4));
+		assertEquals(Character.valueOf('F'), testLab.getCellSymbol(3,  4));
 	}
 	
 	@Test
 	public void testOverlapShieldAndWeapons(){
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(0, 0), new Posicao(0, 0), 1, new Posicao(0, 0), new Posicao(0, 0));
-		assertEquals('H', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+		assertEquals(Character.valueOf('H'), testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 		
 		testLab.getHeroi().setShielded(true);
-		assertEquals('@', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+		assertEquals(Character.valueOf('@'), testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 		
 		testLab.getHeroi().setArmado(true);
-		assertEquals('&', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+		assertEquals(Character.valueOf('&'), testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 		
 		testLab.getHeroi().setArmado(false); 
 		testLab.getHeroi().setHasJavelin(true);
-		assertEquals('$', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
+		assertEquals(Character.valueOf('$'), testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 	}
 	
 	@Test //Not done
@@ -206,7 +204,6 @@ public class TestLabirinto{
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(1, 1), new Posicao(2, 1), 1, new Posicao(3, 1), new Posicao(4, 1));
 		testLab.saveState("test.dat");
 		Labirinto testLab2 = (Labirinto) Labirinto.loadState("test.dat");
-
-		
+		assertEquals(testLab, testLab2);		
 	}
 }

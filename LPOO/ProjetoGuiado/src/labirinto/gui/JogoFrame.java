@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.EventListenerList;
 
 import labirinto.logic.*;
 
@@ -27,10 +28,11 @@ public class JogoFrame extends JFrame {
 	
 	private JogoPanel jogoPanel;
 	
+	public enum EditorSelection{WALL, FREE, HERO, DRAGON, SWORD, JAVELIN, SHIELD}
 	
-	private class JogoPanel extends JPanel{
+	private class JogoPanel extends JPanel implements GridTransformer{
 
-		private static final long serialVersionUID = 573437742923541828L;
+		private static final long serialVersionUID = 573437742923541828L;		
 		
 		public static final String OPCOES = "OPCOES";
 		public static final String PLAY = "PLAY";
@@ -68,6 +70,7 @@ public class JogoFrame extends JFrame {
 		
 		private ConcurrentHashMap<Character, Image> labirintoImages;
 		
+		
 		private class LabirintoMoveAction extends AbstractAction{
 
 			private static final long serialVersionUID = 7244590807255937010L;
@@ -88,8 +91,6 @@ public class JogoFrame extends JFrame {
 			}
 			
 		}
-		
-
 		private class LabirintoAtiraAction extends AbstractAction{
 
 			
@@ -119,7 +120,7 @@ public class JogoFrame extends JFrame {
 			carregaImagens();			
 			criaPanels();			
 		}
-
+		
 
 		/**
 		 * <p>Loads the necessary images to memory.</p><p> Aborts execution if the images can't be read.</p>
@@ -147,6 +148,7 @@ public class JogoFrame extends JFrame {
 			labirintoImages.put('A', heroTile);
 			labirintoImages.put('@', heroTile);
 			labirintoImages.put('&', heroTile);
+			labirintoImages.put('$', heroTile);
 			labirintoImages.put('R', heroTile);
 			labirintoImages.put('J', javTile);
 			labirintoImages.put('P', shieldTile);
@@ -170,7 +172,8 @@ public class JogoFrame extends JFrame {
 		 */
 		public void change(String mode) {
 			if (mode == PLAY){
-				refazLabirinto();
+				if (masmorra == null)
+					refazLabirinto();
 				criaPlayPanel();
 				JogoFrame.this.novoJogoButton.setEnabled(false);
 				JogoFrame.this.saveButton.setEnabled(true);
@@ -182,6 +185,8 @@ public class JogoFrame extends JFrame {
 				mazeBuilderPanel.setGrid(masmorra);
 				mazeBuilderPanel.updateGrid();
 				JogoFrame.this.novoJogoButton.setEnabled(true);
+				JogoFrame.this.saveButton.setEnabled(true);
+				JogoFrame.this.loadButton.setEnabled(true);
 			}
 			else{
 				JogoFrame.this.novoJogoButton.setEnabled(true);
@@ -191,7 +196,19 @@ public class JogoFrame extends JFrame {
 			((CardLayout)getLayout()).show(this, mode);
 			JogoFrame.this.pack();
 		}
-
+		
+		/**
+		 * Transforms the grid given by <code>x, y</code> according to the currently chosen tool
+		 * @param x
+		 * @param y
+		 */		
+		public void transform(int x, int y){
+			System.out.println("yep"+x+","+y);
+			masmorra.setTerreno(Terreno.PAREDE, x,y);
+			criaMazeBuilderPanel();
+			this.change(BUILDER);
+			//labirinto.cli.Interface.printTabuleiro(masmorra, 15);
+		}
 		
 		/**
 		 * <p>Initializes all of the panels that comprise the JogoPanel interface</p>		 
@@ -202,18 +219,17 @@ public class JogoFrame extends JFrame {
 			criaOpcoesPanel();
 			refazLabirinto();
 			criaPlayPanel();
-			criaMazeBuilderPanel();
+			criaMazeBuilderPanel();			
 		}
 
 		
 
 		private void criaMazeBuilderPanel() {
-			mazeBuilderPanel = new GridPanel<Character>( masmorra);
+			mazeBuilderPanel = new GridPanel<Character>( masmorra, this);
 			mazeBuilderPanel.updateGrid();
 			mazeBuilderPanel.paintImmediately(0,0,mazeBuilderPanel.getWidth(), mazeBuilderPanel.getHeight());
-			setPreferredSize(new Dimension(800,800));
-			mazeBuilderPanel.setImageMap(labirintoImages);
-			mazeBuilderPanel.setCellBorder(BorderFactory.createLineBorder(Color.WHITE));
+			setPreferredSize(new Dimension(GridPanel.GRID_PANEL_DIMENSION,GridPanel.GRID_PANEL_DIMENSION));
+			mazeBuilderPanel.setImageMap(labirintoImages);						
 			add(mazeBuilderPanel, BUILDER);
 		}
 
@@ -312,7 +328,7 @@ public class JogoFrame extends JFrame {
 		 */
 		private void criaPlayPanel() {			
 			
-			playPanel = new GridPanel<Character>(masmorra);
+			playPanel = new GridPanel<Character>(masmorra, this);
 			playPanel.setImageMap(labirintoImages);
 			playPanel.updateGrid();
 			
@@ -438,8 +454,9 @@ public class JogoFrame extends JFrame {
 				
 				if (returnVal == JFileChooser.APPROVE_OPTION)
 					try {
-						JogoFrame.this.jogoPanel.masmorra = JogoFrame.this.jogoPanel.masmorra.loadState(fileChooser.getSelectedFile().getCanonicalPath());
+						JogoFrame.this.jogoPanel.masmorra = Labirinto.loadState(fileChooser.getSelectedFile().getCanonicalPath());
 						JogoFrame.this.jogoPanel.criaPlayPanel();
+						JogoFrame.this.jogoPanel.change(JogoPanel.PLAY);
 					} catch ( IOException e1) {						
 						JOptionPane.showMessageDialog(JogoFrame.this, "O ficheiro selecionado não existe ou não pode ser escrito!");
 					}

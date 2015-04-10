@@ -15,8 +15,6 @@ import javax.swing.SwingConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-import labirinto.logic.Labirinto;
-
 public class Interface {
 
 	private static final String MAIN_MENU = "Menu";
@@ -27,10 +25,6 @@ public class Interface {
 	private JFrame frame;
 	private JPanel mainMenu;
 	private JPanel playMenu;
-	private JPanel editor;
-	
-	private Labirinto labirintoLogic;
-	
 	class MenuListener implements ActionListener {
 		private String newCard;
 		
@@ -54,9 +48,8 @@ public class Interface {
 		public void insertString(FilterBypass fb, int offset, String string, javax.swing.text.AttributeSet attr) throws BadLocationException
 		{
 			System.out.println("s");
-			int dimension;
 			try{
-				dimension = Integer.parseInt(string);
+				Integer.parseInt(string);
 			}catch (NumberFormatException e){return;}
 			super.insertString(fb, offset, string, attr);
 			
@@ -65,9 +58,8 @@ public class Interface {
 		@Override
 		public void replace(FilterBypass fb, int offset, int length, String string, javax.swing.text.AttributeSet attr) throws BadLocationException
 		{			
-			int dimension;
 			try{
-				dimension = Integer.parseInt(string);
+				Integer.parseInt(string);
 			}catch (NumberFormatException e){return;}
 			super.replace(fb, offset, length, string, attr);
 		}

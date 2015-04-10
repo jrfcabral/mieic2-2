@@ -96,17 +96,12 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		}
 			
 		
-	}
-
-	
+	}	
 	
 	public Character getCellSymbol(int x, int y){
 		
 		return getCellSymbol(new Posicao(x,y));
 	}
-	
-	
-	
 	
 	public Character getCellSymbol(Posicao posicao)
 	{		
@@ -405,7 +400,7 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	}
 	
 	public void setTerreno(Terreno terreno, Posicao pos){
-		
+		this.tabuleiro.set(pos.getX(), pos.getY(), terreno);
 	}
 	
 	public void setTerreno(Terreno terreno, int x, int y){

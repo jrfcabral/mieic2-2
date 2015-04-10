@@ -1,6 +1,9 @@
 package labirinto.gui;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -13,13 +16,20 @@ import labirinto.logic.GridQueryable;
  */
 public class GridPanel<T> extends JPanel {
 	
+	public static final int GRID_PANEL_DIMENSION = 700;
 	private static final long serialVersionUID = 5796328570279197459L;
 	private GridQueryable<T> grid;
 	private Border cellBorder;
+	private GridTransformer transformer;
 
 	private ConcurrentHashMap<T, Image> imageMap;
 	private ImagePanel[][] gridElements;	
 
+	public GridPanel(GridQueryable<T> grid, GridTransformer t)
+	{
+		this(grid);
+		transformer = t;
+	}
 	public GridPanel(GridQueryable<T> grid){
 		super();
 		if (grid == null)
@@ -30,7 +40,50 @@ public class GridPanel<T> extends JPanel {
 		this.grid = grid;
 		this.imageMap = new ConcurrentHashMap<T, Image>();
 		this.gridElements = new ImagePanel[grid.getDimensao()][grid.getDimensao()];
-		this.setCellBorder(BorderFactory.createEmptyBorder());		
+		this.setCellBorder(BorderFactory.createEmptyBorder());	
+		this.addMouseListener(new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Double x = e.getXOnScreen() - GridPanel.this.getLocationOnScreen().getX() -5;
+				x = x/(GridPanel.GRID_PANEL_DIMENSION / grid.getDimensao());
+				x = Math.floor(x);
+				
+				Double y = e.getYOnScreen() - GridPanel.this.getLocationOnScreen().getY() -5;
+				y = y/(GridPanel.GRID_PANEL_DIMENSION / grid.getDimensao());
+				y = Math.floor(y);
+				
+				System.out.println(x+","+y);
+				
+				GridPanel.this.transformer.transform(y.intValue(), x.intValue());
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		updateGrid();
 	}
 	
@@ -44,16 +97,20 @@ public class GridPanel<T> extends JPanel {
 		this.setLayout(new GridLayout(dimensao, dimensao,0,0));
 		gridElements = new PlayCell[dimensao][dimensao];
 		this.removeAll();
-		for (int i = 0; i < dimensao; i++)
+		for (int i = 0; i < dimensao; i++){
+			System.out.println("");
 			for (int j = 0; j < dimensao; j++){
 				gridElements[i][j] = new PlayCell();
 				if (imageMap.get(grid.getCellSymbol(i, j)) != null)
-					gridElements[i][j].setImage(imageMap.get(grid.getCellSymbol(i, j)).getScaledInstance(800/dimensao, 800/dimensao, Image.SCALE_FAST));
+					gridElements[i][j].setImage(imageMap.get(grid.getCellSymbol(i, j)).getScaledInstance(GRID_PANEL_DIMENSION/dimensao, GRID_PANEL_DIMENSION/dimensao, Image.SCALE_FAST));
 				gridElements[i][j].setBorder(cellBorder);
-				gridElements[i][j].setPreferredSize(new Dimension(800/dimensao, 800/dimensao));
+				gridElements[i][j].setPreferredSize(new Dimension(GRID_PANEL_DIMENSION/dimensao, GRID_PANEL_DIMENSION/dimensao));
 				gridElements[i][j].setBackground(Color.BLACK);
+				System.out.print(grid.getCellSymbol(i,j)+" ");
 				this.add(gridElements[i][j]);				
 			}		
+		}
+				
 	}
 		
 	/**
