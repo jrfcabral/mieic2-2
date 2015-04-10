@@ -1,20 +1,16 @@
 package labirinto.gui;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import labirinto.logic.Direcao;
-import labirinto.logic.Estrategia;
-import labirinto.logic.Labirinto;
-import labirinto.logic.MazeGenerator;
-import labirinto.logic.Posicao;
+
+import labirinto.logic.*;
 
 
 public class JogoFrame extends JFrame {
@@ -26,6 +22,7 @@ public class JogoFrame extends JFrame {
 	private JButton sairButton;
 	private JButton saveButton;
 	private JButton loadButton;
+	private JButton mazeBuilderButton;
 	private JFileChooser fileChooser;
 	
 	private JogoPanel jogoPanel;
@@ -38,12 +35,14 @@ public class JogoFrame extends JFrame {
 		public static final String OPCOES = "OPCOES";
 		public static final String PLAY = "PLAY";
 		public static final String EMPTY = "EMPTY";
+		public static final String BUILDER = "BUILDER";
 		
 		private Labirinto masmorra;		
 		
 		private JPanel emptyPanel;
 		private JPanel playPanel;		
 		private JPanel opcoesPanel;
+		private GridPanel<Character> mazeBuilderPanel;
 		
 		private JLabel dimensaoLabel;
 		private JSlider dimensaoSlider;
@@ -66,7 +65,9 @@ public class JogoFrame extends JFrame {
 		private BufferedImage swordTile;
 		private BufferedImage shieldTile;
 		private BufferedImage javTile;
-
+		
+		private ConcurrentHashMap<Character, Image> labirintoImages;
+		
 		private class LabirintoMoveAction extends AbstractAction{
 
 			private static final long serialVersionUID = 7244590807255937010L;
@@ -111,26 +112,6 @@ public class JogoFrame extends JFrame {
 		}
 		
 
-		public class ImagePanel extends JPanel{
-
-			private static final long serialVersionUID = 1L;
-			private Image tile;
-			
-			public ImagePanel(){
-				super();
-			}
-			
-			protected void paintComponent(Graphics g){
-				super.paintComponent(g);
-				g.drawImage(tile, 0, 0, null);
-			}
-			
-			public void setImg(Image img){
-				tile = img;
-			}
-		}
-		
-		
 		public JogoPanel() throws IOException{
 			super();
 			
@@ -156,6 +137,20 @@ public class JogoFrame extends JFrame {
 					e.printStackTrace();
 					System.exit(-1);
 				}
+			labirintoImages = new ConcurrentHashMap<Character, Image>();
+			labirintoImages.put(' ', floorTile);
+			labirintoImages.put('D', dragonTile);
+			labirintoImages.put('d', dragonTile);
+			labirintoImages.put('F', dragonTile);
+			labirintoImages.put('E', swordTile);
+			labirintoImages.put('H', heroTile);
+			labirintoImages.put('A', heroTile);
+			labirintoImages.put('@', heroTile);
+			labirintoImages.put('&', heroTile);
+			labirintoImages.put('R', heroTile);
+			labirintoImages.put('J', javTile);
+			labirintoImages.put('P', shieldTile);
+			
 		}
 		
 		
@@ -171,6 +166,13 @@ public class JogoFrame extends JFrame {
 				JogoFrame.this.novoJogoButton.setEnabled(false);
 				JogoFrame.this.saveButton.setEnabled(true);
 				JogoFrame.this.loadButton.setEnabled(true);
+			}
+			else if (mode == BUILDER){
+				if (masmorra == null)
+					refazLabirinto();
+				mazeBuilderPanel.setGrid(masmorra);
+				mazeBuilderPanel.updateGrid();
+				JogoFrame.this.novoJogoButton.setEnabled(true);
 			}
 			else{
 				JogoFrame.this.novoJogoButton.setEnabled(true);
@@ -191,9 +193,20 @@ public class JogoFrame extends JFrame {
 			criaOpcoesPanel();
 			refazLabirinto();
 			criaPlayPanel();
+			criaMazeBuilderPanel();
 		}
 
 		
+
+		private void criaMazeBuilderPanel() {
+			this.mazeBuilderPanel = new GridPanel<Character>(this.masmorra);
+			this.mazeBuilderPanel.updateGrid();
+			this.mazeBuilderPanel.paintImmediately(0,0,mazeBuilderPanel.getWidth(), mazeBuilderPanel.getHeight());
+			this.setPreferredSize(new Dimension(800,800));
+			this.mazeBuilderPanel.setComponentMap(labirintoImages);
+			this.add(mazeBuilderPanel, BUILDER);
+		}
+
 
 		/**
 		 * <p>Initializes and configures all the elements of the interface that allow the user to customize the game.</p>
@@ -270,6 +283,7 @@ public class JogoFrame extends JFrame {
 			teclasPanel.add(atiraDireitaField);
 			
 			opcoesPanel.add(teclasPanel);
+			opcoesPanel.setPreferredSize(new Dimension(400, 400));
 			
 			add(opcoesPanel, OPCOES);			
 			
@@ -385,6 +399,7 @@ public class JogoFrame extends JFrame {
 		criaButoes();		
 		criaJogoPanel();
 		
+		
 	}
 	
 	private void criaJogoPanel() throws IOException {
@@ -401,6 +416,7 @@ public class JogoFrame extends JFrame {
 		saveButton.setEnabled(false);
 		loadButton = new JButton("Load");
 		loadButton.setEnabled(false);
+		mazeBuilderButton = new JButton("Maze Builder");		
 		
 		opcoesButton.addActionListener(new ActionListener(){
 
@@ -441,8 +457,7 @@ public class JogoFrame extends JFrame {
 				if (returnVal == JFileChooser.APPROVE_OPTION)
 					try {
 						JogoFrame.this.jogoPanel.masmorra.saveState(fileChooser.getSelectedFile().getCanonicalPath());
-					} catch (IOException e1) {
-						e1.printStackTrace();
+					} catch (IOException e1) {						
 						JOptionPane.showMessageDialog(JogoFrame.this, "Erro ao guardar o labirinto atual!");
 					}				
 			}			
@@ -459,10 +474,19 @@ public class JogoFrame extends JFrame {
 						JogoFrame.this.jogoPanel.masmorra = JogoFrame.this.jogoPanel.masmorra.loadState(fileChooser.getSelectedFile().getCanonicalPath());
 						JogoFrame.this.jogoPanel.criaPlayPanel();
 					} catch ( IOException e1) {						
-						e1.printStackTrace();
 						JOptionPane.showMessageDialog(JogoFrame.this, "O ficheiro selecionado não existe ou não pode ser escrito!");
 					}
 					
+				
+			}
+			
+		});
+		
+		mazeBuilderButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				jogoPanel.change(JogoPanel.BUILDER);
 				
 			}
 			
@@ -472,6 +496,7 @@ public class JogoFrame extends JFrame {
 		botoesPanel.add(sairButton);
 		botoesPanel.add(saveButton);
 		botoesPanel.add(loadButton);
+		botoesPanel.add(mazeBuilderButton);
 	}
 
 	private void criaButoesPanel()

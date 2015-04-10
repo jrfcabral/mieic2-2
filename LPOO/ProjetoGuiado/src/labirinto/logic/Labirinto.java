@@ -12,7 +12,7 @@ import java.util.Random;
 
 import utilitarios.Hipotese;
 
-public class Labirinto implements Serializable{
+public class Labirinto implements Serializable, GridQueryable<Character>{
 	/*private static final char ESPACO = ' ';
 
 	private static final char HEROI_ARMADO = 'A';
@@ -96,7 +96,7 @@ public class Labirinto implements Serializable{
 
 	
 	
-	public char getCellSymbol(int x, int y){
+	public Character getCellSymbol(int x, int y){
 		
 		return getCellSymbol(new Posicao(x,y));
 	}
@@ -104,7 +104,7 @@ public class Labirinto implements Serializable{
 	
 	
 	
-	public char getCellSymbol(Posicao posicao)
+	public Character getCellSymbol(Posicao posicao)
 	{		
 		if (heroi != null && posicao.equals(this.heroi.getPosicao())){
 			if(heroi.hasShield()){
