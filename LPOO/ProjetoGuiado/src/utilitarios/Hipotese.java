@@ -28,7 +28,7 @@ public class Hipotese {
 	}
 	
 	/**
-	 * Has the random number generator generate a new number and determines an event's success according to the numerador and denominador parameters.
+	 * Has the random number generator generate a new number and determines an event's success.
 	 * 
 	 * @return Returns true when the random generator returns a number bigger than or equal to numerator, false otherwise. 
 	 */

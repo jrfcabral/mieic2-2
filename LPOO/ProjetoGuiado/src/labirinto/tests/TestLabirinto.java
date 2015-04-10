@@ -224,9 +224,15 @@ public class TestLabirinto{
 		assertEquals('R', testLab.getCellSymbol(testLab.getHeroi().getPosicao()));
 	}
 	
+	/**
+	 * Tests the both the hero's and the dragon's behavior when a javelin is thrown.
+	 */
 	@Test
 	public void testThrowJavelin(){
 		testLab = mazeSetup(new Posicao(5, 4), new Posicao(0, 0), new Posicao(2, 4), 1, new Posicao(0, 0), new Posicao(0, 0));
+		assertFalse(testLab.getHeroi().hasJavelin());
+		testLab.atiraDardo(Direcao.CIMA);
+		assertFalse(testLab.nenhumDragao());
 		testLab.getHeroi().setHasJavelin(true);
 		assertTrue(testLab.getHeroi().hasJavelin());
 		testLab.atiraDardo(Direcao.BAIXO);
