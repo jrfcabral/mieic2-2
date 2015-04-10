@@ -44,6 +44,7 @@ public class Peca implements Serializable{
 	/**
 	 * Constructor for the Peca class.
 	 * @param posicao the position in which the piece is to be placed in the form of an instance of the Posicao class
+	 * @see Posicao
 	 */
 	public Peca(Posicao posicao)
 	{
