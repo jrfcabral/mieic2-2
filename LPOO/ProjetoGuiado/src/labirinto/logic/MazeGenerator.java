@@ -4,6 +4,7 @@ import java.util.Stack;
 
 public final class MazeGenerator {
 	
+/*
 	public static void printRandomMaze(int size){
 		Terreno[][] test = generate(size);
 		
@@ -14,9 +15,13 @@ public final class MazeGenerator {
 			System.out.print("\n");
 		}
 	}
+*/
 	
-	
-	
+	/** 
+	 * Generates a random maze with its sides measuring whatever the side variable represents. The generated maze will always be a square.
+	 * @param side size of the walls of the maze.
+	 * @return A randomly generated maze.
+	 */
 	public static Terreno[][] generate(int side){
 			 
 		Terreno lab[][] = new Terreno[side][side];
@@ -144,7 +149,10 @@ public final class MazeGenerator {
 	private MazeGenerator(){} 
 
 
-
+	/**
+	 * Gets the predefined maze provided in the project's first iteration.
+	 * @return the aforementioned maze.
+	 */
 	public static Terreno[][] getPredef() {
 		return  converteMapa(new char[][]
 				{	{'X','X','X','X','X','X','X','X','X','X'},
@@ -160,11 +168,22 @@ public final class MazeGenerator {
 			}, 10);		
 	}
 	
+	/**
+	 * Returns the size of the predefined maze provided on the project's first iteration.
+	 * @return the size of the maze's walls (10).
+	 */
 	public static int getPredefSize()
 	{
 		return 10;	
 	}
 	
+	/**
+	 * Converts the predefined maze (implemented with an array of chars) into a standard maze implemented with the Terreno enum.
+	 * @param mapa the char array to convert
+	 * @param tamanho size of the maze
+	 * @return Returns the converted maze.
+	 * @see Terreno
+	 */
 	private static Terreno[][] converteMapa(char[][] mapa, int tamanho)
 	{
 		Terreno[][] novoMapa = new Terreno[tamanho][tamanho];
