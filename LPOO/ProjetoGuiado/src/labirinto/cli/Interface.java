@@ -198,6 +198,8 @@ public class Interface {
 	 * Translates input previously determined to be of the directional type into one direction.
 	 * @param input The input to translate
 	 * @return An instance of the Direcao enum corresponding to the direction that was provided.
+	 * @see Direcao
+	 * @see getInput()
 	 */
 	private static Direcao traduzDirecao(char input)
 	{
@@ -226,7 +228,7 @@ public class Interface {
 	}
 	
 	/**
-	 * Prints the game's tutorial into the console.
+	 * Prints the game's tutorial to the console.
 	 */
 	private static void tutorial(){
 		System.out.print("Comandos: \nW - Cima\nA - Esquerda\nS - Baixo\nD - Direita\nT - Atirar dardo (deve ser seguido de uma das direc��es acima)\n\n"
