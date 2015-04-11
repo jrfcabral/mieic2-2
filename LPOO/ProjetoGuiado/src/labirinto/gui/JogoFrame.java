@@ -67,6 +67,11 @@ public class JogoFrame extends JFrame {
 		private BufferedImage swordTile;
 		private BufferedImage shieldTile;
 		private BufferedImage javTile;
+		private BufferedImage javhero;
+		private BufferedImage javshieldhero;
+		private BufferedImage swordshieldhero;
+		private BufferedImage swordhero;
+		private BufferedImage shieldhero;
 		
 		private ConcurrentHashMap<Character, Image> labirintoImages;
 		
@@ -133,6 +138,11 @@ public class JogoFrame extends JFrame {
 				shieldTile = ImageIO.read(new File("bin/labirinto/resources/images/shieldtile.png").getCanonicalFile());
 				swordTile = ImageIO.read(new File("bin/labirinto/resources/images/swordtile.png").getCanonicalFile());
 				javTile = ImageIO.read(new File("bin/labirinto/resources/images/javtile.png").getCanonicalFile());
+				swordhero = ImageIO.read(new File("bin/labirinto/resources/images/swordhero.png").getCanonicalFile());
+				swordshieldhero = ImageIO.read(new File("bin/labirinto/resources/images/swordshieldhero.png").getCanonicalFile());
+				javshieldhero = ImageIO.read(new File("bin/labirinto/resources/images/javshieldhero.png").getCanonicalFile());
+				javhero = ImageIO.read(new File("bin/labirinto/resources/images/javhero.png").getCanonicalFile());
+				shieldhero = ImageIO.read(new File("bin/labirinto/resources/images/shieldhero.png").getCanonicalFile());
 				}
 				catch(IOException e){
 					e.printStackTrace();
@@ -145,11 +155,11 @@ public class JogoFrame extends JFrame {
 			labirintoImages.put('F', dragonTile);
 			labirintoImages.put('E', swordTile);
 			labirintoImages.put('H', heroTile);
-			labirintoImages.put('A', heroTile);
-			labirintoImages.put('@', heroTile);
-			labirintoImages.put('&', heroTile);
-			labirintoImages.put('$', heroTile);
-			labirintoImages.put('R', heroTile);
+			labirintoImages.put('A', swordhero);
+			labirintoImages.put('@', shieldhero);
+			labirintoImages.put('&', swordshieldhero);
+			labirintoImages.put('$', javshieldhero);
+			labirintoImages.put('R', javhero);
 			labirintoImages.put('J', javTile);
 			labirintoImages.put('P', shieldTile);
 			
@@ -323,7 +333,7 @@ public class JogoFrame extends JFrame {
 				
 		}
 		
-		/**
+		/** 
 		 * Prepares the grid display of the labirinth 
 		 */
 		private void criaPlayPanel() {			

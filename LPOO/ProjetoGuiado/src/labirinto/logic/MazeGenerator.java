@@ -7,19 +7,7 @@ import java.util.Stack;
  *
  */
 public final class MazeGenerator {
-	
-/*
-	public static void printRandomMaze(int size){
-		Terreno[][] test = generate(size);
-		
-		for(int i = 0; i < size; i++){
-			for(int j = 0; j < size; j++){
-				System.out.print(test[i][j]);
-			}
-			System.out.print("\n");
-		}
-	}
-*/
+
 	
 	/** 
 	 * Generates a random maze with its sides measuring whatever the side variable represents. The generated maze will always be a square.
