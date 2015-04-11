@@ -6,10 +6,16 @@ import java.util.Scanner;
 
 import labirinto.logic.*;
 
-
+/**
+ * Class responsible for the command line interface of the game.
+ *
+ */
 
 public class Interface {
-
+	
+	/**
+	 * Enum responsible for translating user input
+	 */
 	private enum InputType {
 		DIRECIONAL, ATIRA_DARDO, INSIGNIFICANTE, DESCONHECIDA;
 		
@@ -25,6 +31,7 @@ public class Interface {
 	}
 	
 	/**
+	 * This function represents most of the command line interface.
 	 * @param args
 	 * @throws IOException 
 	 */
@@ -144,6 +151,11 @@ public class Interface {
 		leitor.close();
 	}
 
+	/**
+	 * Prints the labyrinth on the console
+	 * @param lab The labyrinth to print
+	 * @param dimensao Size of the labyrinth walls (labyrinth is a square).
+	 */
 	public static void printTabuleiro(Labirinto lab, int dimensao) {
 		for (int x=0; x <dimensao;x++)
 		{
@@ -156,11 +168,23 @@ public class Interface {
 		}
 	}
 	
+	/**
+	 * Reads input from the keyboard
+	 * @return The input that was read.
+	 * @throws IOException
+	 */
 	private static char getInput() throws IOException
 	{
 		char tmp = (char) System.in.read();
 		return tmp;
 	}
+	
+	/**
+	 * Reads input from the keyboard continuously until the type of input matches the one specified in tipo.
+	 * @param tipo Type of input desired
+	 * @return The input that was read
+	 * @throws IOException
+	 */
 	private static char getInput(InputType tipo) throws IOException
 	{
 		char tmp = getInput();
@@ -170,7 +194,11 @@ public class Interface {
 		return	getInput(tipo);
 	}
 	
-	
+	/**
+	 * Translates input previously determined to be of the directional type into one direction.
+	 * @param input The input to translate
+	 * @return An instance of the Direcao enum corresponding to the direction that was provided.
+	 */
 	private static Direcao traduzDirecao(char input)
 	{
 		switch (input)
@@ -183,6 +211,9 @@ public class Interface {
 		}
 	}
 	
+	/**
+	 * Prints the title of the game to the console.
+	 */
 	private static void printTitle(){
 		System.out.print("_________          _______    _______  _______  _______  _______ \n");
 		System.out.print("\\__   __/|\\     /|(  ____ \\  (       )(  ___  )/ ___   )(  ____ \\\n");
@@ -194,6 +225,9 @@ public class Interface {
 		System.out.print("   )_(   |/     \\|(_______/  |/     \\||/     \\|(_______/(_______/\n");
 	}
 	
+	/**
+	 * Prints the game's tutorial into the console.
+	 */
 	private static void tutorial(){
 		System.out.print("Comandos: \nW - Cima\nA - Esquerda\nS - Baixo\nD - Direita\nT - Atirar dardo (deve ser seguido de uma das direc��es acima)\n\n"
 				+"O objectivo do her�i (H) � chegar � sa�da do labirinto (S) ap�s ter matado todos os drag�es (D).\n" + 
