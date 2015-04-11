@@ -406,4 +406,12 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	public void setTerreno(Terreno terreno, int x, int y){
 		setTerreno (terreno, new Posicao(x,y));
 	}
+
+	public void setEspadaPosicao(int x, int y) {
+		this.espada.setPosicao(new Posicao(x,y));		
+	}
+	
+	public void setHeroiPosicao(int x, int y) {
+		this.heroi.setPosicao(new Posicao(x,y));		
+	}	
 }

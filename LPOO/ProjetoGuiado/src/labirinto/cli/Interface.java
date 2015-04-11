@@ -41,6 +41,7 @@ public class Interface {
 		int dragoes = -1;
 		int estrategia = 0;
 		int option = 0;
+		@SuppressWarnings("resource")
 		Scanner leitor = new Scanner(System.in);
 				
 		

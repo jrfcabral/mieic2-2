@@ -9,8 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.EventListenerList;
-
 import labirinto.logic.*;
 
 
@@ -25,6 +23,7 @@ public class JogoFrame extends JFrame {
 	private JButton loadButton;
 	private JButton mazeBuilderButton;
 	private JFileChooser fileChooser;
+	private JToolBar terrainPicker;
 	
 	private JogoPanel jogoPanel;
 	
@@ -39,12 +38,14 @@ public class JogoFrame extends JFrame {
 		public static final String EMPTY = "EMPTY";
 		public static final String BUILDER = "BUILDER";
 		
-		private Labirinto masmorra;		
+		private Labirinto masmorra;
+		private JogoFrame.EditorSelection terrainChoice;
 		
 		private JPanel emptyPanel;
 		private GridPanel<Character> playPanel;		
 		private JPanel opcoesPanel;
 		private GridPanel<Character> mazeBuilderPanel;
+	
 		
 		private JLabel dimensaoLabel;
 		private JSlider dimensaoSlider;
@@ -119,6 +120,7 @@ public class JogoFrame extends JFrame {
 			setLayout(new CardLayout());			
 			carregaImagens();			
 			criaPanels();			
+			this.terrainChoice = JogoFrame.EditorSelection.HERO;
 		}
 		
 
@@ -158,10 +160,7 @@ public class JogoFrame extends JFrame {
 			ig2.setBackground(Color.GREEN);
 			ig2.clearRect(0, 0, 1, 1);
 			
-			labirintoImages.put('S', greenImage);
-
-			
-			
+			labirintoImages.put('S', greenImage);			
 		}
 		
 		
@@ -204,10 +203,17 @@ public class JogoFrame extends JFrame {
 		 */		
 		public void transform(int x, int y){
 			System.out.println("yep"+x+","+y);
-			masmorra.setTerreno(Terreno.PAREDE, x,y);
-			criaMazeBuilderPanel();
+			
+			switch (terrainChoice){
+			case WALL:masmorra.setTerreno(Terreno.PAREDE, x, y);break;
+			case FREE: masmorra.setTerreno(Terreno.CHAO, x, y);break;
+			case SWORD: masmorra.setEspadaPosicao(x, y);break;
+			case HERO: masmorra.setHeroiPosicao(x, y);break;			
+			default:
+				break;
+				
+			}
 			this.change(BUILDER);
-			//labirinto.cli.Interface.printTabuleiro(masmorra, 15);
 		}
 		
 		/**
@@ -221,16 +227,17 @@ public class JogoFrame extends JFrame {
 			criaPlayPanel();
 			criaMazeBuilderPanel();			
 		}
-
 		
-
+		/**
+		 * Initializes the maze builder panel
+		 */
 		private void criaMazeBuilderPanel() {
 			mazeBuilderPanel = new GridPanel<Character>( masmorra, this);
 			mazeBuilderPanel.updateGrid();
 			mazeBuilderPanel.paintImmediately(0,0,mazeBuilderPanel.getWidth(), mazeBuilderPanel.getHeight());
 			setPreferredSize(new Dimension(GridPanel.GRID_PANEL_DIMENSION,GridPanel.GRID_PANEL_DIMENSION));
 			mazeBuilderPanel.setImageMap(labirintoImages);						
-			add(mazeBuilderPanel, BUILDER);
+			add(mazeBuilderPanel, BUILDER);			
 		}
 
 
@@ -381,8 +388,9 @@ public class JogoFrame extends JFrame {
 		criaButoesPanel();
 		criaButoes();		
 		criaJogoPanel();
-		
-		
+		terrainPicker = new JToolBar();
+		terrainPicker.add(new JButton("this"));
+		this.add(terrainPicker, BorderLayout.WEST);
 	}
 	
 	private void criaJogoPanel() throws IOException {
@@ -391,6 +399,9 @@ public class JogoFrame extends JFrame {
 		
 	}
 
+	/**
+	 * Sets up all the buttons in the game and assigns them their respective actions
+	 */
 	private void criaButoes() {
 		opcoesButton = new JButton("Opções");
 		novoJogoButton = new JButton("Novo Jogo");
@@ -483,6 +494,9 @@ public class JogoFrame extends JFrame {
 		botoesPanel.add(mazeBuilderButton);
 	}
 
+	/**
+	 * Creates the panel to hold all the games' buttons.
+	 */
 	private void criaButoesPanel()
 	{
 		botoesPanel = new JPanel();
