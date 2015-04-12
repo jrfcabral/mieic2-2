@@ -427,7 +427,7 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	 * @see Terreno
 	 */
 	public void setTerreno(Terreno terreno, int x, int y){
-		setTerreno (terreno, new Posicao(x,y));
+		setTerreno(terreno, new Posicao(x,y));
 	}
 	/**
 	 * Moves the sword to the x and y coordinates provided
@@ -436,7 +436,8 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	 * @see Espada
 	 */
 	public void setEspadaPosicao(int x, int y) {
-		this.espada.setPosicao(new Posicao(x,y));		
+		if (tabuleiro.at(x, y) == Terreno.CHAO && espada != null)
+			this.espada.setPosicao(new Posicao(x,y));		
 	}
 	/**
 	 * Moves the hero to the x and y coordinates provided
@@ -445,7 +446,8 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	 * @see Heroi
 	 */
 	public void setHeroiPosicao(int x, int y) {
-		this.heroi.setPosicao(new Posicao(x,y));		
+		if (tabuleiro.at(x, y) == Terreno.CHAO)
+			this.heroi.setPosicao(new Posicao(x,y));		
 	}
 	
 	
@@ -456,6 +458,9 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	 * @see Dragao
 	 */
 	public void toggleDragon(int x, int y){
+		if (tabuleiro.at(x, y) != Terreno.CHAO)
+			return;
+		
 		for (int i = 0; i < dragoes.length; i++){
 			if (dragoes[i] != null){
 				if (dragoes[i].getPosicao().equals(new Posicao(x,y))){
@@ -474,6 +479,9 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	 * @see Dardo
 	 */
 	public void toggleJavelin(int x, int y){
+		if (tabuleiro.at(x, y) != Terreno.CHAO)
+			return;
+		
 		for (int i = 0; i < dardos.length; i++){
 			if (dardos[i] != null){
 				if (dardos[i].getPosicao().equals(new Posicao(x,y))){
@@ -484,5 +492,15 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		}
 		dardos = Arrays.copyOf(dardos, dardos.length+1);
 		dardos[dardos.length-1] = new Dardo(new Posicao(x,y));
+	}
+
+	 /** Moves the shield to the x and y coordinates provided
+	 * @param x x coordinate of the new sword position
+	 * @param y y coordinate of the new sword position
+	 * @see Escudo
+	 */
+	public void setShieldPosition(int x, int y) {
+		if (tabuleiro.at(x, y) == Terreno.CHAO && escudo != null)
+			this.escudo.setPosicao(new Posicao(x,y));		
 	}
 }

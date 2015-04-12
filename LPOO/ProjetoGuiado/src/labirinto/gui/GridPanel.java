@@ -53,7 +53,7 @@ public class GridPanel<T> extends JPanel {
 				y = y/(GridPanel.GRID_PANEL_DIMENSION / grid.getDimensao());
 				y = Math.floor(y);
 				
-				System.out.println(x+","+y);
+				
 				
 				GridPanel.this.transformer.transform(y.intValue(), x.intValue());
 				
@@ -98,7 +98,7 @@ public class GridPanel<T> extends JPanel {
 		gridElements = new PlayCell[dimensao][dimensao];
 		this.removeAll();
 		for (int i = 0; i < dimensao; i++){
-			System.out.println("");
+			
 			for (int j = 0; j < dimensao; j++){
 				gridElements[i][j] = new PlayCell();
 				if (imageMap.get(grid.getCellSymbol(i, j)) != null)
@@ -106,7 +106,7 @@ public class GridPanel<T> extends JPanel {
 				gridElements[i][j].setBorder(cellBorder);
 				gridElements[i][j].setPreferredSize(new Dimension(GRID_PANEL_DIMENSION/dimensao, GRID_PANEL_DIMENSION/dimensao));
 				gridElements[i][j].setBackground(Color.BLACK);
-				System.out.print(grid.getCellSymbol(i,j)+" ");
+				
 				this.add(gridElements[i][j]);				
 			}		
 		}

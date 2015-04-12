@@ -247,8 +247,9 @@ public class JogoFrame extends JFrame {
 			case FREE: masmorra.setTerreno(Terreno.CHAO, x, y);break;
 			case SWORD: masmorra.setEspadaPosicao(x, y);break;
 			case HERO: masmorra.setHeroiPosicao(x, y);break;
-			case DRAGON: masmorra.toggleDragon(x, y);
-			case JAVELIN: masmorra.toggleJavelin(x, y);
+			case DRAGON: masmorra.toggleDragon(x, y);break;
+			case JAVELIN: masmorra.toggleJavelin(x, y);break;
+			case SHIELD: masmorra.setShieldPosition(x,y); break;
 			default:
 				break;
 				
