@@ -47,11 +47,11 @@ public enum Estrategia {
 	@Override public String toString(){
 		switch(this){
 		case PARADO:
-			return "Sempre parados";
+			return "Dragons don't move";
 		case ALTERNADO:
-			return "Alternar dormir com acordar";
+			return "Dragons move and ocasionally fall asleep";
 		case SEMPRE_ACORDADO:
-			return "Nunca dormir";
+			return "Dragons move and don't sleep";
 		default:
 			throw new IllegalArgumentException();
 		}

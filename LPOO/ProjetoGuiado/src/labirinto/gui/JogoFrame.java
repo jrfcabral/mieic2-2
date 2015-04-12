@@ -291,7 +291,7 @@ public class JogoFrame extends JFrame {
 			
 			JPanel dimensaoPanel = new JPanel();
 			dimensaoPanel.setLayout(new FlowLayout());
-			dimensaoLabel = new JLabel("Dimensão:");
+			dimensaoLabel = new JLabel("Size:");
 			dimensaoSlider = new JSlider();
 			dimensaoSlider.setMinimum(5);
 			dimensaoSlider.setMaximum(41);
@@ -306,7 +306,7 @@ public class JogoFrame extends JFrame {
 			
 			JPanel dragoesPanel = new JPanel();
 			dimensaoPanel.setLayout(new FlowLayout());
-			dragoesLabel = new JLabel("Dragoes:");
+			dragoesLabel = new JLabel("Number of Dragons:");
 			dragoesSlider = new JSlider();
 			dragoesSlider.setMinimum(1);
 			dragoesSlider.setMaximum(10);
@@ -320,7 +320,7 @@ public class JogoFrame extends JFrame {
 			opcoesPanel.add(dragoesPanel);
 			
 			JPanel estrategiaPanel = new JPanel();
-			estrategiaLabel = new JLabel("Estratégia:");
+			estrategiaLabel = new JLabel("Strategy:");
 			estrategiaBox = new JComboBox<Estrategia>();
 			estrategiaBox.addItem(Estrategia.ALTERNADO);
 			estrategiaBox.addItem(Estrategia.PARADO);
@@ -329,7 +329,7 @@ public class JogoFrame extends JFrame {
 			estrategiaPanel.add(estrategiaBox);
 			opcoesPanel.add(estrategiaPanel);
 			
-			JLabel teclasLabel = new JLabel("Teclas");						
+			JLabel teclasLabel = new JLabel("Keys");						
 			teclasLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			opcoesPanel.add(teclasLabel);
 			
@@ -338,23 +338,76 @@ public class JogoFrame extends JFrame {
 			teclasPanel.setLayout(new GridLayout(4,2));
 			teclasPanel.setPreferredSize(new Dimension(20, 20));
 			
+			JPanel moveUpPanel = new JPanel();
+			moveUpPanel.setLayout(new GridLayout(1, 2));
+			JLabel moverCimaLbl = new JLabel("Move up");
 			moveCimaField = new JTextField("w");
+			moveUpPanel.add(moverCimaLbl);
+			moveUpPanel.add(moveCimaField);
+			
+			JPanel moveDownPanel = new JPanel();
+			moveDownPanel.setLayout(new GridLayout(1, 2));
+			JLabel moveDownLbl = new JLabel("Move Down");
+			moveBaixoField = new JTextField("s");
+			moveDownPanel.add(moveDownLbl);
+			moveDownPanel.add(moveBaixoField);
+			
+			JPanel moveLeftPanel = new JPanel();
+			moveLeftPanel.setLayout(new GridLayout(1, 2));
+			JLabel moveLeftLbl = new JLabel("Move Left");
+			moveEsquerdaField = new JTextField("a");
+			moveLeftPanel.add(moveLeftLbl);
+			moveLeftPanel.add(moveEsquerdaField);
+			
+			
+			JPanel moveRightPanel = new JPanel();
+			moveRightPanel.setLayout(new GridLayout(1, 2));
+			JLabel moveRightLbl = new JLabel("Move Right");
+			moveDireitaField = new JTextField("d");
+			moveRightPanel.add(moveRightLbl);
+			moveRightPanel.add(moveDireitaField);
+			
 			moveBaixoField = new JTextField("s");
 			moveEsquerdaField = new JTextField("a");
 			moveDireitaField = new JTextField("d");
-			teclasPanel.add(moveCimaField);
-			teclasPanel.add(moveBaixoField);
-			teclasPanel.add(moveEsquerdaField);
-			teclasPanel.add(moveDireitaField);
+			teclasPanel.add(moveUpPanel);
+			teclasPanel.add(moveDownPanel);
+			teclasPanel.add(moveLeftPanel);
+			teclasPanel.add(moveRightPanel);
 			
+			JPanel throwUpPanel = new JPanel(); //kek
+			throwUpPanel.setLayout(new GridLayout(1, 2));
+			JLabel throwUpLbl = new JLabel("Throw up");
 			atiraCimaField = new JTextField("u");
+			throwUpPanel.add(throwUpLbl);
+			throwUpPanel.add(atiraCimaField);
+			
+			JPanel throwDownPanel = new JPanel();
+			throwDownPanel.setLayout(new GridLayout(1, 2));
+			JLabel throwDownLbl = new JLabel("Throw Down");
 			atiraBaixoField = new JTextField("j");
+			throwDownPanel.add(throwDownLbl);
+			throwDownPanel.add(atiraBaixoField);
+			
+			JPanel throwLeftPanel = new JPanel();
+			throwLeftPanel.setLayout(new GridLayout(1, 2));
+			JLabel throwLeftLbl = new JLabel("Throw Left");
 			atiraEsquerdaField = new JTextField("h");
+			throwLeftPanel.add(throwLeftLbl);
+			throwLeftPanel.add(atiraEsquerdaField);
+			
+			JPanel throwRightPanel = new JPanel();
+			throwRightPanel.setLayout(new GridLayout(1, 2));
+			JLabel throwRightLbl = new JLabel("Throw Right");
 			atiraDireitaField = new JTextField("k");
-			teclasPanel.add(atiraCimaField);
-			teclasPanel.add(atiraBaixoField);
-			teclasPanel.add(atiraEsquerdaField);
-			teclasPanel.add(atiraDireitaField);
+			throwRightPanel.add(throwRightLbl);
+			throwRightPanel.add(atiraDireitaField);
+			
+			atiraDireitaField = new JTextField("k");
+			teclasPanel.add(throwUpPanel);
+			teclasPanel.add(throwDownPanel);
+			teclasPanel.add(throwLeftPanel);
+			teclasPanel.add(throwRightPanel);
 			
 			opcoesPanel.add(teclasPanel);
 			opcoesPanel.setPreferredSize(new Dimension(400, 400));
@@ -418,7 +471,7 @@ public class JogoFrame extends JFrame {
 	
 	public JogoFrame() throws IOException
 	{
-		setTitle("As Aventuras de Sir McMataDragalhões");
+		setTitle("The Adventures of Ser McKilal Durgons");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 100);
 		setResizable(false);		
@@ -439,13 +492,13 @@ public class JogoFrame extends JFrame {
 		criaJogoPanel();
 		terrainPicker = new JToolBar();
 		terrainPicker.setLayout(new GridLayout(0,1,10,10));
-		terrainPicker.add(new JButton("Heroi"));		
-		terrainPicker.add(new JButton("Parede"));
-		terrainPicker.add(new JButton("Chão"));
-		terrainPicker.add(new JButton("Dragão"));
-		terrainPicker.add(new JButton("Espada"));
-		terrainPicker.add(new JButton("Dardo"));
-		terrainPicker.add(new JButton("Escudo"));
+		terrainPicker.add(new JButton("Hero"));		
+		terrainPicker.add(new JButton("Wall"));
+		terrainPicker.add(new JButton("Floor"));
+		terrainPicker.add(new JButton("Dragon"));
+		terrainPicker.add(new JButton("Sword"));
+		terrainPicker.add(new JButton("Javelin"));
+		terrainPicker.add(new JButton("Shield"));
 		
 		for(int i= 0; i < terrainPicker.getComponents().length; i++)
 			if(terrainPicker.getComponents()[i] instanceof JButton)
@@ -465,9 +518,9 @@ public class JogoFrame extends JFrame {
 	 * Sets up all the buttons in the game and assigns them their respective actions
 	 */
 	private void criaButoes() {
-		opcoesButton = new JButton("Opções"); 
-		novoJogoButton = new JButton("Novo Jogo");
-		sairButton = new JButton("Sair"); 
+		opcoesButton = new JButton("Options"); 
+		novoJogoButton = new JButton("New Game");
+		sairButton = new JButton("Exit"); 
 		saveButton = new JButton("Save");
 		saveButton.setEnabled(false);
 		loadButton = new JButton("Load");

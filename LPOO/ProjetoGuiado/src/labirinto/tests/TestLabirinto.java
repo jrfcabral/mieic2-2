@@ -192,13 +192,7 @@ public class TestLabirinto{
 		testLab.move(Direcao.ESQUERDA);
 		assertFalse(testLab.isPerdeu());
 	}
-	
-/*@Test
-	public void testMultipleDragons(){
-		testLab = mazeSetup(new Posicao(5, 4), new Posicao(0, 0), new Posicao(3, 4), 2);
-		testLab.getDragoes()[1] = new Dragao(new Posicao(7, 4));
-		
-	}*/
+
 	
 	/**
 	 * Tests the behavior of both the shield and the hero when the hero moves into the position where the sword is.

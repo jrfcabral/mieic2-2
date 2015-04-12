@@ -23,6 +23,5 @@ public enum Terreno {PAREDE, CHAO, SAIDA, ERRO;
 		}
 		
 	}
-	
 
 }

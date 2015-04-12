@@ -604,4 +604,5 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		if (tabuleiro.at(x, y) == Terreno.CHAO && escudo != null)
 			this.escudo.setPosicao(new Posicao(x,y));		
 	}
+	
 }
