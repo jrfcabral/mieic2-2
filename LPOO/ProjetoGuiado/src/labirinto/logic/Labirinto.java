@@ -13,8 +13,7 @@ import java.util.Random;
 import utilitarios.Hipotese;
 
 /**
- * @author joao
- *
+ * 
  */
 public class Labirinto implements Serializable, GridQueryable<Character>{
 	/*private static final char ESPACO = ' ';
@@ -59,22 +58,43 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 //	private int numeroDragoes;
 	private Estrategia estrategia;
 	
+	/**
+	 * Getter for the dimensao variable which represents the size of the maze
+	 */
 	public int getDimensao() {
 		return dimensao;
 	}
-
+	
+	/**
+	 * Getter for the perdeu variable which represents whether or not the player lost the game.
+	 * @return
+	 */
 	public boolean isPerdeu() {
 		return perdeu;
 	}
 
+	/**
+	 * Getter for the acabou variable which represents whether or not the game over
+	 * @return 
+	 */
 	public boolean isAcabou() {
 		return acabou;
 	}
 	
+	/**
+	 * Generates an instance of Labirinto with the predefined maze and a dragon that stands permanently still.
+	 */
 	public Labirinto(){
 		this(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), 1, Estrategia.PARADO);
 	}
-
+	
+	/**
+	 * Constructor for the Labirinto class
+	 * @param formatoTabuleiro layout of the maze
+	 * @param dimensao size of the maze
+	 * @param dragoes number of dragons to put in the maze
+	 * @param estrategia strategy to apply to the dragons
+	 */
 	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia)
 	{
 		Random rand = new Random();
@@ -86,6 +106,10 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		inicializarPecas();
 		
 	}
+	
+	/**
+	 * Places the pieces in the maze.
+	 */
 	private void inicializarPecas() {		
 		
 		heroi = new Heroi(tabuleiro.getFreeCell());		
@@ -103,11 +127,17 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		
 	}	
 	
+	/**
+	 *  Translates a cell from the Terreno enum into a character
+	 */
 	public Character getCellSymbol(int x, int y){
 		
 		return getCellSymbol(new Posicao(x,y));
 	}
 	
+	/**
+	 * Translates a cell from the Terreno enum into a character
+	 */
 	public Character getCellSymbol(Posicao posicao)
 	{		
 		if (heroi != null && posicao.equals(this.heroi.getPosicao())){
@@ -166,7 +196,10 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		return tabuleiro.at(posicao).toString().charAt(0);
 	}
 	
-	
+	/**
+	 * "Throws" the javelin and checks if it hits
+	 * @param dir direction in which the javelin is thrown
+	 */
 	public void atiraDardo(Direcao dir)
 	{
 		if (heroi.hasJavelin())
@@ -180,13 +213,20 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	}	
 	
 	//wasd:mover heroi
+	/**
+	 * Moves the hero and starts AI's turn 
+	 * @param dir direction of movement for the hero
+	 */
 	public void move(Direcao dir)
 	{
 		movePeca(dir, heroi);		
 		processaTurno();
 		
 	}
-
+	
+	/**
+	 * Processes the turn for the game's AI.
+	 */
 	private void processaTurno() {
 		
 		if ( (heroi.isArmado() || heroi.hasJavelin()) && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao())
@@ -195,7 +235,10 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		moverTodosOsDragoes();		
 		apanharEquipamento();
 	}
-
+	
+	/**
+	 * Checks if the hero is in the same cell as a piece of equipment (i.e shield, sword or javelin) and if so, picks it up.
+	 */
 	private void apanharEquipamento() {
 		if (espada != null && heroi.getPosicao().equals(espada.getPosicao())){
 			if(heroi.hasJavelin() == true){
@@ -228,7 +271,10 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 			escudo = null;
 		}
 	}
-
+	
+	/**
+	 * Moves all the dragons within the array of dragons
+	 */
 	private void moverTodosOsDragoes() {
 		for (int i = 0; i < dragoes.length; i++){
 			
@@ -278,7 +324,10 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		}
 	}
 	
-	
+	/**
+	 * Checks if there are any dragons left in the maze
+	 * @return true if none are left, false otherwise
+	 */
 	public boolean nenhumDragao(){
 		for(int i = 0; i < dragoes.length; i++){
 			if(dragoes[i] != null)
@@ -288,7 +337,12 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	}
 	
 	
-
+	/**
+	 * Moves a piece from one cell one adjacent to it depending of the provided direction
+	 * @param dir direction of the movement
+	 * @param peca piece to move
+	 * @return true if the piece was successfully moved, false if otherwise (when it hits a wall)
+	 */
 	private boolean movePeca(Direcao dir, Peca peca) {
 		Posicao novaPosicao = peca.getPosicao().novaPosicao(dir);
 		if (tabuleiro.validaPosicao(novaPosicao)){
@@ -298,11 +352,26 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		return false;
 	}
 	
+	/**
+	 *  Checks whether a piece within striking range of an attack
+	 * @param agressor the piece that attacks
+	 * @param defensor the piece to check
+	 * @param alcance range of the attack (in cells)
+	 * @return
+	 */
 	private boolean isNaMira(Peca agressor, Peca defensor, int alcance)
 	{
 		return isNaMira(agressor, defensor, alcance, Direcao.values());
 	}
 	
+	/**
+	 * Checks whether a piece within striking range of an attack
+	 * @param agressor the piece that attacks
+	 * @param defensor the piece to check
+	 * @param alcance range of the attack (in cells)
+	 * @param dir direction(s) of the attack
+	 * @return
+	 */
 	private boolean isNaMira(Peca agressor, Peca defensor, int alcance, Direcao dir)
 	{
 		for(int a = 1; a <= alcance; a++){				
@@ -326,6 +395,14 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		return false;
 	}
 	
+	/**
+	 * Checks whether a piece within striking range of an attack
+	 * @param agressor the piece that attacks
+	 * @param defensor the piece to check
+	 * @param alcance range of the attack (in cells)
+	 * @param dir direction(s) of the attack
+	 * @return
+	 */
 	private boolean isNaMira(Peca agressor, Peca defensor, int alcance, Direcao[] dir){
 		
 		for (int i = 0; i < dir.length; i++){
@@ -340,6 +417,19 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 			
 	}
 	
+	/**
+	 * Special constructor used only for testing purposes
+	 * @see TestLabirinto
+	 * @param formatoTabuleiro the terrain of the maze
+	 * @param dimensao size of the maze
+	 * @param dragoes number of dragons 
+	 * @param estrategia strategy to assign to the game
+	 * @param heroPos position of the hero within the maze
+	 * @param swordPos position of the sword within the maze
+	 * @param dragonPos position of the first dragon within the maze
+	 * @param shieldPos position of the shield within the maze
+	 * @param javPos position of the javelin within the maze
+	 */
 	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia, Posicao heroPos, Posicao swordPos, Posicao dragonPos, Posicao shieldPos, Posicao javPos){
 		this(formatoTabuleiro, dimensao, dragoes, estrategia);
 		this.heroi = new Heroi(heroPos);
@@ -353,14 +443,29 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	}
 	
 	
+	/**
+	 * Getter for the Heroi instance of the Labirinto from which the method is called.
+	 * @return 
+	 */
 	public Heroi getHeroi(){
 		return this.heroi;
 	}
 	
+	/**
+	 * Getter for the array of dargons (Only used for testing purposes)
+	 * @see TestLabirinto
+	 * @return
+	 */
 	public Dragao[] getDragoes(){
 		return this.dragoes;
 	}
 	
+	/**
+	 * Serializes the instance of Labirinto from which the method is called and puts into a file with the specified name.
+	 * @param filename Name of the file
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void saveState(String filename) throws FileNotFoundException, IOException{
 
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
@@ -377,6 +482,13 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		
 	}
 	
+	/**
+	 * Loads a game by de-serializing the objects contained in the specified file
+	 * @param filename name of the file from which to load
+	 * @return An instance of the labirinto class that ws serialized within the file.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public static Labirinto loadState(String filename) throws FileNotFoundException, IOException {
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
 		Object obj = null;
@@ -392,17 +504,6 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		return (Labirinto) obj;
 	}
 	
-	public boolean equals(Object obj){
-		if(obj != null && obj instanceof Labirinto){
-			if((this.acabou == ((Labirinto) obj).isAcabou()) &&
-				(this.perdeu == ((Labirinto) obj).isPerdeu()) && 
-				(this.dimensao == ((Labirinto) obj).getDimensao()) &&
-				(this.estrategia.equals(((Labirinto)obj).estrategia))){
-				return true;
-			}
-		}
-		return false;
-	}
 	
 	
 	/**
