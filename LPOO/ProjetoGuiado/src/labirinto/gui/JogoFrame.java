@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import labirinto.logic.*;
 
 
@@ -27,7 +28,22 @@ public class JogoFrame extends JFrame {
 	
 	private JogoPanel jogoPanel;
 	
-	public enum EditorSelection{WALL, FREE, HERO, DRAGON, SWORD, JAVELIN, SHIELD}
+	public enum EditorSelection{WALL, FREE, HERO, DRAGON, SWORD, JAVELIN, SHIELD;
+
+	public static EditorSelection fromString(String text) {
+		switch (text){
+		case "Parede":return WALL;
+		case "Chão":return FREE;
+		case "Heroi":return HERO;
+		case "Dardo":return JAVELIN;
+		case "Dragão": return DRAGON;
+		case "Espada": return SWORD;
+		case "Escudo": return SHIELD;
+		
+		}
+		return null;
+			
+	}}
 	
 	private class JogoPanel extends JPanel implements GridTransformer{
 
@@ -45,7 +61,7 @@ public class JogoFrame extends JFrame {
 		private GridPanel<Character> playPanel;		
 		private JPanel opcoesPanel;
 		private GridPanel<Character> mazeBuilderPanel;
-	
+		private boolean builderPanelActive = false;	
 		
 		private JLabel dimensaoLabel;
 		private JSlider dimensaoSlider;
@@ -73,6 +89,7 @@ public class JogoFrame extends JFrame {
 		private BufferedImage swordshieldhero;
 		private BufferedImage swordhero;
 		private BufferedImage shieldhero;
+		private BufferedImage sleepingDargon;
 		
 		private ConcurrentHashMap<Character, Image> labirintoImages;
 		
@@ -145,6 +162,7 @@ public class JogoFrame extends JFrame {
 				javshieldhero = ImageIO.read(new File("bin/labirinto/resources/images/javshieldhero.png").getCanonicalFile());
 				javhero = ImageIO.read(new File("bin/labirinto/resources/images/javhero.png").getCanonicalFile());
 				shieldhero = ImageIO.read(new File("bin/labirinto/resources/images/shieldhero.png").getCanonicalFile());
+				sleepingDargon = ImageIO.read(new File("bin/labirinto/resources/images/sleepdragontile.png").getCanonicalFile());
 				}
 				catch(IOException e){
 					e.printStackTrace();
@@ -153,7 +171,7 @@ public class JogoFrame extends JFrame {
 			labirintoImages = new ConcurrentHashMap<Character, Image>();
 			labirintoImages.put(' ', floorTile);
 			labirintoImages.put('D', dragonTile);
-			labirintoImages.put('d', dragonTile);
+			labirintoImages.put('d', sleepingDargon);
 			labirintoImages.put('F', dragonTile);
 			labirintoImages.put('E', swordTile);
 			labirintoImages.put('H', heroTile);
@@ -196,12 +214,20 @@ public class JogoFrame extends JFrame {
 				JogoFrame.this.novoJogoButton.setEnabled(true);
 				JogoFrame.this.saveButton.setEnabled(true);
 				JogoFrame.this.loadButton.setEnabled(true);
+				terrainPicker.setVisible(true);
+				builderPanelActive = true;
 			}
 			else{
 				JogoFrame.this.novoJogoButton.setEnabled(true);
 				JogoFrame.this.saveButton.setEnabled(false);
 				JogoFrame.this.loadButton.setEnabled(false);
 			}
+			
+			if (mode != BUILDER){
+				terrainPicker.setVisible(false);
+				builderPanelActive = false;
+			}
+			
 			((CardLayout)getLayout()).show(this, mode);
 			JogoFrame.this.pack();
 		}
@@ -212,13 +238,17 @@ public class JogoFrame extends JFrame {
 		 * @param y
 		 */		
 		public void transform(int x, int y){
-			System.out.println("yep"+x+","+y);
+			
+			if (!builderPanelActive)
+				return;
 			
 			switch (terrainChoice){
 			case WALL:masmorra.setTerreno(Terreno.PAREDE, x, y);break;
 			case FREE: masmorra.setTerreno(Terreno.CHAO, x, y);break;
 			case SWORD: masmorra.setEspadaPosicao(x, y);break;
-			case HERO: masmorra.setHeroiPosicao(x, y);break;			
+			case HERO: masmorra.setHeroiPosicao(x, y);break;
+			case DRAGON: masmorra.toggleDragon(x, y);
+			case JAVELIN: masmorra.toggleJavelin(x, y);
 			default:
 				break;
 				
@@ -392,15 +422,36 @@ public class JogoFrame extends JFrame {
 		setBounds(100, 100, 450, 100);
 		setResizable(false);		
 		setFocusable(true);
-		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setLayout(new BorderLayout());		
+		ActionListener listener = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {		
+				JButton source = (JButton) arg0.getSource();
+				JogoFrame.this.jogoPanel.terrainChoice = JogoFrame.EditorSelection.fromString(source.getText());
+				
+			}			
+		};
 		
 		fileChooser = new JFileChooser();		
 		criaButoesPanel();
 		criaButoes();		
 		criaJogoPanel();
 		terrainPicker = new JToolBar();
-		terrainPicker.add(new JButton("this"));
-		this.add(terrainPicker, BorderLayout.WEST);
+		terrainPicker.setLayout(new GridLayout(0,1,10,10));
+		terrainPicker.add(new JButton("Heroi"));		
+		terrainPicker.add(new JButton("Parede"));
+		terrainPicker.add(new JButton("Chão"));
+		terrainPicker.add(new JButton("Dragão"));
+		terrainPicker.add(new JButton("Espada"));
+		terrainPicker.add(new JButton("Dardo"));
+		terrainPicker.add(new JButton("Escudo"));
+		
+		for(int i= 0; i < terrainPicker.getComponents().length; i++)
+			if(terrainPicker.getComponents()[i] instanceof JButton)
+				((JButton)terrainPicker.getComponents()[i]).addActionListener(listener);
+		
+		this.add(terrainPicker, BorderLayout.WEST); 
+		
 	}
 	
 	private void criaJogoPanel() throws IOException {
@@ -413,9 +464,9 @@ public class JogoFrame extends JFrame {
 	 * Sets up all the buttons in the game and assigns them their respective actions
 	 */
 	private void criaButoes() {
-		opcoesButton = new JButton("Opções");
+		opcoesButton = new JButton("Opções"); 
 		novoJogoButton = new JButton("Novo Jogo");
-		sairButton = new JButton("Sair");
+		sairButton = new JButton("Sair"); 
 		saveButton = new JButton("Save");
 		saveButton.setEnabled(false);
 		loadButton = new JButton("Load");

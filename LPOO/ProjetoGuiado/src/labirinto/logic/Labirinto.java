@@ -7,10 +7,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Random;
 
 import utilitarios.Hipotese;
 
+/**
+ * @author joao
+ *
+ */
 public class Labirinto implements Serializable, GridQueryable<Character>{
 	/*private static final char ESPACO = ' ';
 
@@ -399,19 +404,85 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		return false;
 	}
 	
+	
+	/**
+	 * Sets the terrain at the Tabuleiro's position to the specified type of terrain
+	 * @param terreno terrain type to be set
+	 * @param pos position to edit
+	 * @see Posicao
+	 * @see Tabuleiro
+	 * @see Terreno
+	 */
 	public void setTerreno(Terreno terreno, Posicao pos){
 		this.tabuleiro.set(pos.getX(), pos.getY(), terreno);
 	}
 	
+	/**
+	 * Sets the terrain at the Tabuleiro's position to the specified type of terrain
+	 * @param terreno terrain type to be set
+	 * @param x x coordinate of the position
+	 * @param y y coordinate of the position
+	 * @see Posicao
+	 * @see Tabuleiro
+	 * @see Terreno
+	 */
 	public void setTerreno(Terreno terreno, int x, int y){
 		setTerreno (terreno, new Posicao(x,y));
 	}
-
+	/**
+	 * Moves the sword to the x and y coordinates provided
+	 * @param x x coordinate of the new sword position
+	 * @param y y coordinate of the new sword position
+	 * @see Espada
+	 */
 	public void setEspadaPosicao(int x, int y) {
 		this.espada.setPosicao(new Posicao(x,y));		
 	}
-	
+	/**
+	 * Moves the hero to the x and y coordinates provided
+	 * @param x x coordinate of the new sword position
+	 * @param y y coordinate of the new sword position
+	 * @see Heroi
+	 */
 	public void setHeroiPosicao(int x, int y) {
 		this.heroi.setPosicao(new Posicao(x,y));		
-	}	
+	}
+	
+	
+	/**
+	 * Toggles the existence of a dragon at the provided x and y coordinates
+	 * @param x x coordinate of the position to toggle
+	 * @param y y coordinate of the position to toggle
+	 * @see Dragao
+	 */
+	public void toggleDragon(int x, int y){
+		for (int i = 0; i < dragoes.length; i++){
+			if (dragoes[i] != null){
+				if (dragoes[i].getPosicao().equals(new Posicao(x,y))){
+					dragoes[i] = null;
+					return;
+				}
+			}						
+		}
+		dragoes = Arrays.copyOf(dragoes, dragoes.length+1);
+		dragoes[dragoes.length-1] = new Dragao(new Posicao(x,y));
+	}
+	/**
+	 * Toggles the existence of a javelin at the provided x and y coordinates
+	 * @param x x coordinate of the position to toggle
+	 * @param y y coordinate of the position to toggle
+	 * @see Dardo
+	 */
+	public void toggleJavelin(int x, int y){
+		for (int i = 0; i < dardos.length; i++){
+			if (dardos[i] != null){
+				if (dardos[i].getPosicao().equals(new Posicao(x,y))){
+					dardos[i] = null;
+					return;
+				}
+			}						
+		}
+		dardos = Arrays.copyOf(dardos, dardos.length+1);
+		dardos[dardos.length-1] = new Dardo(new Posicao(x,y));
+	}
 }
