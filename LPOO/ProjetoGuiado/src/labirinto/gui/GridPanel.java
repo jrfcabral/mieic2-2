@@ -102,7 +102,7 @@ public class GridPanel<T> extends JPanel {
 			for (int j = 0; j < dimensao; j++){
 				gridElements[i][j] = new PlayCell();
 				if (imageMap.get(grid.getCellSymbol(i, j)) != null)
-					gridElements[i][j].setImage(imageMap.get(grid.getCellSymbol(i, j)).getScaledInstance(GRID_PANEL_DIMENSION/dimensao, GRID_PANEL_DIMENSION/dimensao, Image.SCALE_FAST));
+					gridElements[i][j].setImage(imageMap.get(grid.getCellSymbol(i, j)).getScaledInstance(GRID_PANEL_DIMENSION/dimensao, GRID_PANEL_DIMENSION/dimensao, Image.SCALE_SMOOTH));
 				gridElements[i][j].setBorder(cellBorder);
 				gridElements[i][j].setPreferredSize(new Dimension(GRID_PANEL_DIMENSION/dimensao, GRID_PANEL_DIMENSION/dimensao));
 				gridElements[i][j].setBackground(Color.BLACK);
