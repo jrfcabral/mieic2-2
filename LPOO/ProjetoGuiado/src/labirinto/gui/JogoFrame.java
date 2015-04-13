@@ -29,7 +29,7 @@ public class JogoFrame extends JFrame {
 	
 	private JogoPanel jogoPanel;
 	
-	public enum EditorSelection{WALL, FREE, HERO, DRAGON, SWORD, JAVELIN, SHIELD;
+	public enum EditorSelection{WALL, FREE, HERO, DRAGON, SWORD, JAVELIN, SHIELD, EXIT;
 
 	public static EditorSelection fromString(String text) {
 		switch (text){
@@ -40,6 +40,7 @@ public class JogoFrame extends JFrame {
 		case "Dragon": return DRAGON;
 		case "Sword": return SWORD;
 		case "Shield": return SHIELD;
+		case "Exit": return EXIT;
 		
 		}
 		return WALL;
@@ -95,6 +96,7 @@ public class JogoFrame extends JFrame {
 		private BufferedImage swordhero;
 		private BufferedImage shieldhero;
 		private BufferedImage sleepingDargon;
+		private BufferedImage dragonsword;
 		
 		private ConcurrentHashMap<Character, Image> labirintoImages;
 		
@@ -177,6 +179,7 @@ public class JogoFrame extends JFrame {
 				swordhero = ImageIO.read(new File("bin/labirinto/resources/images/swordhero.png").getCanonicalFile());
 				swordshieldhero = ImageIO.read(new File("bin/labirinto/resources/images/swordshieldhero.png").getCanonicalFile());
 				javshieldhero = ImageIO.read(new File("bin/labirinto/resources/images/javshieldhero.png").getCanonicalFile());
+				dragonsword = ImageIO.read(new File("bin/labirinto/resources/images/sworddragontile.png").getCanonicalFile());
 				javhero = ImageIO.read(new File("bin/labirinto/resources/images/javhero.png").getCanonicalFile());
 				shieldhero = ImageIO.read(new File("bin/labirinto/resources/images/shieldhero.png").getCanonicalFile());
 				sleepingDargon = ImageIO.read(new File("bin/labirinto/resources/images/sleepdragontile.png").getCanonicalFile());
@@ -189,7 +192,7 @@ public class JogoFrame extends JFrame {
 			labirintoImages.put(' ', floorTile);
 			labirintoImages.put('D', dragonTile);
 			labirintoImages.put('d', sleepingDargon);
-			labirintoImages.put('F', dragonTile);
+			labirintoImages.put('F', dragonsword);
 			labirintoImages.put('E', swordTile);
 			labirintoImages.put('H', heroTile);
 			labirintoImages.put('A', swordhero);
@@ -197,7 +200,7 @@ public class JogoFrame extends JFrame {
 			labirintoImages.put('&', swordshieldhero);
 			labirintoImages.put('$', javshieldhero);
 			labirintoImages.put('R', javhero);
-			labirintoImages.put('J', javTile);
+			labirintoImages.put('J', javTile);			
 			labirintoImages.put('P', shieldTile);
 			
 			BufferedImage greenImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -222,10 +225,11 @@ public class JogoFrame extends JFrame {
 				JogoFrame.this.playModeButton.setEnabled(false);
 				JogoFrame.this.saveButton.setEnabled(true);
 				JogoFrame.this.loadButton.setEnabled(true);
+				JogoFrame.this.mazeBuilderButton.setEnabled(true);
 			}
 			else if (mode == BUILDER){
 				if (masmorra == null)
-					refazLabirinto();
+					refazLabirinto(); 
 				mazeBuilderPanel.setGrid(masmorra);
 				mazeBuilderPanel.updateGrid();
 				JogoFrame.this.playModeButton.setEnabled(true);
@@ -233,6 +237,7 @@ public class JogoFrame extends JFrame {
 				JogoFrame.this.loadButton.setEnabled(true);
 				terrainPicker.setVisible(true);
 				builderPanelActive = true;
+				mazeBuilderButton.setEnabled(false);
 			}
 			else{
 				JogoFrame.this.playModeButton.setEnabled(true);
@@ -244,6 +249,12 @@ public class JogoFrame extends JFrame {
 				terrainPicker.setVisible(false);
 				builderPanelActive = false;
 			}
+			
+			if (mode == WIN || mode == LOSE){
+				playModeButton.setEnabled(false);
+				mazeBuilderButton.setEnabled(false);
+			}
+				
 			
 			((CardLayout)getLayout()).show(this, mode);
 			JogoFrame.this.pack();
@@ -267,6 +278,7 @@ public class JogoFrame extends JFrame {
 			case DRAGON: masmorra.toggleDragon(x, y);break;
 			case JAVELIN: masmorra.toggleJavelin(x, y);break;
 			case SHIELD: masmorra.setShieldPosition(x,y); break;
+			case EXIT: masmorra.setTerreno(Terreno.SAIDA, x, y);
 			default:
 				break;
 				
@@ -539,6 +551,7 @@ public class JogoFrame extends JFrame {
 		terrainPicker.add(new JButton("Sword"));
 		terrainPicker.add(new JButton("Javelin"));
 		terrainPicker.add(new JButton("Shield"));
+		terrainPicker.add(new JButton("Exit"));
 		
 		for(int i= 0; i < terrainPicker.getComponents().length; i++)
 			if(terrainPicker.getComponents()[i] instanceof JButton)
