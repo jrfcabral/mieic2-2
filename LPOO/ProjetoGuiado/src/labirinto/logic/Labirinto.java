@@ -4,15 +4,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Random;
 
 import utilitarios.Hipotese;
 
-public class Labirinto implements Serializable{
+/**
+ * 
+ */
+public class Labirinto implements Serializable, GridQueryable<Character>{
 	/*private static final char ESPACO = ' ';
 
 	private static final char HEROI_ARMADO = 'A';
@@ -29,6 +32,11 @@ public class Labirinto implements Serializable{
 
 	private static final char ESCUDO = 'P'; //Protec�ao, a falta d melhor nome*/
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6678642295421935384L;
+
 	private static final int NUMERO_DARDOS = 5;
 	
 	//em 10
@@ -50,22 +58,43 @@ public class Labirinto implements Serializable{
 //	private int numeroDragoes;
 	private Estrategia estrategia;
 	
+	/**
+	 * Getter for the dimensao variable which represents the size of the maze
+	 */
 	public int getDimensao() {
 		return dimensao;
 	}
-
+	
+	/**
+	 * Getter for the perdeu variable which represents whether or not the player lost the game.
+	 * @return
+	 */
 	public boolean isPerdeu() {
 		return perdeu;
 	}
 
+	/**
+	 * Getter for the acabou variable which represents whether or not the game over
+	 * @return 
+	 */
 	public boolean isAcabou() {
 		return acabou;
 	}
 	
+	/**
+	 * Generates an instance of Labirinto with the predefined maze and a dragon that stands permanently still.
+	 */
 	public Labirinto(){
 		this(MazeGenerator.getPredef(), MazeGenerator.getPredefSize(), 1, Estrategia.PARADO);
 	}
-
+	
+	/**
+	 * Constructor for the Labirinto class
+	 * @param formatoTabuleiro layout of the maze
+	 * @param dimensao size of the maze
+	 * @param dragoes number of dragons to put in the maze
+	 * @param estrategia strategy to apply to the dragons
+	 */
 	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia)
 	{
 		Random rand = new Random();
@@ -77,6 +106,10 @@ public class Labirinto implements Serializable{
 		inicializarPecas();
 		
 	}
+	
+	/**
+	 * Places the pieces in the maze.
+	 */
 	private void inicializarPecas() {		
 		
 		heroi = new Heroi(tabuleiro.getFreeCell());		
@@ -92,19 +125,20 @@ public class Labirinto implements Serializable{
 		}
 			
 		
-	}
-
+	}	
 	
-	
-	public char getCellSymbol(int x, int y){
+	/**
+	 *  Translates a cell from the Terreno enum into a character
+	 */
+	public Character getCellSymbol(int x, int y){
 		
 		return getCellSymbol(new Posicao(x,y));
 	}
 	
-	
-	
-	
-	public char getCellSymbol(Posicao posicao)
+	/**
+	 * Translates a cell from the Terreno enum into a character
+	 */
+	public Character getCellSymbol(Posicao posicao)
 	{		
 		if (heroi != null && posicao.equals(this.heroi.getPosicao())){
 			if(heroi.hasShield()){
@@ -162,7 +196,10 @@ public class Labirinto implements Serializable{
 		return tabuleiro.at(posicao).toString().charAt(0);
 	}
 	
-	
+	/**
+	 * "Throws" the javelin and checks if it hits
+	 * @param dir direction in which the javelin is thrown
+	 */
 	public void atiraDardo(Direcao dir)
 	{
 		if (heroi.hasJavelin())
@@ -176,13 +213,20 @@ public class Labirinto implements Serializable{
 	}	
 	
 	//wasd:mover heroi
+	/**
+	 * Moves the hero and starts AI's turn 
+	 * @param dir direction of movement for the hero
+	 */
 	public void move(Direcao dir)
 	{
 		movePeca(dir, heroi);		
 		processaTurno();
 		
 	}
-
+	
+	/**
+	 * Processes the turn for the game's AI.
+	 */
 	private void processaTurno() {
 		
 		if ( (heroi.isArmado() || heroi.hasJavelin()) && tabuleiro.at(heroi.getPosicao()) == Terreno.SAIDA && nenhumDragao())
@@ -191,7 +235,10 @@ public class Labirinto implements Serializable{
 		moverTodosOsDragoes();		
 		apanharEquipamento();
 	}
-
+	
+	/**
+	 * Checks if the hero is in the same cell as a piece of equipment (i.e shield, sword or javelin) and if so, picks it up.
+	 */
 	private void apanharEquipamento() {
 		if (espada != null && heroi.getPosicao().equals(espada.getPosicao())){
 			if(heroi.hasJavelin() == true){
@@ -224,7 +271,10 @@ public class Labirinto implements Serializable{
 			escudo = null;
 		}
 	}
-
+	
+	/**
+	 * Moves all the dragons within the array of dragons
+	 */
 	private void moverTodosOsDragoes() {
 		for (int i = 0; i < dragoes.length; i++){
 			
@@ -274,7 +324,10 @@ public class Labirinto implements Serializable{
 		}
 	}
 	
-	
+	/**
+	 * Checks if there are any dragons left in the maze
+	 * @return true if none are left, false otherwise
+	 */
 	public boolean nenhumDragao(){
 		for(int i = 0; i < dragoes.length; i++){
 			if(dragoes[i] != null)
@@ -284,7 +337,12 @@ public class Labirinto implements Serializable{
 	}
 	
 	
-
+	/**
+	 * Moves a piece from one cell one adjacent to it depending of the provided direction
+	 * @param dir direction of the movement
+	 * @param peca piece to move
+	 * @return true if the piece was successfully moved, false if otherwise (when it hits a wall)
+	 */
 	private boolean movePeca(Direcao dir, Peca peca) {
 		Posicao novaPosicao = peca.getPosicao().novaPosicao(dir);
 		if (tabuleiro.validaPosicao(novaPosicao)){
@@ -294,11 +352,26 @@ public class Labirinto implements Serializable{
 		return false;
 	}
 	
+	/**
+	 *  Checks whether a piece within striking range of an attack
+	 * @param agressor the piece that attacks
+	 * @param defensor the piece to check
+	 * @param alcance range of the attack (in cells)
+	 * @return
+	 */
 	private boolean isNaMira(Peca agressor, Peca defensor, int alcance)
 	{
 		return isNaMira(agressor, defensor, alcance, Direcao.values());
 	}
 	
+	/**
+	 * Checks whether a piece within striking range of an attack
+	 * @param agressor the piece that attacks
+	 * @param defensor the piece to check
+	 * @param alcance range of the attack (in cells)
+	 * @param dir direction(s) of the attack
+	 * @return
+	 */
 	private boolean isNaMira(Peca agressor, Peca defensor, int alcance, Direcao dir)
 	{
 		for(int a = 1; a <= alcance; a++){				
@@ -322,6 +395,14 @@ public class Labirinto implements Serializable{
 		return false;
 	}
 	
+	/**
+	 * Checks whether a piece within striking range of an attack
+	 * @param agressor the piece that attacks
+	 * @param defensor the piece to check
+	 * @param alcance range of the attack (in cells)
+	 * @param dir direction(s) of the attack
+	 * @return
+	 */
 	private boolean isNaMira(Peca agressor, Peca defensor, int alcance, Direcao[] dir){
 		
 		for (int i = 0; i < dir.length; i++){
@@ -336,6 +417,19 @@ public class Labirinto implements Serializable{
 			
 	}
 	
+	/**
+	 * Special constructor used only for testing purposes
+	 * @see TestLabirinto
+	 * @param formatoTabuleiro the terrain of the maze
+	 * @param dimensao size of the maze
+	 * @param dragoes number of dragons 
+	 * @param estrategia strategy to assign to the game
+	 * @param heroPos position of the hero within the maze
+	 * @param swordPos position of the sword within the maze
+	 * @param dragonPos position of the first dragon within the maze
+	 * @param shieldPos position of the shield within the maze
+	 * @param javPos position of the javelin within the maze
+	 */
 	public Labirinto(Terreno[][] formatoTabuleiro, int dimensao, int dragoes, Estrategia estrategia, Posicao heroPos, Posicao swordPos, Posicao dragonPos, Posicao shieldPos, Posicao javPos){
 		this(formatoTabuleiro, dimensao, dragoes, estrategia);
 		this.heroi = new Heroi(heroPos);
@@ -349,14 +443,29 @@ public class Labirinto implements Serializable{
 	}
 	
 	
+	/**
+	 * Getter for the Heroi instance of the Labirinto from which the method is called.
+	 * @return 
+	 */
 	public Heroi getHeroi(){
 		return this.heroi;
 	}
 	
+	/**
+	 * Getter for the array of dargons (Only used for testing purposes)
+	 * @see TestLabirinto
+	 * @return
+	 */
 	public Dragao[] getDragoes(){
 		return this.dragoes;
 	}
 	
+	/**
+	 * Serializes the instance of Labirinto from which the method is called and puts into a file with the specified name.
+	 * @param filename Name of the file
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void saveState(String filename) throws FileNotFoundException, IOException{
 
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
@@ -373,6 +482,13 @@ public class Labirinto implements Serializable{
 		
 	}
 	
+	/**
+	 * Loads a game by de-serializing the objects contained in the specified file
+	 * @param filename name of the file from which to load
+	 * @return An instance of the labirinto class that ws serialized within the file.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public static Labirinto loadState(String filename) throws FileNotFoundException, IOException {
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
 		Object obj = null;
@@ -388,16 +504,118 @@ public class Labirinto implements Serializable{
 		return (Labirinto) obj;
 	}
 	
-	public boolean equals(Object obj){
-		if(obj instanceof Labirinto){
-			if((this.acabou == ((Labirinto) obj).isAcabou()) &&
-				(this.perdeu == ((Labirinto) obj).isPerdeu()) && 
-				(this.dimensao == ((Labirinto) obj).getDimensao()) &&
-				(this.estrategia.equals(((Labirinto)obj).estrategia))){
-				return true;
-			}
-		}
-		return false;
+	
+	
+	/**
+	 * Sets the terrain at the Tabuleiro's position to the specified type of terrain
+	 * @param terreno terrain type to be set
+	 * @param pos position to edit
+	 * @see Posicao
+	 * @see Tabuleiro
+	 * @see Terreno
+	 */
+	public void setTerreno(Terreno terreno, Posicao pos){
+		this.tabuleiro.set(pos.getX(), pos.getY(), terreno);
 	}
 	
+	/**
+	 * Sets the terrain at the Tabuleiro's position to the specified type of terrain
+	 * @param terreno terrain type to be set
+	 * @param x x coordinate of the position
+	 * @param y y coordinate of the position
+	 * @see Posicao
+	 * @see Tabuleiro
+	 * @see Terreno
+	 */
+	public void setTerreno(Terreno terreno, int x, int y){
+		setTerreno(terreno, new Posicao(x,y));
+	}
+	/**
+	 * Moves the sword to the x and y coordinates provided
+	 * @param x x coordinate of the new sword position
+	 * @param y y coordinate of the new sword position
+	 * @see Espada
+	 */
+	public void setEspadaPosicao(int x, int y) {
+		if (tabuleiro.at(x, y) == Terreno.CHAO && espada != null)
+			this.espada.setPosicao(new Posicao(x,y));		
+	}
+	/**
+	 * Moves the hero to the x and y coordinates provided
+	 * @param x x coordinate of the new sword position
+	 * @param y y coordinate of the new sword position
+	 * @see Heroi
+	 */
+	public void setHeroiPosicao(int x, int y) {
+		if (tabuleiro.at(x, y) == Terreno.CHAO)
+			this.heroi.setPosicao(new Posicao(x,y));		
+	}
+	
+	
+	/**
+	 * Toggles the existence of a dragon at the provided x and y coordinates
+	 * @param x x coordinate of the position to toggle
+	 * @param y y coordinate of the position to toggle
+	 * @see Dragao
+	 */
+	public void toggleDragon(int x, int y){
+		if (tabuleiro.at(x, y) != Terreno.CHAO)
+			return;
+		
+		for (int i = 0; i < dragoes.length; i++){
+			if (dragoes[i] != null){
+				if (dragoes[i].getPosicao().equals(new Posicao(x,y))){
+					dragoes[i] = null;
+					return;
+				}
+			}						
+		}
+		dragoes = Arrays.copyOf(dragoes, dragoes.length+1);
+		dragoes[dragoes.length-1] = new Dragao(new Posicao(x,y));
+	}
+	/**
+	 * Toggles the existence of a javelin at the provided x and y coordinates
+	 * @param x x coordinate of the position to toggle
+	 * @param y y coordinate of the position to toggle
+	 * @see Dardo
+	 */
+	public void toggleJavelin(int x, int y){
+		if (tabuleiro.at(x, y) != Terreno.CHAO)
+			return;
+		
+		for (int i = 0; i < dardos.length; i++){
+			if (dardos[i] != null){
+				if (dardos[i].getPosicao().equals(new Posicao(x,y))){
+					dardos[i] = null;
+					return;
+				}
+			}						
+		}
+		dardos = Arrays.copyOf(dardos, dardos.length+1);
+		dardos[dardos.length-1] = new Dardo(new Posicao(x,y));
+	}
+
+	 /** Moves the shield to the x and y coordinates provided
+	 * @param x x coordinate of the new sword position
+	 * @param y y coordinate of the new sword position
+	 * @see Escudo
+	 */
+	public void setShieldPosition(int x, int y) {
+		if (tabuleiro.at(x, y) == Terreno.CHAO && escudo != null)
+			this.escudo.setPosicao(new Posicao(x,y));		
+	}
+	@Override
+	public boolean equals(Object obj){
+		if (!(obj instanceof Labirinto) || obj == null)
+			return false;
+		Labirinto lab = (Labirinto)obj;
+		if (lab.getDimensao() != this.getDimensao())
+			return false;
+		
+		for(int i = 0; i != lab.getDimensao(); i++)
+			for (int j = 0; j != lab.getDimensao(); j++)
+				if (lab.getCellSymbol(i, j) != this.getCellSymbol(i, j))
+					return false;
+		return true;
+	}
 }

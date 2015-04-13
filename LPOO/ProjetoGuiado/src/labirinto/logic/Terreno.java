@@ -1,7 +1,14 @@
 package labirinto.logic;
 
+/**
+ * Enum used to make the maze's terrain (everything but the pieces)
+ *
+ */
 public enum Terreno {PAREDE, CHAO, SAIDA, ERRO;
 	
+	/**
+	 * Converts an instance of Terreno to the corresponding character
+	 */
 	public String toString()
 	{
 		switch(this){
@@ -16,6 +23,5 @@ public enum Terreno {PAREDE, CHAO, SAIDA, ERRO;
 		}
 		
 	}
-	
 
 }
