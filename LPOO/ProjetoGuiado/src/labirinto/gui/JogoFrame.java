@@ -32,16 +32,16 @@ public class JogoFrame extends JFrame {
 
 	public static EditorSelection fromString(String text) {
 		switch (text){
-		case "Parede":return WALL;
-		case "Chão":return FREE;
-		case "Heroi":return HERO;
-		case "Dardo":return JAVELIN;
-		case "Dragão": return DRAGON;
-		case "Espada": return SWORD;
-		case "Escudo": return SHIELD;
+		case "Wall":return WALL;
+		case "Floor":return FREE;
+		case "Hero":return HERO;
+		case "Javelin":return JAVELIN;
+		case "Dragon": return DRAGON;
+		case "Sword": return SWORD;
+		case "Shield": return SHIELD;
 		
 		}
-		return null;
+		return WALL;
 			
 	}}
 	
@@ -53,6 +53,8 @@ public class JogoFrame extends JFrame {
 		public static final String PLAY = "PLAY";
 		public static final String EMPTY = "EMPTY";
 		public static final String BUILDER = "BUILDER";
+		public static final String WIN = "WIN";
+		public static final String LOSE = "LOSE";
 		
 		private Labirinto masmorra;
 		private JogoFrame.EditorSelection terrainChoice;
@@ -61,6 +63,8 @@ public class JogoFrame extends JFrame {
 		private GridPanel<Character> playPanel;		
 		private JPanel opcoesPanel;
 		private GridPanel<Character> mazeBuilderPanel;
+		private ImagePanel WinPanel;
+		private ImagePanel LosePanel;
 		private boolean builderPanelActive = false;	
 		
 		private JLabel dimensaoLabel;
@@ -103,7 +107,19 @@ public class JogoFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 
-				JogoPanel.this.masmorra.move(direcao);							
+				JogoPanel.this.masmorra.move(direcao);
+				if(JogoPanel.this.masmorra.isAcabou()){
+					if(JogoPanel.this.masmorra.isPerdeu()){
+						jogoPanel.change(LOSE);
+						return;
+					}
+					else{
+						//System.out.println("You Wonered!");
+						jogoPanel.change(jogoPanel.WIN);
+						return;
+						//System.out.println("You Wonered!");
+					}
+				}
 				JogoPanel.this.criaPlayPanel();				
 				((CardLayout)JogoPanel.this.getLayout()).show(JogoPanel.this, PLAY);
 
@@ -259,14 +275,37 @@ public class JogoFrame extends JFrame {
 		
 		/**
 		 * <p>Initializes all of the panels that comprise the JogoPanel interface</p>		 
+		 * @throws IOException 
 		 */
-		private void criaPanels() {
+		private void criaPanels() throws IOException {
 			emptyPanel = new JPanel();
 			add(emptyPanel, EMPTY);
 			criaOpcoesPanel();
 			refazLabirinto();
 			criaPlayPanel();
-			criaMazeBuilderPanel();			
+			criaMazeBuilderPanel();
+			criaWinPanel();
+			criaLosePanel();
+		}
+		
+		/**
+		 * Initializes the Win panel
+		 * @throws IOException 
+		 */
+		public void criaWinPanel() throws IOException{
+			WinPanel = new ImagePanel();
+			WinPanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youwon.png")).getScaledInstance(780, 700, Image.SCALE_SMOOTH));
+			add(WinPanel, WIN);
+		}
+		
+		/**
+		 * Initializes the Lose Panel
+		 * @throws IOException 
+		 */
+		public void criaLosePanel() throws IOException{
+			LosePanel = new ImagePanel();
+			LosePanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youlost.png")).getScaledInstance(780, 700, Image.SCALE_SMOOTH));
+			add(LosePanel, LOSE);
 		}
 		
 		/**
