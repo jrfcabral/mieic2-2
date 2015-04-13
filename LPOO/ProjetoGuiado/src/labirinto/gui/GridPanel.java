@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import labirinto.logic.GridQueryable;
@@ -23,6 +24,7 @@ public class GridPanel<T> extends JPanel {
 	private GridTransformer transformer;
 
 	private ConcurrentHashMap<T, Image> imageMap;
+	private ConcurrentHashMap<T, Image> scaledImageMap;
 	private ImagePanel[][] gridElements;	
 
 	public GridPanel(GridQueryable<T> grid, GridTransformer t)
@@ -30,8 +32,11 @@ public class GridPanel<T> extends JPanel {
 		this(grid);
 		transformer = t;
 	}
+	
 	public GridPanel(GridQueryable<T> grid){
 		super();
+		scaledImageMap = new ConcurrentHashMap<T, Image>();
+		
 		if (grid == null)
 			throw new NullPointerException();
 		if (grid.getDimensao() < 1)
@@ -92,8 +97,8 @@ public class GridPanel<T> extends JPanel {
 	 * everytime the grid is expected to have changed.</p>
 	 */
 	public void updateGrid() {
-		int dimensao = grid.getDimensao();
-		
+		scaleImages();
+		int dimensao = grid.getDimensao();		
 		this.setLayout(new GridLayout(dimensao, dimensao,0,0));
 		gridElements = new PlayCell[dimensao][dimensao];
 		this.removeAll();
@@ -102,7 +107,7 @@ public class GridPanel<T> extends JPanel {
 			for (int j = 0; j < dimensao; j++){
 				gridElements[i][j] = new PlayCell();
 				if (imageMap.get(grid.getCellSymbol(i, j)) != null)
-					gridElements[i][j].setImage(imageMap.get(grid.getCellSymbol(i, j)).getScaledInstance(GRID_PANEL_DIMENSION/dimensao, GRID_PANEL_DIMENSION/dimensao, Image.SCALE_SMOOTH));
+					gridElements[i][j].setImage(scaledImageMap.get(grid.getCellSymbol(i, j)));
 				gridElements[i][j].setBorder(cellBorder);
 				gridElements[i][j].setPreferredSize(new Dimension(GRID_PANEL_DIMENSION/dimensao, GRID_PANEL_DIMENSION/dimensao));
 				gridElements[i][j].setBackground(Color.BLACK);
@@ -125,6 +130,7 @@ public class GridPanel<T> extends JPanel {
 	 */
 	public void setImageMap(ConcurrentHashMap<T, Image> imageMap) {
 		this.imageMap = imageMap;
+		scaleImages();
 	}	
 
 	/**
@@ -139,5 +145,12 @@ public class GridPanel<T> extends JPanel {
 	 */
 	public void setGrid(GridQueryable<T> grid) {
 		this.grid = grid;
+		
+	}
+	
+	private void scaleImages(){
+		for(Map.Entry<T, Image> entry: imageMap.entrySet()){
+			scaledImageMap.put(entry.getKey(), entry.getValue().getScaledInstance(GRID_PANEL_DIMENSION/grid.getDimensao(), GRID_PANEL_DIMENSION/grid.getDimensao(), Image.SCALE_SMOOTH));
+		}
 	}
 }
