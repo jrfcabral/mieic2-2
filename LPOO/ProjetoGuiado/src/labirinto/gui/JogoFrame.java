@@ -18,7 +18,8 @@ public class JogoFrame extends JFrame {
 	
 	private JPanel botoesPanel;
 	private JButton opcoesButton;
-	private JButton novoJogoButton;
+	private JButton novoLabirintoButton;
+	private JButton playModeButton;
 	private JButton sairButton;
 	private JButton saveButton;
 	private JButton loadButton;
@@ -115,7 +116,7 @@ public class JogoFrame extends JFrame {
 					}
 					else{
 						//System.out.println("You Wonered!");
-						jogoPanel.change(jogoPanel.WIN);
+						jogoPanel.change(JogoPanel.WIN);
 						return;
 						//System.out.println("You Wonered!");
 					}
@@ -218,7 +219,7 @@ public class JogoFrame extends JFrame {
 				if (masmorra == null)
 					refazLabirinto();
 				criaPlayPanel();
-				JogoFrame.this.novoJogoButton.setEnabled(false);
+				JogoFrame.this.playModeButton.setEnabled(false);
 				JogoFrame.this.saveButton.setEnabled(true);
 				JogoFrame.this.loadButton.setEnabled(true);
 			}
@@ -227,14 +228,14 @@ public class JogoFrame extends JFrame {
 					refazLabirinto();
 				mazeBuilderPanel.setGrid(masmorra);
 				mazeBuilderPanel.updateGrid();
-				JogoFrame.this.novoJogoButton.setEnabled(true);
+				JogoFrame.this.playModeButton.setEnabled(true);
 				JogoFrame.this.saveButton.setEnabled(true);
 				JogoFrame.this.loadButton.setEnabled(true);
 				terrainPicker.setVisible(true);
 				builderPanelActive = true;
 			}
 			else{
-				JogoFrame.this.novoJogoButton.setEnabled(true);
+				JogoFrame.this.playModeButton.setEnabled(true);
 				JogoFrame.this.saveButton.setEnabled(false);
 				JogoFrame.this.loadButton.setEnabled(false);
 			}
@@ -558,13 +559,27 @@ public class JogoFrame extends JFrame {
 	 */
 	private void criaButoes() {
 		opcoesButton = new JButton("Options"); 
-		novoJogoButton = new JButton("New Game");
+		playModeButton = new JButton("Play Mode");
+		novoLabirintoButton = new JButton("New Game");
 		sairButton = new JButton("Exit"); 
 		saveButton = new JButton("Save");
 		saveButton.setEnabled(false);
 		loadButton = new JButton("Load");
 		loadButton.setEnabled(false);
-		mazeBuilderButton = new JButton("Maze Builder");		
+		mazeBuilderButton = new JButton("Maze Builder");
+		
+		novoLabirintoButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JogoFrame.this.jogoPanel.refazLabirinto();
+				if (JogoFrame.this.jogoPanel.builderPanelActive)
+					JogoFrame.this.jogoPanel.change(JogoPanel.BUILDER);
+				else
+					JogoFrame.this.jogoPanel.change(JogoPanel.PLAY);
+				
+			}
+			
+		});
 		
 		opcoesButton.addActionListener(new ActionListener(){
 
@@ -576,7 +591,7 @@ public class JogoFrame extends JFrame {
 			
 		});
 		
-		novoJogoButton.addActionListener(new ActionListener(){
+		playModeButton.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -640,7 +655,8 @@ public class JogoFrame extends JFrame {
 			}
 			
 		});
-		botoesPanel.add(novoJogoButton);
+		botoesPanel.add(novoLabirintoButton);
+		botoesPanel.add(playModeButton);
 		botoesPanel.add(opcoesButton);		
 		botoesPanel.add(sairButton);
 		botoesPanel.add(saveButton);

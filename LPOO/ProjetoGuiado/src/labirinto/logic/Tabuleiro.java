@@ -64,11 +64,6 @@ public class Tabuleiro implements Serializable{
 			throw new IndexOutOfBoundsException();
 	}
 	
-	private void set(Posicao posicao, Terreno terreno) {
-		set(posicao.getX(), posicao.getY(), terreno);		
-	}
-
-
 	/**
 	 * Determines what is in the provided position within the maze.
 	 * @param x
