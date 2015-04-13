@@ -47,19 +47,13 @@ public class GridPanel<T> extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Double x = e.getXOnScreen() - GridPanel.this.getLocationOnScreen().getX()-10;
-				System.out.println(x);
-				x = x/(GridPanel.GRID_PANEL_DIMENSION / dimensao);
-				System.out.println(x+","+GridPanel.GRID_PANEL_DIMENSION/grid.getDimensao()+","+dimensao);
+				Double x = e.getXOnScreen() - GridPanel.this.getLocationOnScreen().getX()-10;				
+				x = x/(GridPanel.GRID_PANEL_DIMENSION / dimensao);				
 				x = Math.floor(x);
 				
 				Double y = e.getYOnScreen() - GridPanel.this.getLocationOnScreen().getY() -10;
 				y = y/(GridPanel.GRID_PANEL_DIMENSION / dimensao);
-				y = Math.floor(y);
-				
-				
-				System.out.println(x+","+y);
-				System.out.println("------------------");
+				y = Math.floor(y);	
 				
 				GridPanel.this.transformer.transform(y.intValue(), x.intValue());
 				
