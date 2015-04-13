@@ -417,7 +417,7 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	
 	/**
 	 * Special constructor used only for testing purposes
-	 * @see TestLabirinto
+	 * @see labirinto.tests.TestLabirinto
 	 * @param formatoTabuleiro the terrain of the maze
 	 * @param dimensao size of the maze
 	 * @param dragoes number of dragons 
@@ -451,7 +451,7 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	
 	/**
 	 * Getter for the array of dargons (Only used for testing purposes)
-	 * @see TestLabirinto
+	 * @see labirinto.tests.TestLabirinto
 	 * @return
 	 */
 	public Dragao[] getDragoes(){

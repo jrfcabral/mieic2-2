@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Class that acts as Superclass for all of the game's pieces
  * @see Heroi
- * @see Dragon
+ * @see Dragao
  * @see Espada
  * @see Dardo
  * @see Escudo

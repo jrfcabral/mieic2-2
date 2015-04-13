@@ -12,7 +12,10 @@ import javax.swing.*;
 
 import labirinto.logic.*;
 
-
+/**
+ * Class that comprises most of the GUI
+ *
+ */
 public class JogoFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
@@ -47,6 +50,7 @@ public class JogoFrame extends JFrame {
 			
 	}}
 	
+
 	private class JogoPanel extends JPanel implements GridTransformer{
 
 		private static final long serialVersionUID = 573437742923541828L;		

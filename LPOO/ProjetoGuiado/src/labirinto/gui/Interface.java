@@ -15,6 +15,10 @@ import javax.swing.SwingConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+/**
+ * Class responsible for initializing the GUI
+ *
+ */
 public class Interface {
 
 	private static final String MAIN_MENU = "Menu";
