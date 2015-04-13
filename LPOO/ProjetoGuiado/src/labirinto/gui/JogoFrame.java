@@ -100,8 +100,6 @@ public class JogoFrame extends JFrame {
 		private BufferedImage swordhero;
 		private BufferedImage shieldhero;
 		private BufferedImage sleepingDargon;
-		private BufferedImage dragonsword;
-		
 		private ConcurrentHashMap<Character, Image> labirintoImages;
 		
 		
@@ -183,7 +181,7 @@ public class JogoFrame extends JFrame {
 				swordhero = ImageIO.read(new File("bin/labirinto/resources/images/swordhero.png").getCanonicalFile());
 				swordshieldhero = ImageIO.read(new File("bin/labirinto/resources/images/swordshieldhero.png").getCanonicalFile());
 				javshieldhero = ImageIO.read(new File("bin/labirinto/resources/images/javshieldhero.png").getCanonicalFile());
-				dragonsword = ImageIO.read(new File("bin/labirinto/resources/images/sworddragontile.png").getCanonicalFile());
+				ImageIO.read(new File("bin/labirinto/resources/images/sworddragontile.png").getCanonicalFile());
 				javhero = ImageIO.read(new File("bin/labirinto/resources/images/javhero.png").getCanonicalFile());
 				shieldhero = ImageIO.read(new File("bin/labirinto/resources/images/shieldhero.png").getCanonicalFile());
 				sleepingDargon = ImageIO.read(new File("bin/labirinto/resources/images/sleepdragontile.png").getCanonicalFile());

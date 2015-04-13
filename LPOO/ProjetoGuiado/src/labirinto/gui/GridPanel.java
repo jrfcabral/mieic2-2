@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import labirinto.logic.GridQueryable;
-import labirinto.logic.Labirinto;
 
 /**
  * <p>A simple extension of JPanel to visually represent grid objects such as mazes.</p>
