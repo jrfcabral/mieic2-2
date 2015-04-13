@@ -44,6 +44,8 @@ public class GridPanel<T> extends JPanel {
 		if (grid.getDimensao() < 1)
 			throw new IllegalArgumentException();
 		
+		dimensao = grid.getDimensao();
+		
 		this.grid = grid;
 		this.imageMap = new ConcurrentHashMap<T, Image>();
 		this.gridElements = new ImagePanel[grid.getDimensao()][grid.getDimensao()];
@@ -146,8 +148,8 @@ public class GridPanel<T> extends JPanel {
 	 */
 	public void setGrid(GridQueryable<T> grid) {
 		this.grid = grid;
-		scaleImages();
-		
+		dimensao = grid.getDimensao();
+		scaleImages();		
 	}
 	
 	/**
