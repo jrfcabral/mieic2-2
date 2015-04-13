@@ -604,5 +604,18 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 		if (tabuleiro.at(x, y) == Terreno.CHAO && escudo != null)
 			this.escudo.setPosicao(new Posicao(x,y));		
 	}
-	
+	@Override
+	public boolean equals(Object obj){
+		if (!(obj instanceof Labirinto) || obj == null)
+			return false;
+		Labirinto lab = (Labirinto)obj;
+		if (lab.getDimensao() != this.getDimensao())
+			return false;
+		
+		for(int i = 0; i != lab.getDimensao(); i++)
+			for (int j = 0; j != lab.getDimensao(); j++)
+				if (lab.getCellSymbol(i, j) != this.getCellSymbol(i, j))
+					return false;
+		return true;
+	}
 }
