@@ -12,7 +12,10 @@ import javax.swing.*;
 
 import labirinto.logic.*;
 
-
+/**
+ * Class that comprises most of the GUI
+ *
+ */
 public class JogoFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
@@ -47,6 +50,7 @@ public class JogoFrame extends JFrame {
 			
 	}}
 	
+
 	private class JogoPanel extends JPanel implements GridTransformer{
 
 		private static final long serialVersionUID = 573437742923541828L;		
@@ -307,7 +311,7 @@ public class JogoFrame extends JFrame {
 		 */
 		public void criaWinPanel() throws IOException{
 			WinPanel = new ImagePanel();
-			WinPanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youwon.png")).getScaledInstance(780, 700, Image.SCALE_SMOOTH));
+			WinPanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youwon.png")).getScaledInstance(700, 750, Image.SCALE_SMOOTH));
 			add(WinPanel, WIN);
 		}
 		
@@ -317,7 +321,7 @@ public class JogoFrame extends JFrame {
 		 */
 		public void criaLosePanel() throws IOException{
 			LosePanel = new ImagePanel();
-			LosePanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youlost.png")).getScaledInstance(780, 700, Image.SCALE_SMOOTH));
+			LosePanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youlost.png")).getScaledInstance(700, 700, Image.SCALE_SMOOTH));
 			add(LosePanel, LOSE);
 		}
 		

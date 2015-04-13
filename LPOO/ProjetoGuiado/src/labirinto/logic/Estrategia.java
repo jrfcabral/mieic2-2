@@ -10,6 +10,7 @@ public enum Estrategia {
 	
 	/**
 	 * Translates an integer into the corresponding enum.
+	 * @return The translated enum.
 	 */
 	public static Estrategia  fromNumber(int number)
 	{
@@ -27,6 +28,7 @@ public enum Estrategia {
 	
 	/**
 	 * Translates an instance of the Estrategia enum into the corresponding integer.
+	 * @return The integer
 	 */
 	public int toNumber(){
 		switch (this){
