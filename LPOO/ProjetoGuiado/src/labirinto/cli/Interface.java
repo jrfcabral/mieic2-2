@@ -96,7 +96,7 @@ public class Interface {
 		}while(dragoes < 1);
 		
 		System.out.println("This games provides several behaviors for the dragons. These are:"
-				+ "1. Dragon stands still\n2. Dragon is permanently awake\n3. Dragon is mobile and can fall asleep\n");
+				+ "\n1. Dragon stands still\n2. Dragon is permanently awake\n3. Dragon is mobile and can fall asleep\n");
 		
 		do{
 			try{
@@ -235,7 +235,7 @@ public class Interface {
 		System.out.print("Keys: \nW - Up\nA - Left\nS - Down\nD - Right\nT - Throw javelin (must be followed by a directional key)\n\n"
 				+"The hero's (H) goal is to reach the maze's exit (S) after having slain all the dragons (D).\n" + 
 				"In order to slay the dragons needs either a sword (E) or a javelin (J) and (optionally) the shield (P), which can be found scattered throughout the maze.\n"+
-				"The hero can only have either a sword or a javelin at every moment. If you attempt to pick up a sword while you have a javelin, you will drop the javelin (and vice-versa)." + "If the hero gets close to a dragon "
+				"The hero can only have either a sword or a javelin at every moment.If you attempt to pick up a sword while you have a javelin, you will drop the javelin (and vice-versa)." + "\nIf the hero gets close to a dragon "
 						+ "without the shield, he will be immediately incinerated.\n\n\n");
 	}
 	
