@@ -53,14 +53,14 @@ public class Interface {
 		
 		while(option != 1){
 		
-			System.out.print("1. Come�ar jogo\n2. Tutorial\n3. Sair\n");
+			System.out.print("1. New Game\n2. Tutorial\n3. Exit\n");
 			do{
 				try{
-					System.out.print("Insira uma op��o: ");
+					System.out.print("Type in an option: ");
 					option = leitor.nextInt();
 				}
 				catch(Exception e){
-					System.out.print("Entrada n�o v�lida. Insira um n�mero.");
+					System.out.print("Invalid input. Type in a number: ");
 				}
 			}while(option < 1 || option > 3);
 			
@@ -74,38 +74,38 @@ public class Interface {
 		
 		do{
 			try{
-				System.out.println("\n\n\nInsira dimensão pretendida para o labirinto (deve ser um numero impar), ou -1 para o labirinto padrao:");
+				System.out.println("\n\n\nType in the dimension for the maze (must be an odd number) or type in -1 for the predefined maze:");
 				dimensao = leitor.nextInt();
 			}
 			catch (Exception e){
 				leitor.nextLine();
-				System.out.println("Entrada não vãlida. Insira um número! :\\");
+				System.out.println("Invalid input. Please type in a number :\\");
 			}
 		}while(dimensao < -1 || (dimensao % 2) == 0);
 		
 		
 		do{
 			try{
-				System.out.println("Insira numero de dragães que quer defrontar (pelo menos 1):");
+				System.out.println("Type in the number of dragons you want to face (at least 1):");
 				dragoes = leitor.nextInt();
 			}
 			catch (Exception e){
 				leitor.nextLine();
-				System.out.println("Entrada não válida. Insira um número! :\\");
+				System.out.println("Invalid input. Please type in a number :\\");
 			}
 		}while(dragoes < 1);
 		
-		System.out.println("Este jogo tem � sua disposi��o v�rios modos relativos ao comportamento dos dragoes. S�o eles: \n"
-				+ "1. Drag�o sempre acordado\n2. Drag�o sempre parado\n3. Drag�o adormece ocasionalmente\n");
+		System.out.println("This games provides several behaviors for the dragons. These are:"
+				+ "\n1. Dragon stands still\n2. Dragon is permanently awake\n3. Dragon is mobile and can fall asleep\n");
 		
 		do{
 			try{
-				System.out.println("Insira a estratégia a usar:");
+				System.out.println("Pick a behaviour:");
 				estrategia = leitor.nextInt();
 			}
 			catch (Exception e){
 				leitor.nextLine();
-				System.out.println("Entrada não válida. Insira um número! :\\");
+				System.out.println("Invalid input. Please type in a number :\\");
 			}
 		}while(estrategia < 1 || estrategia > 3);
 		
@@ -145,9 +145,9 @@ public class Interface {
 		
 		printTabuleiro(lab, dimensao);
 		if (!lab.isPerdeu())
-			System.out.println("Venceu! :)");
+			System.out.println("You won :)");
 		else
-			System.out.println("Perdeu! :(");
+			System.out.println("You lost! :(");
 		
 		leitor.close();
 	}
@@ -232,10 +232,11 @@ public class Interface {
 	 * Prints the game's tutorial to the console.
 	 */
 	private static void tutorial(){
-		System.out.print("Comandos: \nW - Cima\nA - Esquerda\nS - Baixo\nD - Direita\nT - Atirar dardo (deve ser seguido de uma das direc��es acima)\n\n"
-				+"O objectivo do her�i (H) � chegar � sa�da do labirinto (S) ap�s ter matado todos os drag�es (D).\n" + 
-				"Para matar drag�es, o her�i necessita de uma espada (E) ou dardo (J) e do escudo (P), que podem ser encontrados espalhados pelo labirinto.\n"+
-				"O he�i s� pode ter um dardo ou uma espada em qualquer momento." + "Se o her�i chegar perto de um drag�o sem o escudo, ser� instantaneamente esturricado.\n\n\n");
+		System.out.print("Keys: \nW - Up\nA - Left\nS - Down\nD - Right\nT - Throw javelin (must be followed by a directional key)\n\n"
+				+"The hero's (H) goal is to reach the maze's exit (S) after having slain all the dragons (D).\n" + 
+				"In order to slay the dragons needs either a sword (E) or a javelin (J) and (optionally) the shield (P), which can be found scattered throughout the maze.\n"+
+				"The hero can only have either a sword or a javelin at every moment.If you attempt to pick up a sword while you have a javelin, you will drop the javelin (and vice-versa)." + "\nIf the hero gets close to a dragon "
+						+ "without the shield, he will be immediately incinerated.\n\n\n");
 	}
 	
 }
