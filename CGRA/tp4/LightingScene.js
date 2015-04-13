@@ -3,7 +3,7 @@ var degToRad = Math.PI / 180.0;
 var BOARD_WIDTH = 6.0;
 var BOARD_HEIGHT = 4.0;
 
-var BOARD_A_DIVISIONS = 100;
+var BOARD_A_DIVISIONS = 250;
 var BOARD_B_DIVISIONS = 100;
 
 function LightingScene() {
@@ -34,7 +34,7 @@ LightingScene.prototype.init = function(application) {
 	this.floor = new MyQuad(this,0,10,0,12);
 	this.leftwall = new MyQuad(this,-1,2,-0.5,1.5);
 	this.planewall = new Plane(this, 100);
-	this.boardA = new Plane(this, BOARD_A_DIVISIONS);
+	this.boardA = new Plane(this, BOARD_A_DIVISIONS,-0.19,1.19,0,1);
 	this.boardB = new Plane(this, BOARD_B_DIVISIONS);
 
 	// Materials
@@ -73,8 +73,19 @@ LightingScene.prototype.init = function(application) {
 	this.materialFloor.setAmbient(0,1,0.03,0,1);
 	this.materialFloor.setSpecular(0.05,0.025,0,1);
 	this.materialFloor.loadTexture("../resources/images/floor.png");
-
 	
+	this.slidesAppearance = new CGFappearance(this);
+	this.slidesAppearance.setSpecular(0.05, 0.05,0.05,1);
+	this.slidesAppearance.setDiffuse(1,1,1,1);
+	this.slidesAppearance.setShininess(10);
+	this.slidesAppearance.loadTexture("../resources/images/slides.png");
+	this.slidesAppearance.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
+	
+	this.boardAppearance = new CGFappearance(this);
+	this.boardAppearance.setSpecular(0.6, 0.6,0.6,1);
+	this.boardAppearance.setDiffuse(0.4,0.4,0.4,1);
+	this.boardAppearance.setShininess(100);
+	this.boardAppearance.loadTexture("../resources/images/board.png");
 };
 
 LightingScene.prototype.initCameras = function() {
@@ -203,11 +214,12 @@ LightingScene.prototype.display = function() {
 	this.popMatrix();
 
 	// Board A
+
 	this.pushMatrix();
 		this.translate(4, 4.5, 0.2);
 		this.scale(BOARD_WIDTH, BOARD_HEIGHT, 1);
 		
-		this.materialA.apply();
+		this.slidesAppearance.apply();
 		this.boardA.display();
 	this.popMatrix();
 
@@ -216,7 +228,7 @@ LightingScene.prototype.display = function() {
 		this.translate(10.5, 4.5, 0.2);
 		this.scale(BOARD_WIDTH, BOARD_HEIGHT, 1);
 		
-		this.materialB.apply();
+		this.boardAppearance.apply();
 		this.boardB.display();
 	this.popMatrix();
 
