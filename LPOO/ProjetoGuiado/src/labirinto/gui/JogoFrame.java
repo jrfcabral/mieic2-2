@@ -333,12 +333,18 @@ public class JogoFrame extends JFrame {
 		 * Initializes the maze builder panel
 		 */
 		private void criaMazeBuilderPanel() {
+			try{
+			remove(mazeBuilderPanel);
+			}catch(Exception e){
+				
+			}
 			mazeBuilderPanel = new GridPanel<Character>( masmorra, this);
 			mazeBuilderPanel.updateGrid();
 			mazeBuilderPanel.paintImmediately(0,0,mazeBuilderPanel.getWidth(), mazeBuilderPanel.getHeight());
 			setPreferredSize(new Dimension(GridPanel.GRID_PANEL_DIMENSION,GridPanel.GRID_PANEL_DIMENSION));
-			mazeBuilderPanel.setImageMap(labirintoImages);						
-			add(mazeBuilderPanel, BUILDER);			
+			mazeBuilderPanel.setImageMap(labirintoImages);			
+			add(mazeBuilderPanel, BUILDER);
+			
 		}
 
 
@@ -489,6 +495,11 @@ public class JogoFrame extends JFrame {
 		 */
 		private void criaPlayPanel() {			
 			
+			try{
+				remove(playPanel);
+				}catch(Exception e){
+					
+				}
 			playPanel = new GridPanel<Character>(masmorra, this);
 			playPanel.setImageMap(labirintoImages);
 			playPanel.updateGrid();
@@ -497,6 +508,7 @@ public class JogoFrame extends JFrame {
 			atualizaKeybindings();
 			
 			JogoFrame.this.pack();
+			
 			
 			this.add(playPanel, PLAY);
 			
