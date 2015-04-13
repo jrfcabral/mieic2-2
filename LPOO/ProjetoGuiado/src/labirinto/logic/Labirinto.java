@@ -13,7 +13,8 @@ import java.util.Random;
 import utilitarios.Hipotese;
 
 /**
- * 
+ * Class that represents the actual game. This class contains the functions to initialize the game process its turns.
+ *
  */
 public class Labirinto implements Serializable, GridQueryable<Character>{
 	/*private static final char ESPACO = ' ';
@@ -32,9 +33,6 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 
 	private static final char ESCUDO = 'P'; //Protec�ao, a falta d melhor nome*/
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6678642295421935384L;
 
 	private static final int NUMERO_DARDOS = 5;
