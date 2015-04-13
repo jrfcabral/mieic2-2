@@ -309,7 +309,7 @@ public class JogoFrame extends JFrame {
 		 */
 		public void criaWinPanel() throws IOException{
 			WinPanel = new ImagePanel();
-			WinPanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youwon.png")).getScaledInstance(700, 750, Image.SCALE_SMOOTH));
+			WinPanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youwon.png")).getScaledInstance(800, 750, Image.SCALE_SMOOTH));
 			add(WinPanel, WIN);
 		}
 		
@@ -319,7 +319,7 @@ public class JogoFrame extends JFrame {
 		 */
 		public void criaLosePanel() throws IOException{
 			LosePanel = new ImagePanel();
-			LosePanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youlost.png")).getScaledInstance(700, 700, Image.SCALE_SMOOTH));
+			LosePanel.setImage(ImageIO.read(new File("bin/labirinto/resources/images/youlost.png")).getScaledInstance(800, 750, Image.SCALE_SMOOTH));
 			add(LosePanel, LOSE);
 		}
 		
