@@ -256,6 +256,12 @@ public class JogoFrame extends JFrame {
 				playModeButton.setEnabled(false);
 				mazeBuilderButton.setEnabled(false);
 			}
+			
+			if (masmorra.isAcabou()){
+				playModeButton.setEnabled(false);
+				mazeBuilderButton.setEnabled(false);
+			}
+				
 				
 			
 			((CardLayout)getLayout()).show(this, mode);
