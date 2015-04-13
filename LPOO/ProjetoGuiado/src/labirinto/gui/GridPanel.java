@@ -10,17 +10,19 @@ import javax.swing.border.Border;
 import java.util.concurrent.ConcurrentHashMap;
 
 import labirinto.logic.GridQueryable;
+import labirinto.logic.Labirinto;
 
 /**
  * <p>A simple extension of JPanel to visually represent grid objects such as mazes.</p>
  */
 public class GridPanel<T> extends JPanel {
 	
-	public static final int GRID_PANEL_DIMENSION = 700;
+	public static final int GRID_PANEL_DIMENSION = 800;
 	private static final long serialVersionUID = 5796328570279197459L;
 	private GridQueryable<T> grid;
 	private Border cellBorder;
 	private GridTransformer transformer;
+	private int dimensao;
 
 	private ConcurrentHashMap<T, Image> imageMap;
 	private ImagePanel[][] gridElements;	
@@ -45,15 +47,19 @@ public class GridPanel<T> extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Double x = e.getXOnScreen() - GridPanel.this.getLocationOnScreen().getX() -5;
-				x = x/(GridPanel.GRID_PANEL_DIMENSION / grid.getDimensao());
+				Double x = e.getXOnScreen() - GridPanel.this.getLocationOnScreen().getX()-10;
+				System.out.println(x);
+				x = x/(GridPanel.GRID_PANEL_DIMENSION / dimensao);
+				System.out.println(x+","+GridPanel.GRID_PANEL_DIMENSION/grid.getDimensao()+","+dimensao);
 				x = Math.floor(x);
 				
-				Double y = e.getYOnScreen() - GridPanel.this.getLocationOnScreen().getY() -5;
-				y = y/(GridPanel.GRID_PANEL_DIMENSION / grid.getDimensao());
+				Double y = e.getYOnScreen() - GridPanel.this.getLocationOnScreen().getY() -10;
+				y = y/(GridPanel.GRID_PANEL_DIMENSION / dimensao);
 				y = Math.floor(y);
 				
 				
+				System.out.println(x+","+y);
+				System.out.println("------------------");
 				
 				GridPanel.this.transformer.transform(y.intValue(), x.intValue());
 				
@@ -92,7 +98,7 @@ public class GridPanel<T> extends JPanel {
 	 * everytime the grid is expected to have changed.</p>
 	 */
 	public void updateGrid() {
-		int dimensao = grid.getDimensao();
+		dimensao = grid.getDimensao();
 		
 		this.setLayout(new GridLayout(dimensao, dimensao,0,0));
 		gridElements = new PlayCell[dimensao][dimensao];
@@ -139,5 +145,6 @@ public class GridPanel<T> extends JPanel {
 	 */
 	public void setGrid(GridQueryable<T> grid) {
 		this.grid = grid;
+		System.out.println("atualizando grid dimensao "+this.grid.getDimensao());
 	}
 }

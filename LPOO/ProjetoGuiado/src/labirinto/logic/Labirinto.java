@@ -59,7 +59,7 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	/**
 	 * Getter for the dimensao variable which represents the size of the maze
 	 */
-	public int getDimensao() {
+	public int getDimensao() {		
 		return dimensao;
 	}
 	
@@ -97,6 +97,7 @@ public class Labirinto implements Serializable, GridQueryable<Character>{
 	{
 		Random rand = new Random();
 		this.tabuleiro = new Tabuleiro(formatoTabuleiro, dimensao);		
+		System.out.println("A inicializar novo labirinto, dimensao:"+dimensao);
 		this.dimensao = dimensao;
 		this.dragoes = new Dragao[dragoes];
 		this.dardos = new Dardo[rand.nextInt(Labirinto.NUMERO_DARDOS) + 1];
