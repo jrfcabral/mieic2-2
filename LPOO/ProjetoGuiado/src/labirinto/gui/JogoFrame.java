@@ -192,7 +192,7 @@ public class JogoFrame extends JFrame {
 			labirintoImages.put(' ', floorTile);
 			labirintoImages.put('D', dragonTile);
 			labirintoImages.put('d', sleepingDargon);
-			labirintoImages.put('F', dragonsword);
+			labirintoImages.put('F', dragonTile);
 			labirintoImages.put('E', swordTile);
 			labirintoImages.put('H', heroTile);
 			labirintoImages.put('A', swordhero);
