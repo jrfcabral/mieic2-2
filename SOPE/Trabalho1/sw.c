@@ -50,7 +50,10 @@ int main(int argc, char **argv){
 	while(!feof(words)){
 		int fd[2];
 		pipe(fd);
-		fgets(word, 256, words);
+		char *test = fgets(word, 256, words);
+		if(test == NULL){
+			break;		
+		}
 		word[strlen(word) - 1] = '\0';
 		pid = fork();
 		if(pid == 0){
@@ -65,15 +68,30 @@ int main(int argc, char **argv){
 			int n;
 			wait(&n);
 			char result[10000];
+			char *dump, *formatted;
 			n = read(fd[0], result, 10000);
-			fgets(result, 1000, );
 			result[n] = '\0';
-			puts(result);
+			
+			dump = strtok(result, ":\n");
+		if(dump != NULL){
+			while(1){
+				write(search_res, word, strlen(word));
+				write(search_res, " : ", 3);
+				write(search_res, name, strlen(name));
+				write(search_res, "-", 1);
+				write(search_res, dump, strlen(dump));
+				write(search_res, "\n", 1);
+				if((dump = strtok(NULL, ":\n")) == NULL)
+					break;
+				if((dump = strtok(NULL, ":\n")) == NULL)
+					break;
+			}
+		}
 			
 		}		
 		
 	}
 	
 	dup2(std, STDOUT_FILENO);
-	
+	close(search_res);	
 }
