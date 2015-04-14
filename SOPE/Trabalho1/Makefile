@@ -14,7 +14,8 @@ index: $(OBJECTS_INDEX)
 	cc $(OBJECTS_INDEX) -o index
 
 clean:
-	 @rm -f *.o index sw
+	 @rm -f *.o index sw res_*
+
 sw.o: sw.c
 index.o: index.c
 
