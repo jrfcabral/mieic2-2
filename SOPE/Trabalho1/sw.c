@@ -15,7 +15,7 @@ int main(int argc, char **argv){
 	FILE *words;
 	words = fopen("words.txt", "r");
 	if(words == NULL){
-		perror(argv[1]);
+		perror("words.txt");
 		exit(-1);	
 	}	
 	
