@@ -20,16 +20,103 @@
 Pessoa(\underline{idPessoa}, nome)
 Prisioneiro(\underline{número}, idPessoa $\rightarrow$ Pessoa, data de entrada, data de saída, cela $\rightarrow$ Cela)\\
 Funcionário(\underline{idFuncionário}, idPessoa $\rightarrow$ Pessoa, cargo, hora de entrada, hora de saída)\\
-Tempo de Recreio(\underline{motivo $\rightarrow$ Recompensa}, duração, prisioneiro $\rightarrow$ Prisioneiro)\\
-Objeto Pessoal(\underline{motivo $\rightarrow$ Recompensa}, duração, prisioneiro $\rightarrow$ Prisioneiro)\\
-Local(\underline{nome}, função)\\
-Cela(\underline{número}, nome $\rightarrow$ local)\\
+Tempo de Recreio(\underline{idRecompensa $\rightarrow$ Recompensa}, duração, prisioneiro $\rightarrow$ Prisioneiro)\\
+Objeto Pessoal(\underline{idRecompensa $\rightarrow$ Recompensa}, descrição, prisioneiro $\rightarrow$ Prisioneiro)\\
+Local(\underline{idLocal},nome, função)\\
+Cela(\underline{número}, idLocal $\rightarrow$ local)\\
 Pena(\underline{idPena}, data de sentença, motivo, prisioneiro $\rightarrow$ Prisioneiro)\\
 Incidente(\underline{idIncidente}, descrição, data, local $\rightarrow$ Local, relator $\rightarrow$ Funcionário )\\
-PrisioneiroIncidente(prisioneiro $\rightarrow$ Prisioneiro, incidente $\rightarrow$ Incidente)\\
-Penalização(\underline{idPena}$\rightarrow$ Pena, \underline{idIncidente} $\rightarrow$ Incidente, descrição)
+PrisioneiroIncidente(\underline{prisioneiro $\rightarrow$ Prisioneiro}, \underline{incidente $\rightarrow$ Incidente})\\
+Penalização(\underline{idPena}$\rightarrow$ Pena, \underline{idIncidente} $\rightarrow$ Incidente, descrição)\\
+Recompensa(\underline{idRecompensa}, motivo, idPrisioneiro $\rightarrow$ Prisioneiro)\\
 
 %Cmo se faz pra classes d atribuição?
 
+\section{SQL-LDD}
 
+
+CREATE TABLE Pessoa (\newline
+idPessoa	INTEGER PRIMARY KEY,\newline
+nome		NVARCHAR(50)\newline
+);\\
+
+\noindent
+CREATE TABLE Prisioneiro (\newline
+idPessoa	INTEGER PRIMARY KEY REFERENCES Pessoa(idPessoa),\newline
+dataDeEntrada	INTEGER,\newline
+dataDeSaida	INTEGER,\newline
+cela		INETEGER REFERENCES Cela(número),\newline
+CHECK	(dataDeEntrada < dataDeSaida)\newline
+);\newline
+
+CREATE TABLE Funcionário (\newline
+idPessoa	INTEGER REFERENCES Pessoa(idPessoa),\newline
+cargo		NVARCHAR(20),\\
+horaDeEntrada	INTEGER,\\
+horaDeSaída	INTEGER,\\
+CHECK (horaDeEntrada < horaDeSaida)\\
+);
+\newpage
+CREATE TABLE TempoDeRecreio(\\
+idRecompensa	INTEGER PRIMARY KEY REFERENCES Recompensa(idRecompensa),\\
+duração		INTEGER,\\
+prisioneiro	INTEGER REFERENCES Prisioneiro(idPessoa)\\
+);\\
+
+CREATE TABLE ObjetoPessoal(\\
+idRecompensa	INTEGER PRIMARY KEY REFERENCES Recompensa(idRecompensa),\\
+descrição	NVARCHAR(50),\\
+prisioneiro 	INTEGER REFERENCES Prisioneiro(idPessoa)\\
+);\\
+
+CREATE TABLE Local(\\
+idLocal		INTEGER PRIMARY KEY,\\
+nome		NVARCHAR(50),\\
+função		NVARCHAR(100)\\
+);\\
+
+CREATE TABLE Cela(\\
+número		INTEGER PRIMARY KEY,\\
+idLocal		INTEGER REFERENCES LOCAL(idLocal)\\
+);\\
+
+CREATE TABLE Pena(\\
+idPena 		INTEGER PRIMARY KEY,\\
+dataDeSentença	INTEGER,\\
+motivo		NVARCHAR(100),\\
+idPessoa	INTEGER REFERENCES Prisioneiro(idPessoa)\\
+);
+
+CREATE TABLE Incidente(\\
+idIncidente 	INTEGER PRIMARY KEY,\\
+descrição	NVARCHAR(100),\\
+data		INTEGER,
+idLocal		INTEGER REFERENCES Local(idLocal),\\
+relator		INTEGER REFERENCES Funcionário(idPessoa)\\
+);
+
+CREATE TABLE PrisioneiroIncidente(\\
+prisioneiro	INTEGER REFERENCES Pessoa(idPessoa),\\
+incidente	INTEGER REFERENCES Incidente(idIncidente),\\
+PRIMARY KEY(prisioneiro, incidente)\\
+);\\
+\newpage
+CREATE TABLE Penalização(\\
+idPena 		INTEGER REFERENCES Pena(idPena),\\
+idIncidente	INTEGER REFERENCES Incidente(idIncidente),\\
+descrição	NVARCHAR(100),\\
+PRIMARY KEY (idPena, idIncidente)\\
+);\\
+
+CREATE TABLE Recompensa(\\
+idRecompensa	INTEGER PRIMARY KEY,
+motivo 		NVARCHAR(100),
+idPrisioneiro	INTEGER REFERENCES Prisioneiro(idPessoa)
+);
+
+
+
+
+
+	
 \end{document}
