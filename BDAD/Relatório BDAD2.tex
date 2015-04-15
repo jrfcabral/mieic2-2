@@ -17,17 +17,17 @@
 \pagenumbering{arabic}
 
 \section{Esquema Relacional}
-
-Prisioneiro(\underline{número}, nome $\rightarrow$ Pessoa, data de entrada, data de saída, cela $\rightarrow$ Cela)\\
-Funcionário(\underline{IDFuncionário}, nome $\rightarrow$ Pessoa, cargo, hora de entrada, hora de saída)\\
+Pessoa(\underline{idPessoa}, nome)
+Prisioneiro(\underline{número}, idPessoa $\rightarrow$ Pessoa, data de entrada, data de saída, cela $\rightarrow$ Cela)\\
+Funcionário(\underline{idFuncionário}, idPessoa $\rightarrow$ Pessoa, cargo, hora de entrada, hora de saída)\\
 Tempo de Recreio(\underline{motivo $\rightarrow$ Recompensa}, duração, prisioneiro $\rightarrow$ Prisioneiro)\\
 Objeto Pessoal(\underline{motivo $\rightarrow$ Recompensa}, duração, prisioneiro $\rightarrow$ Prisioneiro)\\
 Local(\underline{nome}, função)\\
 Cela(\underline{número}, nome $\rightarrow$ local)\\
-Pena(\underline{IDPena}, data de sentença, motivo, prisioneiro $\rightarrow$ Prisioneiro)\\
-Incidente(\underline{IDIncidente}, descrição, data, local $\rightarrow$ Local, relator $\rightarrow$ Funcionário )\\
+Pena(\underline{idPena}, data de sentença, motivo, prisioneiro $\rightarrow$ Prisioneiro)\\
+Incidente(\underline{idIncidente}, descrição, data, local $\rightarrow$ Local, relator $\rightarrow$ Funcionário )\\
 PrisioneiroIncidente(prisioneiro $\rightarrow$ Prisioneiro, incidente $\rightarrow$ Incidente)\\
-
+Penalização(\underline{idPena}$\rightarrow$ Pena, \underline{idIncidente} $\rightarrow$ Incidente, descrição)
 
 %Cmo se faz pra classes d atribuição?
 
