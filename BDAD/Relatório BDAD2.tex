@@ -46,7 +46,7 @@ idPessoa	INTEGER PRIMARY KEY REFERENCES Pessoa(idPessoa),\newline
 dataDeEntrada	INTEGER,\newline
 dataDeSaida	INTEGER,\newline
 cela		INETEGER REFERENCES Cela(número),\newline
-CHECK	(dataDeEntrada < dataDeSaida)\newline
+CHECK	(dataDeEntrada \textless  dataDeSaida)\newline
 );\newline
 
 CREATE TABLE Funcionário (\newline
@@ -54,7 +54,7 @@ idPessoa	INTEGER REFERENCES Pessoa(idPessoa),\newline
 cargo		NVARCHAR(20),\\
 horaDeEntrada	INTEGER,\\
 horaDeSaída	INTEGER,\\
-CHECK (horaDeEntrada < horaDeSaida)\\
+CHECK (horaDeEntrada \textless horaDeSaida)\\
 );
 \newpage
 CREATE TABLE TempoDeRecreio(\\
