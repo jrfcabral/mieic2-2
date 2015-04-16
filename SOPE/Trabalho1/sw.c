@@ -1,23 +1,31 @@
 #include <unistd.h>
-#include <stdlib.h>
+#include <stdlib.h> 
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <sys/wait.h>
 
 
 int main(int argc, char **argv){
-	if(argc != 2){
-		printf("Usage: %s file\n", argv[0]);
+	if(argc != 3){
+		printf("Usage: %s file dir\n", argv[0]);
 		exit(-1);	
 	}
-	
+		
 	FILE *words;
-	words = fopen("words.txt", "r");
+	char *wordsDir = (char *)malloc((strlen(argv[2])+8)*sizeof(char));
+	strcpy(wordsDir, argv[2]);
+	strcat(wordsDir, "words.txt");
+
+	words = fopen(wordsDir, "r");
 	if(words == NULL){
 		perror("words.txt");
 		exit(-1);	
 	}	
+	
+	char *grepname = (char *)malloc((strlen(argv[1])+strlen(argv[2]))*sizeof(char));
+	strcpy(grepname, argv[2]);
+	strcat(grepname, argv[1]);
 	
 	char *name = (char *)malloc(strlen(argv[1])*sizeof(char));
 	strcpy(name, argv[1]);
@@ -27,6 +35,8 @@ int main(int argc, char **argv){
 			name[i] = '\0';			
 		}
 	}	
+
+
 	char *fpath = (char *)malloc((4+strlen(name)+4)*sizeof(char));
 	strcpy(fpath, "res_");
 	strcat(fpath, name);
@@ -59,7 +69,7 @@ int main(int argc, char **argv){
 		if(pid == 0){
 			close(fd[0]);
 			dup2(fd[1], STDOUT_FILENO);
-			execlp("grep", "grep", "-no", word, argv[1], NULL);
+			execlp("grep", "grep", "-no", word, grepname, NULL);
 			printf("Command not executed.\n");
 			exit(-1);
 		}
@@ -68,7 +78,7 @@ int main(int argc, char **argv){
 			int n;
 			wait(&n);
 			char result[10000];
-			char *dump, *formatted;
+			char *dump;
 			n = read(fd[0], result, 10000);
 			result[n] = '\0';
 			
@@ -94,4 +104,5 @@ int main(int argc, char **argv){
 	
 	dup2(std, STDOUT_FILENO);
 	close(search_res);	
+	return 0;
 }

@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <errno.h>
+
 void call_csc(char* path){
     int pid = fork();
     if (pid < 0){
@@ -22,6 +23,20 @@ void call_csc(char* path){
         perror(strerror(errno));
         exit(errno);
     }
+}
+
+void call_sw(char *filename, char *path){
+	pid_t pid = fork();
+		if(pid == 0){
+			execlp("./sw", "./sw", filename, path, NULL);
+			printf("Erro...\n");
+		}
+		else if(pid < 0){
+			write(STDERR_FILENO, "Error on sw call", 16);
+		}
+		else{
+			wait(NULL);			
+		}		
 }
 
 int main(int argc, char **argv){
@@ -77,15 +92,9 @@ int main(int argc, char **argv){
 			continue;
 		}
 		else if(S_ISREG(ent_stat.st_mode)){
-			pid_t pid = fork();
-			if(pid == 0){
-				execlp("./sw", "./sw", src_ent->d_name, NULL);
-				printf("Erro...\n");
-			}		
+			call_sw(src_ent->d_name, argv[1]);		
 		}
 	}
-	int i = 0;
-	while( i==0){wait(&i);printf("sw acabou\n");}
 
 	call_csc(argv[1]);
 
