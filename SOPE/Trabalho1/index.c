@@ -3,8 +3,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <errno.h>
+void call_csc(char* path){
+    int pid = fork();
+    if (pid < 0){
+        perror(strerror(errno));
+        exit(errno);
+    }
+    else if (pid == 0){
+        wait(&pid);
+        if (pid)
+            puts("csc returned an error code");
+    }
+    else if(execlp("./csc", "./csc", path, NULL)){
+        perror(strerror(errno));
+        exit(errno);
+    }
+}
 
 int main(int argc, char **argv){
 	if(argc != 2){
@@ -55,7 +73,7 @@ int main(int argc, char **argv){
 	while((src_ent = readdir(src)) != NULL){
 		lstat(src_ent->d_name, &ent_stat);
 		
-		if(!strcmp(src_ent->d_name, "words.txt")){
+		if(!strcmp(src_ent->d_name, "words.txt") || strncmp(src_ent->d_name, "res_", 4) == 0){
 			continue;
 		}
 		else if(S_ISREG(ent_stat.st_mode)){
@@ -66,6 +84,10 @@ int main(int argc, char **argv){
 			}		
 		}
 	}
+	int i = 0;
+	while( i==0){wait(&i);printf("sw acabou\n");}
+
+	call_csc(argv[1]);
 
 	return 0;	
 }
