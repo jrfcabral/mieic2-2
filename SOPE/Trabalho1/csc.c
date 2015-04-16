@@ -98,13 +98,14 @@ int main(int argc, char** argv)
 {
     //try to open current directory and fail on error
     char currentdir[1024];
-    if (argc == 1)
+    if (argc == 1 || !strcmp(argv[1],"."))
         getcwd(currentdir, 1024);
     else if (argc == 2)
-        strcpy(currentdir, argv[0]);
+        strcpy(currentdir, argv[1]);
     else
         printf("Usage: csc directory\n");
     
+    printf("opening %s directory\n", argv[1]);
 	DIR* dir = opendir(currentdir);
    	if (dir == NULL){
 	    perror(strerror(errno));
@@ -125,9 +126,9 @@ int main(int argc, char** argv)
             strcpy(found[foundSize-1], entry->d_name);            
         }
     
-    //two things can cause readdir after iterate to return NULL - an error or no more files to read
+    //two things can cause readdir after iterate to return NULL - an error or no more files to read so check for error after NULL
     if (errno){
-        perror(strerror(errno));
+        perror("error with readdir");
         exit(errno);
     }
     
@@ -149,8 +150,12 @@ int main(int argc, char** argv)
     sort("temp.txt");
 
     //join lines started by the same word
-    //clean("temp.txt", "index.txt");
-    // if(unlink("temp.txt")) perror("Couldn't delete temporary file");
+    clean("temp.txt", "index.txt");
+    close(temp);
+    if(unlink("temp.txt"))
+        perror("Couldn't delete temporary file");
+    sort("index.txt");
+
     
     //release allocated memory
     for(;foundSize>0;foundSize--)free(found[foundSize-1]);
