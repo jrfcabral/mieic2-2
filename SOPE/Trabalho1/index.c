@@ -84,10 +84,10 @@ int main(int argc, char **argv){
 			}		
 		}
 	}
-	int i = 0;
-	while( i==0){wait(&i);printf("sw acabou\n");}
 
-	call_csc(argv[1]);
+
+
+//	call_csc(argv[1]);
 
 	return 0;	
 }

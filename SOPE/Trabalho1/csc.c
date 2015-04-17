@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
+#include <limits.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -22,7 +23,7 @@ void concatenate(char** args, int fd){
         perror(strerror(errno));
         exit(errno);
     }
-    else if (pid == 0){
+    else if (pid){
         wait(&pid);
         if (pid)
             puts("cat returned an error code");
@@ -36,15 +37,16 @@ void concatenate(char** args, int fd){
 }
 
 //calls sort on the file provided by path, outputs to fd
-void sort(char* path){
+void sort(char* path, char* outpath){
     int pid = fork();
+    int res;
     if (pid < 0){
         perror(strerror(errno));
         exit(errno);
     }
-    else if (pid == 0){
-        wait(&pid);
-        if (pid)
+    else if (pid){
+        wait(&res);
+        if (res)
             puts("sort returned an error code");
     }
     else if(execlp("sort", "sort", path, "-o", path, NULL) < 0){
@@ -78,12 +80,12 @@ void clean(char* inpath, char* outpath){
         perror(strerror(errno));
         exit(errno);
     }
-    else if (pid == 0){
+    else if (pid){
        wait(&pid);
        if (pid)
            puts("clean returned an error code");
     }
-    else if (execlp("awk", "awk", "{line=\"\";for(i=2;i <= NF; i++)line = line $i \" \"; table[$1] = table[$1] line;} END {for (key in table) print key \" \" table[key] \n;}", NULL) < 0){
+    else if (execlp("awk", "awk", "{line=\"\";for(i=2;i <= NF; i++)line = line ($i (i == NF ?\", \" : \" \")); table[$1] = table[$1] line;} END {for (key in table) print key \" \" table[key] \n;}", NULL) < 0){
         perror(strerror(errno));
         exit(errno);
     }    
@@ -105,7 +107,9 @@ int main(int argc, char** argv)
     else
         printf("Usage: csc directory\n");
     
-    printf("opening %s directory\n", argv[1]);
+    char buf[PATH_MAX+1];
+    char* real = realpath(currentdir, buf);
+   // printf("opening %s directory\n", real);
 	DIR* dir = opendir(currentdir);
    	if (dir == NULL){
 	    perror(strerror(errno));
@@ -134,7 +138,11 @@ int main(int argc, char** argv)
     
     //open output file
     int temp = open("temp.txt", (O_CREAT | O_TRUNC | O_WRONLY), 0777);   
-    
+    if (temp < 0){
+        close(temp);
+        perror(strerror(errno));
+        exit(-1);
+    }
     //concatenate the files
     if (foundSize > 1){ //if there is anything to do       
         found = realloc(found, ++foundSize*sizeof(char*));
@@ -147,14 +155,14 @@ int main(int argc, char** argv)
     }
     
     //sort the concatenated file   
-    sort("temp.txt");
+    sort("temp.txt", "tempsorted.txt");
 
     //join lines started by the same word
     clean("temp.txt", "index.txt");
     close(temp);
     if(unlink("temp.txt"))
         perror("Couldn't delete temporary file");
-    sort("index.txt");
+    sort("index.txt", "indexsorted.txt");
 
     
     //release allocated memory
