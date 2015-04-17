@@ -7,13 +7,17 @@
 
 
 int main(int argc, char **argv){
-	if(argc != 2/*3*/){
+	if(argc != 3){
 		printf("Usage: %s file dir\n", argv[0]);
 		exit(-1);	
 	}
 	
+
+	char *wordsDir = (char *)malloc((strlen(argv[2])+8)*sizeof(char));
+	strcpy(wordsDir, argv[2]);
+	strcat(wordsDir, "words.txt");
 	FILE *words;
-	words = fopen("words.txt", "r");
+	words = fopen(wordsDir, "r");
 	if(words == NULL){
 		perror("words.txt");
 		exit(-1);	
@@ -26,7 +30,12 @@ int main(int argc, char **argv){
 		if(name[i] == '.'){
 			name[i] = '\0';			
 		}
-	}	
+	}
+
+	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char));
+	strcpy(grepName, argv[2]);
+	strcat(grepName, argv[1]);
+		
 	char *fpath = (char *)malloc((4+strlen(name)+4)*sizeof(char));
 	strcpy(fpath, "res_");
 	strcat(fpath, name);
@@ -59,7 +68,7 @@ int main(int argc, char **argv){
 		if(pid == 0){
 			close(fd[0]);
 			dup2(fd[1], STDOUT_FILENO);
-			execlp("grep", "grep", "-no", word, argv[1], NULL);
+			execlp("grep", "grep", "-no", word, grepName, NULL);
 			printf("Command not executed.\n");
 			exit(-1);
 		}

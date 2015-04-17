@@ -24,7 +24,7 @@ void call_csc(char* path){
     }
 }
 
-/*void call_sw(char *filename, char *dir){
+void call_sw(char *filename, char *dir){
 	pid_t pid = fork();
 	if(pid == 0){
 		execlp("./sw", "./sw", filename, dir, NULL);
@@ -33,7 +33,7 @@ void call_csc(char* path){
 	else if(pid < 0){
 		printf("Erro...\n");
 	}
-}*/
+}
 
 int main(int argc, char **argv){
 	if(argc != 2){
@@ -53,7 +53,10 @@ int main(int argc, char **argv){
 	}
 
 	while((src_ent = readdir(src)) != NULL){
-		lstat(src_ent->d_name, &ent_stat);
+		char *test = (char *)malloc(strlen(argv[1])+ strlen(src_ent->d_name)*sizeof(char));
+		strcpy(test, argv[1]);
+		strcat(test, src_ent->d_name);
+		lstat(test, &ent_stat);		
 		
 		if(!strcmp(src_ent->d_name, "words.txt")){
 			printf("Found words.txt\n");
@@ -88,12 +91,12 @@ int main(int argc, char **argv){
 			continue;
 		}
 		else if(S_ISREG(ent_stat.st_mode)){
-			pid_t pid = fork();
+			/*pid_t pid = fork();
 			if(pid == 0){
 				execlp("./sw", "./sw", src_ent->d_name, NULL);
 				printf("Erro...\n");
-			}
-			//call_sw(src_ent->d_name, argv[1]);		
+			}*/
+			call_sw(src_ent->d_name, argv[1]);		
 		}
 	}
 	
