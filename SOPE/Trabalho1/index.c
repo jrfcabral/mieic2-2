@@ -33,6 +33,9 @@ void call_sw(char *filename, char *dir){
 	else if(pid < 0){
 		printf("Erro...\n");
 	}
+	else{
+		wait(NULL);
+	}
 }
 
 int main(int argc, char **argv){
@@ -85,23 +88,19 @@ int main(int argc, char **argv){
 	}	
 	
 	while((src_ent = readdir(src)) != NULL){
-		lstat(src_ent->d_name, &ent_stat);
+		char *test = (char *)malloc(strlen(argv[1])+ strlen(src_ent->d_name)*sizeof(char));
+		lstat(test, &ent_stat);
 		
 		if(!strcmp(src_ent->d_name, "words.txt") || strncmp(src_ent->d_name, "res_", 4) == 0){
 			continue;
 		}
 		else if(S_ISREG(ent_stat.st_mode)){
-			/*pid_t pid = fork();
-			if(pid == 0){
-				execlp("./sw", "./sw", src_ent->d_name, NULL);
-				printf("Erro...\n");
-			}*/
 			call_sw(src_ent->d_name, argv[1]);		
 		}
 	}
 	
 
-	call_csc(argv[1]);
+	call_csc(".");
 
 	return 0;	
 }

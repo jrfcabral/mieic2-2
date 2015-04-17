@@ -12,10 +12,11 @@ int main(int argc, char **argv){
 		exit(-1);	
 	}
 	
-
+	//building string for words.txt
 	char *wordsDir = (char *)malloc((strlen(argv[2])+8)*sizeof(char));
 	strcpy(wordsDir, argv[2]);
 	strcat(wordsDir, "words.txt");
+	//opening words.txt
 	FILE *words;
 	words = fopen(wordsDir, "r");
 	if(words == NULL){
@@ -23,6 +24,7 @@ int main(int argc, char **argv){
 		exit(-1);	
 	}	
 	
+	//Extracting the file's name (without file extension)
 	char *name = (char *)malloc(strlen(argv[1])*sizeof(char));
 	strcpy(name, argv[1]);
 	int i;
@@ -31,11 +33,8 @@ int main(int argc, char **argv){
 			name[i] = '\0';			
 		}
 	}
-
-	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char));
-	strcpy(grepName, argv[2]);
-	strcat(grepName, argv[1]);
-		
+	
+	//Building res_ string for receiving file.
 	char *fpath = (char *)malloc((4+strlen(name)+4)*sizeof(char));
 	strcpy(fpath, "res_");
 	strcat(fpath, name);
@@ -43,9 +42,14 @@ int main(int argc, char **argv){
 	strcat(fpath, ".txt");
 	//puts(name);
 	//puts(fpath);
-		
-	int search_res;
+	
+	//Building string for grep search	
+	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char));
+	strcpy(grepName, argv[2]);
+	strcat(grepName, argv[1]);
 
+	int search_res;
+	//Opening/Creating receiver file
 	search_res = open(fpath, (O_CREAT | O_WRONLY | O_TRUNC), 0777);
 	if(search_res< 0){
 		perror(argv[1]);
@@ -55,11 +59,11 @@ int main(int argc, char **argv){
 
 	pid_t pid;
 	char *word = (char *)malloc(256*sizeof(char));
-	int std = dup(STDOUT_FILENO);
-	while(!feof(words)){
+	int std = dup(STDOUT_FILENO); //Store stdout in a safe location
+	while(!feof(words)){ //grep cycle
 		int fd[2];
 		pipe(fd);
-		char *test = fgets(word, 256, words);
+		char *test = fgets(word, 256, words); //get word from words.txt
 		if(test == NULL){
 			break;		
 		}
