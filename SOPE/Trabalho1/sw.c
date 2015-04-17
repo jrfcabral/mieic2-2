@@ -3,12 +3,12 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <sys/wait.h>
 
 
 int main(int argc, char **argv){
-	if(argc != 2){
-		printf("Usage: %s file\n", argv[0]);
+	if(argc != 2/*3*/){
+		printf("Usage: %s file dir\n", argv[0]);
 		exit(-1);	
 	}
 	
@@ -68,7 +68,7 @@ int main(int argc, char **argv){
 			int n;
 			wait(&n);
 			char result[10000];
-			char *dump, *formatted;
+			char *dump;
 			n = read(fd[0], result, 10000);
 			result[n] = '\0';
 			
@@ -76,7 +76,7 @@ int main(int argc, char **argv){
 		if(dump != NULL){
 			while(1){
 				write(search_res, word, strlen(word));
-				write(search_res, " : ", 3);
+				write(search_res, ": ", 2);
 				write(search_res, name, strlen(name));
 				write(search_res, "-", 1);
 				write(search_res, dump, strlen(dump));
@@ -94,4 +94,5 @@ int main(int argc, char **argv){
 	
 	dup2(std, STDOUT_FILENO);
 	close(search_res);	
+	return 0;
 }
