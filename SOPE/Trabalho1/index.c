@@ -38,6 +38,46 @@ void call_sw(char *filename, char *dir){
 	}
 }
 
+
+/*int check_files(char *dir){
+	int hasWords = 0, hasFiles = 0;
+	DIR *src;
+	struct dirent *src_ent;
+	struct stat ent_stat;
+
+	src = opendir(argv[1]);
+	if(src == NULL){
+		write(STDERR_FILENO, "Could not open directory.", 25);
+		exit(-1);
+	}
+
+	
+	while((src_ent = readdir(src)) != NULL){
+		char *test = (char *)malloc(strlen(argv[1])+ strlen(src_ent->d_name)*sizeof(char));
+		strcpy(test, argv[1]);
+		strcat(test, src_ent->d_name);
+		lstat(test, &ent_stat);		
+		
+		if(!strcmp(src_ent->d_name, "words.txt")){
+			printf("Found words.txt\n");
+			hasWords = 1;
+		}
+		else if(S_ISREG(ent_stat.st_mode)){
+			printf("Found ");
+			puts(src_ent->d_name);
+			hasFiles = 1;
+		}
+
+		free(test);		
+
+		if(hasWords && hasFiles){
+			printf("Initiating search...\n");
+			break;
+		}	
+	}
+	
+}*/
+
 int main(int argc, char **argv){
 	if(argc != 2){
 		printf("\nUsage: %s dir\n\n", argv[0]);
