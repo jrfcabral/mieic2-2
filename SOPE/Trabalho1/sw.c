@@ -15,6 +15,7 @@ int main(int argc, char **argv){
 	//building string for words.txt
 	char *wordsDir = (char *)malloc((strlen(argv[2])+8)*sizeof(char));
 	strcpy(wordsDir, argv[2]);
+	strcat(wordsDir, "/");
 	strcat(wordsDir, "words.txt");
 	//opening words.txt
 	FILE *words;
@@ -46,6 +47,7 @@ int main(int argc, char **argv){
 	//Building string for grep search	
 	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char));
 	strcpy(grepName, argv[2]);
+	strcat(grepName, "/");
 	strcat(grepName, argv[1]);
 
 	int search_res;

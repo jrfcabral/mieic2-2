@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <errno.h>
+#include <limits.h>
 void call_csc(char* path){
     int pid = fork();
     if (pid < 0){
@@ -84,21 +85,26 @@ int main(int argc, char **argv){
 		exit(-1);
 	}
 	
+	 char buf[PATH_MAX+1];
+    char* real = realpath(argv[1], buf);
+	
 	int hasWords = 0, hasFiles = 0;
 	DIR *src;
 	struct dirent *src_ent;
 	struct stat ent_stat;
 	
-	src = opendir(argv[1]);
+	src = opendir(real);
 	if(src == NULL){
 		write(STDERR_FILENO, "Could not open directory.", 25);
 		exit(-1);
 	}
 
 	while((src_ent = readdir(src)) != NULL){
-		char *test = (char *)malloc(strlen(argv[1])+ strlen(src_ent->d_name)*sizeof(char));
-		strcpy(test, argv[1]);
+		char *test = (char *)malloc(strlen(real)+ strlen(src_ent->d_name)*sizeof(char)+2*sizeof(char));
+		strcpy(test, real);
+		strcat(test, "/");
 		strcat(test, src_ent->d_name);
+		puts(test);
 		lstat(test, &ent_stat);		
 		
 		if(!strcmp(src_ent->d_name, "words.txt")){
@@ -121,21 +127,24 @@ int main(int argc, char **argv){
 	}
 	closedir(src);
 
-	src = opendir(argv[1]);
+	src = opendir(real);
 	if(src == NULL){
 		write(STDERR_FILENO, "Could not open directory.", 25);
 		exit(-1);
 	}	
 	
 	while((src_ent = readdir(src)) != NULL){
-		char *test = (char *)malloc(strlen(argv[1])+ strlen(src_ent->d_name)*sizeof(char));
+		char *test = (char *)malloc(strlen(real)+ strlen(src_ent->d_name)*sizeof(char));
+		strcpy(test, real);
+		strcat(test, "/");
+		strcat(test, src_ent->d_name);
 		lstat(test, &ent_stat);
 		
 		if(!strcmp(src_ent->d_name, "words.txt") || strncmp(src_ent->d_name, "res_", 4) == 0){
 			continue;
 		}
 		else if(S_ISREG(ent_stat.st_mode)){
-			call_sw(src_ent->d_name, argv[1]);		
+			call_sw(src_ent->d_name, real);		
 		}
 	}
 	call_csc(".");
