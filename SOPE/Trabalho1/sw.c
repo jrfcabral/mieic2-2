@@ -89,7 +89,7 @@ int main(int argc, char **argv){
 		if(dump != NULL){
 			while(1){
 				write(search_res, word, strlen(word));
-				write(search_res, ": ", 2);
+				write(search_res, ": ", 3);
 				write(search_res, name, strlen(name));
 				write(search_res, "-", 1);
 				write(search_res, dump, strlen(dump));

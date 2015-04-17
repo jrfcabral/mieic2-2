@@ -98,9 +98,6 @@ int main(int argc, char **argv){
 			call_sw(src_ent->d_name, argv[1]);		
 		}
 	}
-	
-
 	call_csc(".");
-
 	return 0;	
 }
