@@ -17,6 +17,7 @@ int main(int argc, char **argv){
 	strcpy(wordsDir, argv[2]);
 	strcat(wordsDir, "/");
 	strcat(wordsDir, "words.txt");
+
 	//opening words.txt
 	FILE *words;
 	words = fopen(wordsDir, "r");
@@ -39,16 +40,7 @@ int main(int argc, char **argv){
 	char *fpath = (char *)malloc((4+strlen(name)+4)*sizeof(char));
 	strcpy(fpath, "res_");
 	strcat(fpath, name);
-	//puts(fpath);	
 	strcat(fpath, ".txt");
-	//puts(name);
-	//puts(fpath);
-	
-	//Building string for grep search	
-	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char)+2);
-	strcpy(grepName, argv[2]);
-	strcat(grepName, "/");
-	strcat(grepName, argv[1]);
 
 	int search_res;
 	//Opening/Creating receiver file
@@ -58,6 +50,11 @@ int main(int argc, char **argv){
 		exit(-1);	
 	}
 		
+	//Building string for grep search	
+	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char)+2);
+	strcpy(grepName, argv[2]);
+	strcat(grepName, "/");
+	strcat(grepName, argv[1]);
 
 	pid_t pid;
 	char *word = (char *)malloc(256*sizeof(char));
