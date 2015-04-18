@@ -65,7 +65,7 @@ void clean(char* inpath, char* outpath){
     //redirect input and output
     int backup_in = dup(STDIN_FILENO);
     int backup_out = dup(STDOUT_FILENO);
-    int in = open(inpath, (O_RDONLY), 0777);
+    int in = open(inpath, (O_RDONLY), 0777);    
     int out = open(outpath, (O_CREAT | O_TRUNC | O_WRONLY), 0777);
     dup2(in, STDIN_FILENO);
     dup2(out, STDOUT_FILENO);
@@ -83,9 +83,9 @@ void clean(char* inpath, char* outpath){
     else if (pid){
        wait(&pid);
        if (pid)
-           puts("clean returned an error code");
+           puts("awk returned an error code");
     }
-    else if (execlp("awk", "awk", "{line=\"\";for(i=2;i <= NF; i++)line = line ($i (i == NF ?\", \" : \" \")); table[$1] = table[$1] line;} END {for (key in table) print key \" \" substr(table[key],0, length(table[key])-2);}", NULL) < 0){
+    else if (execlp("awk", "awk", "{line=\"\";for(i=2;i <= NF; i++)line = line ($i (i == NF ?\", \" : \" \")); table[$1] = table[$1] line;} END {for (key in table) print key \" \" substr(table[key],0, length(table[key])-2)	;}", NULL) < 0){
         perror(strerror(errno));
         exit(errno);
     }    
@@ -106,11 +106,10 @@ int main(int argc, char** argv)
         strcpy(currentdir, argv[1]);
     else
         printf("Usage: csc directory\n");
-    
     char buf[PATH_MAX+1];
     char* real = realpath(currentdir, buf);
    // printf("opening %s directory\n", real);
-	DIR* dir = opendir(real);
+	DIR* dir = opendir(".");
    	if (dir == NULL){
 	    perror(strerror(errno));
 	    exit(errno);
@@ -155,14 +154,14 @@ int main(int argc, char** argv)
     }
     
     //sort the concatenated file   
-    sort("temp.txt", "tempsorted.txt");
+    sort("temp.txt",  "temp.txt");
 
-    //join lines started by the same word
-    clean("temp.txt", "index.txt");
+    //join lines started by the same word    
+    clean("temp.txt", strcat(real,"/index.txt"));
     close(temp);
     if(unlink("temp.txt"))
         perror("Couldn't delete temporary file");
-    sort("index.txt", "indexsorted.txt");
+
 
     
     //release allocated memory

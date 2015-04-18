@@ -11,6 +11,10 @@
 
 /*Calls csc on the specified path as a child process*/
 void call_csc(char* path){
+	if (strcmp(path, "temp.txt") == 0){
+		printf("ola\n");
+		exit(-2);
+	}
     int pid = fork();
     if (pid < 0){
         perror(strerror(errno));
@@ -129,6 +133,6 @@ int main(int argc, char **argv){
 		}
 	}
 
-	call_csc(".");
+	call_csc(real);
 	return 0;	
 }
