@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 	//puts(fpath);
 	
 	//Building string for grep search	
-	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char));
+	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char)+2);
 	strcpy(grepName, argv[2]);
 	strcat(grepName, "/");
 	strcat(grepName, argv[1]);
@@ -76,7 +76,7 @@ int main(int argc, char **argv){
 			dup2(fd[1], STDOUT_FILENO);
 			execlp("grep", "grep", "-no", word, grepName, NULL);
 			printf("Command not executed.\n");
-			exit(-1);
+			exit(-1); 
 		}
 		else{
 			close(fd[1]);
@@ -88,20 +88,20 @@ int main(int argc, char **argv){
 			result[n] = '\0';
 			
 			dump = strtok(result, ":\n");
-		if(dump != NULL){
-			while(1){
-				write(search_res, word, strlen(word));
-				write(search_res, ": ", 3);
-				write(search_res, name, strlen(name));
-				write(search_res, "-", 1);
-				write(search_res, dump, strlen(dump));
-				write(search_res, "\n", 1);
-				if((dump = strtok(NULL, ":\n")) == NULL)
-					break;
-				if((dump = strtok(NULL, ":\n")) == NULL)
-					break;
+			if(dump != NULL){
+				while(1){
+					write(search_res, word, strlen(word));
+					write(search_res, ": ", 2);
+					write(search_res, name, strlen(name));
+					write(search_res, "-", 1);
+					write(search_res, dump, strlen(dump));
+					write(search_res, "\n", 1);
+					if((dump = strtok(NULL, ":\n")) == NULL)
+						break;
+					if((dump = strtok(NULL, ":\n")) == NULL)
+						break;
+				}
 			}
-		}
 			
 		}		
 		
