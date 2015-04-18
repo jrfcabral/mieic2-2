@@ -85,7 +85,7 @@ void clean(char* inpath, char* outpath){
        if (pid)
            puts("clean returned an error code");
     }
-    else if (execlp("awk", "awk", "{line=\"\";for(i=2;i <= NF; i++)line = line ($i (i == NF ?\", \" : \" \")); table[$1] = table[$1] line;} END {for (key in table) print key \" \" table[key] \n;}", NULL) < 0){
+    else if (execlp("awk", "awk", "{line=\"\";for(i=2;i <= NF; i++)line = line ($i (i == NF ?\", \" : \" \")); table[$1] = table[$1] line;} END {for (key in table) print key \" \" substr(table[key],0, length(table[key])-2);}", NULL) < 0){
         perror(strerror(errno));
         exit(errno);
     }    
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
     char buf[PATH_MAX+1];
     char* real = realpath(currentdir, buf);
    // printf("opening %s directory\n", real);
-	DIR* dir = opendir(currentdir);
+	DIR* dir = opendir(real);
    	if (dir == NULL){
 	    perror(strerror(errno));
 	    exit(errno);
