@@ -24,8 +24,9 @@ void concatenate(char** args, int fd){
         exit(errno);
     }
     else if (pid){
-        wait(&pid);
-        if (pid)
+	int res;
+        waitpid(pid, &res,0);
+        if (res)
             puts("cat returned an error code");
     }
     else if(execvp(*args, args) < 0){
@@ -45,7 +46,7 @@ void sort(char* path, char* outpath){
         exit(errno);
     }
     else if (pid){
-        wait(&res);
+        waitpid(pid, &res,0);
         if (res)
             puts("sort returned an error code");
     }
@@ -63,7 +64,7 @@ void sortversion(char* path, char* outpath){
         exit(errno);
     }
     else if (pid){
-        wait(&res);
+        waitpid(pid, &res,0);
         if (res)
             puts("sort returned an error code");
     }
