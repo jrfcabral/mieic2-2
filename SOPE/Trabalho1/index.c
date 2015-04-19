@@ -12,11 +12,10 @@
 /*Calls csc on the specified path as a child process*/
 void call_csc(char* path){
 	if (strcmp(path, "temp.txt") == 0){
-		printf("ola\n");
 		exit(-2);
 	}
+	
     int pid = fork();
-    printf("%d\n", pid);
     if (pid < 0){
         perror(strerror(errno));
         exit(errno);
@@ -24,8 +23,6 @@ void call_csc(char* path){
     else if (pid){
 	int res;
         waitpid(pid, &res, 0);
-        if (res)
-            printf("%d\n", res);
     }
     else if(execlp("./csc", "./csc", path, NULL)){
         perror(strerror(errno));
@@ -35,6 +32,7 @@ void call_csc(char* path){
 
 /*Calls sw on the specified file in the specified directory as a child process*/
 void call_sw(char *filename, char *dir){
+
 	pid_t pid = fork();
 	if(pid == 0){
 		execlp("./sw", "./sw", filename, dir, NULL);
@@ -81,7 +79,6 @@ int checkFiles(char *dir){
 		free(pathedFile);		
 	
 		if(hasWords && hasFiles){
-			printf("Initiating search...\n");
 			closedir(src);			
 			return 1;
 		}

@@ -142,7 +142,7 @@ void format(char* inpath, char* outpath){
 void cleanup(){
 	
 	DIR *dir = opendir(".");
-	puts("vou limpar, sou portugues\n");	
+	//puts("vou limpar, sou portugues\n");	
 	struct dirent *src_ent;
 	src_ent = readdir(dir);
 	
@@ -153,7 +153,7 @@ void cleanup(){
 	}
 	
 
-	puts("cleaned up \n");
+	//puts("cleaned up \n");
 	
 }
 
