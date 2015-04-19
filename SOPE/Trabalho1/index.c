@@ -19,7 +19,7 @@ void call_csc(char* path){
     char* exepath;
     exepath = dirname(fullpath);
     strcat(exepath, "/csc");	
-	puts(exepath);	
+	
     int pid = fork();
     if (pid < 0){
         perror(strerror(errno));
@@ -42,7 +42,7 @@ void call_sw(char *filename, char *dir){
 	char* exepath;
 	exepath = dirname(path);
 	strcat(exepath, "/sw");	
-	puts(exepath);
+	
 	pid_t pid = fork();
 	if(pid == 0){
 		execlp(exepath, exepath, filename, dir, NULL);
