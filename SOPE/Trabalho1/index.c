@@ -8,13 +8,18 @@
 #include <stdio.h>
 #include <errno.h>
 #include <limits.h>
-
+#include <libgen.h>
 /*Calls csc on the specified path as a child process*/
 void call_csc(char* path){
 	if (strcmp(path, "temp.txt") == 0){
 		exit(-2);
 	}
-	
+    char fullpath[PATH_MAX+1];
+    readlink("/proc/self/exe", fullpath, PATH_MAX+1);
+    char* exepath;
+    exepath = dirname(fullpath);
+    strcat(exepath, "/csc");	
+	puts(exepath);	
     int pid = fork();
     if (pid < 0){
         perror(strerror(errno));
@@ -24,7 +29,7 @@ void call_csc(char* path){
 	int res;
         waitpid(pid, &res, 0);
     }
-    else if(execlp("./csc", "./csc", path, NULL)){
+    else if(execlp(exepath, exepath, path, NULL)){
         perror(strerror(errno));
         exit(errno);
     }
@@ -32,10 +37,15 @@ void call_csc(char* path){
 
 /*Calls sw on the specified file in the specified directory as a child process*/
 void call_sw(char *filename, char *dir){
-
+	char path[PATH_MAX+1];
+	readlink("/proc/self/exe", path, PATH_MAX+1);
+	char* exepath;
+	exepath = dirname(path);
+	strcat(exepath, "/sw");	
+	puts(exepath);
 	pid_t pid = fork();
 	if(pid == 0){
-		execlp("./sw", "./sw", filename, dir, NULL);
+		execlp(exepath, exepath, filename, dir, NULL);
 		printf("Erro...\n");
 		exit(-1);
 	}
@@ -89,6 +99,8 @@ int checkFiles(char *dir){
 
 
 int main(int argc, char **argv){
+	
+
 	if(argc != 2){
 		printf("\nUsage: %s dir\n\n", argv[0]);
 		exit(-1);
