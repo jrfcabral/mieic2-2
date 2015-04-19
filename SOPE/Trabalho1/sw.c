@@ -5,7 +5,6 @@
 #include <string.h>
 #include <sys/wait.h>
 
-
 int main(int argc, char **argv){
 	if(argc != 3){
 		printf("Usage: %s file dir\n", argv[0]);

@@ -155,7 +155,7 @@ int main(int argc, char** argv)
     
     //sort the concatenated file   
     sort("temp.txt",  "temp.txt");
-	
+	sleep(1);
     //join lines started by the same word    
     clean("temp.txt", strcat(real,"/index.txt"));
     close(temp);

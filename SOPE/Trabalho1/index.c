@@ -100,6 +100,10 @@ int main(int argc, char **argv){
 	
 	char buf[PATH_MAX+1];
     	char *real = realpath(argv[1], buf);
+	if(real == NULL){
+		printf("Error. The specified directory is probably non-existant.\n");
+		exit(-1);
+	}
 
 	if(!checkFiles(real)){
 		printf("The program did not find the necessary files to proceed.\nMake sure to have a words.txt files aswell as other text files to be parsed.\n");
