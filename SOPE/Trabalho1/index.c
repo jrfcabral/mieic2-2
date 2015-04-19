@@ -37,6 +37,7 @@ void call_sw(char *filename, char *dir){
 	if(pid == 0){
 		execlp("./sw", "./sw", filename, dir, NULL);
 		printf("Erro...\n");
+		exit(-1);
 	}
 	else if(pid < 0){
 		printf("Erro...\n");
@@ -121,8 +122,8 @@ int main(int argc, char **argv){
 		strcat(pathedFile, "/");
 		strcat(pathedFile, src_ent->d_name);
 		lstat(pathedFile, &ent_stat);
-		
-		if(!strcmp(src_ent->d_name, "words.txt") || strncmp(src_ent->d_name, "res_", 4) == 0){
+
+		if(!strncmp(src_ent->d_name, "words.txt", 8) || strncmp(src_ent->d_name, "res_", 4) == 0){
 			continue;
 		}
 		else if(S_ISREG(ent_stat.st_mode)){

@@ -13,7 +13,7 @@ int main(int argc, char **argv){
 	}
 	
 	//building string for words.txt
-	char *wordsDir = (char *)malloc((strlen(argv[2])+8)*sizeof(char));
+	char *wordsDir = (char *)malloc((strlen(argv[2])+8)*sizeof(char)+3);
 	strcpy(wordsDir, argv[2]);
 	strcat(wordsDir, "/");
 	strcat(wordsDir, "words.txt");
@@ -22,7 +22,7 @@ int main(int argc, char **argv){
 	FILE *words;
 	words = fopen(wordsDir, "r");
 	if(words == NULL){
-		perror("words.txt");
+		perror(wordsDir);
 		exit(-1);	
 	}	
 	

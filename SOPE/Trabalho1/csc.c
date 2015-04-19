@@ -56,8 +56,8 @@ void sort(char* path, char* outpath){
 }
 
 //joins lines that have the same first word, inputs from inpath, outputs to outpath
-void clean(char* inpath, char* outpath){
-    if(!strcmp(inpath, outpath)){
+void clean(char* inpath, char* outpath){    
+	if(!strcmp(inpath, outpath)){
         perror("clean: cannot output to the file being read\n");
         exit(-1);
     }
@@ -155,7 +155,7 @@ int main(int argc, char** argv)
     
     //sort the concatenated file   
     sort("temp.txt",  "temp.txt");
-
+	
     //join lines started by the same word    
     clean("temp.txt", strcat(real,"/index.txt"));
     close(temp);
