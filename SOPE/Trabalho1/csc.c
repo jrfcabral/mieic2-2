@@ -128,7 +128,7 @@ int main(int argc, char** argv)
             found[foundSize-1] = malloc(sizeof(char)*strlen(entry->d_name));
             strcpy(found[foundSize-1], entry->d_name);            
         }
-    
+    closedir(dir);
     //two things can cause readdir after iterate to return NULL - an error or no more files to read so check for error after NULL
     if (errno){
         perror("error with readdir");
@@ -155,17 +155,20 @@ int main(int argc, char** argv)
     
     //sort the concatenated file   
     sort("temp.txt",  "temp.txt");
-	sleep(1);
+
     //join lines started by the same word    
     clean("temp.txt", strcat(real,"/index.txt"));
     close(temp);
     if(unlink("temp.txt"))
-        perror("Couldn't delete temporary file");
-
-
+        perror("Couldn't delete temporary file");    
+    
+    usleep(10000);
+    //sort the resulting file
+    sort(real,real);
     
     //release allocated memory
     for(;foundSize>0;foundSize--)free(found[foundSize-1]);
     free(found);
+    
     exit(0);//successful run
 }
