@@ -48,9 +48,9 @@ void call_sw(char *filename, char *dir){
 }
 
 /*Erases res_ files*/
-/*void cleanup(){
+void cleanup(){
 	char buf[PATH_MAX+1];
-    char *realDir = realpath(argv[1], buf);
+    char *realDir = realpath(".", buf);
 
 	DIR *dir;
 	struct dirent *dir_ent;
@@ -58,15 +58,18 @@ void call_sw(char *filename, char *dir){
 	
 	dir = opendir(realDir);
 	
-	while((src_ent = readdir(src)) != NULL){
-		lstat(src_ent->d_name, &ent_stat);
+	while((dir_ent = readdir(dir)) != NULL){
+		lstat(dir_ent->d_name, &ent_stat);
 		if(S_ISREG(ent_stat.st_mode)){
-			if(!strncmp(src_ent->d_name, "res_", 4)){
-				unlink(src_ent->d_name);
+			if(!strncmp(dir_ent->d_name, "res_", 4)){
+				unlink(dir_ent->d_name);
+			}
 		}
 	}
+
+	free(realDir);
 	
-}*/
+}
 
 /*Checks whether the specified directory holds the files necessary for index to run.*/
 int checkFiles(char *dir){
@@ -91,12 +94,9 @@ int checkFiles(char *dir){
 		lstat(pathedFile, &ent_stat);		
 		
 		if(!strcmp(src_ent->d_name, "words.txt")){
-			printf("Found words.txt\n");
 			hasWords = 1;
 		}
 		else if(S_ISREG(ent_stat.st_mode)){
-			printf("Found ");
-			puts(src_ent->d_name);
 			hasFiles = 1;
 		}
 
@@ -160,7 +160,8 @@ int main(int argc, char **argv){
 	} 
 
 	call_csc(real);
-	//cleanup();
+	/*sleep(1);
+	cleanup();*/
 	
 	return 0;	
 }
