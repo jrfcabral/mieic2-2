@@ -68,11 +68,13 @@ void sortversion(char* path, char* outpath){
         if (res)
             puts("sort returned an error code");
     }
-    else if(execlp("sort", "sort", path, "-o","-V", path, NULL) < 0){
+    else if(execlp("sort", "sort", "-V", path, "-o", path, NULL) < 0){
         perror(strerror(errno));
         exit(errno);
     }
 }
+
+
 
 //joins lines that have the same first word, inputs from inpath, outputs to outpath
 void clean(char* inpath, char* outpath){    
@@ -115,6 +117,48 @@ void clean(char* inpath, char* outpath){
     close(in);
     close(out);
 }
+
+void format(char* inpath, char* outpath){    
+	if(!strcmp(inpath, outpath)){
+        perror("clean: cannot output to the file being read\n");
+        exit(-1);
+    }
+    
+    //redirect input and output
+    int backup_in = dup(STDIN_FILENO);
+    int backup_out = dup(STDOUT_FILENO);
+    int in = open(inpath, (O_RDONLY), 0777);    
+    int out = open(outpath, (O_CREAT | O_TRUNC | O_WRONLY), 0777);
+    dup2(in, STDIN_FILENO);
+    dup2(out, STDOUT_FILENO);
+    if (backup_in < 0 || backup_out < 0 || in < 0 || out < 0){
+        perror("clean: couldn't redirect output!");
+        exit(-1);
+    }
+    
+    //call awk
+    int pid = fork();
+    if (pid < 0){
+        perror(strerror(errno));
+        exit(errno);
+    }
+    else if (pid){
+       int res;
+       waitpid(pid, &res,0);
+       if (res)
+           puts("awk returned an error code");
+    }
+    else if (execlp("awk", "awk", "BEGIN{print \"Index:\";} {print $0 \"\\n\";}", NULL) < 0){
+        perror(strerror(errno));
+        exit(errno);
+    }    
+    //restore output/input
+    dup2(backup_in, STDIN_FILENO);
+    dup2(backup_out, STDOUT_FILENO);
+    close(in);
+    close(out);
+}
+
 
 int main(int argc, char** argv)
 {
@@ -177,17 +221,18 @@ int main(int argc, char** argv)
     sortversion("temp.txt", "temp.txt");
 
     //join lines started by the same word    
-    clean("temp.txt", strcat(real,"/index.txt"));
+    clean("temp.txt", "temp2.txt");
     close(temp);
     if(unlink("temp.txt"))
         perror("Couldn't delete temporary file");    
-    
-    //usleep(100000);//needed because even after the awk process ends (ie. after wait() has been called on it) the cleaned file still takes some time to appear on disk for some reason
-    //sort the resulting file
-    sortversion(real,real);
-    sort(real,real);
 
-   
+    //sort the resulting file
+    sortversion("temp2.txt","temp2.txt");
+    sort("temp2.txt","temp2.txt");
+    
+    format("temp2.txt", strcat(real, "/index.txt"));
+    if(unlink("temp2.txt"))
+        perror("Couldn't delete temporary file");          
     
     //release allocated memory
     for(;foundSize>0;foundSize--)free(found[foundSize-1]);
