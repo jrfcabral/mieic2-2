@@ -20,7 +20,7 @@ void concatenate(char** args, int fd){
     dup2(fd, STDOUT_FILENO);    
     int pid = fork();
     if (pid < 0){
-        perror(strerror(errno));
+         perror(strerror(errno));
         exit(errno);
     }
     else if (pid){
@@ -138,7 +138,24 @@ void format(char* inpath, char* outpath){
     close(in);
     close(out);
 }
+/*Erases res_ files*/
+void cleanup(){
+	
+	DIR *dir = opendir(".");
+	puts("vou limpar, sou portugues\n");	
+	struct dirent *src_ent;
+	src_ent = readdir(dir);
+	
+	while(src_ent != NULL){
+		if ( strncmp(src_ent->d_name, "res_",4) == 0)
+			unlink(src_ent->d_name);
+		src_ent = readdir(dir);
+	}
+	
 
+	puts("cleaned up \n");
+	
+}
 
 int main(int argc, char** argv)
 {
@@ -216,6 +233,6 @@ int main(int argc, char** argv)
     //release allocated memory
     for(;foundSize>0;foundSize--)free(found[foundSize-1]);
     free(found);
-    
+    cleanup();
     exit(0);//successful run
 }

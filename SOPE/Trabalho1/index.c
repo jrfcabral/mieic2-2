@@ -16,14 +16,16 @@ void call_csc(char* path){
 		exit(-2);
 	}
     int pid = fork();
+    printf("%d\n", pid);
     if (pid < 0){
         perror(strerror(errno));
         exit(errno);
     }
-    else if (pid == 0){
-        wait(&pid);
-        if (pid)
-            puts("csc returned an error code");
+    else if (pid){
+	int res;
+        waitpid(pid, &res, 0);
+        if (res)
+            printf("%d\n", res);
     }
     else if(execlp("./csc", "./csc", path, NULL)){
         perror(strerror(errno));
@@ -43,32 +45,8 @@ void call_sw(char *filename, char *dir){
 		printf("Erro...\n");
 	}
 	else{
-		wait(NULL);
+		waitpid(pid,NULL,0);
 	}
-}
-
-/*Erases res_ files*/
-void cleanup(){
-	char buf[PATH_MAX+1];
-    char *realDir = realpath(".", buf);
-
-	DIR *dir;
-	struct dirent *dir_ent;
-	struct stat ent_stat;
-	
-	dir = opendir(realDir);
-	
-	while((dir_ent = readdir(dir)) != NULL){
-		lstat(dir_ent->d_name, &ent_stat);
-		if(S_ISREG(ent_stat.st_mode)){
-			if(!strncmp(dir_ent->d_name, "res_", 4)){
-				unlink(dir_ent->d_name);
-			}
-		}
-	}
-
-	
-	
 }
 
 /*Checks whether the specified directory holds the files necessary for index to run.*/
@@ -158,10 +136,8 @@ int main(int argc, char **argv){
 			free(pathedFile);		
 		}
 	} 
-
-	call_csc(real);
-	sleep(1);
-	cleanup();
 	
+	call_csc(real);
+		
 	return 0;	
 }
