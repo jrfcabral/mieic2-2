@@ -50,31 +50,11 @@ void sort(char* path, char* outpath){
         if (res)
             puts("sort returned an error code");
     }
-    else if(execlp("sort", "sort", path, "-o", path, NULL) < 0){
+    else if(execlp("sort", "sort", "-V","-f", path, "-o", path, NULL) < 0){
         perror(strerror(errno));
         exit(errno);
     }
 }
-
-void sortversion(char* path, char* outpath){
-    int pid = fork();
-    int res;
-    if (pid < 0){
-        perror(strerror(errno));
-        exit(errno);
-    }
-    else if (pid){
-        waitpid(pid, &res,0);
-        if (res)
-            puts("sort returned an error code");
-    }
-    else if(execlp("sort", "sort", "-V", path, "-o", path, NULL) < 0){
-        perror(strerror(errno));
-        exit(errno);
-    }
-}
-
-
 
 //joins lines that have the same first word, inputs from inpath, outputs to outpath
 void clean(char* inpath, char* outpath){    
@@ -148,7 +128,7 @@ void format(char* inpath, char* outpath){
        if (res)
            puts("awk returned an error code");
     }
-    else if (execlp("awk", "awk", "BEGIN{print \"Index:\";} {print $0 \"\\n\";}", NULL) < 0){
+    else if (execlp("awk", "awk", "BEGIN{print \"INDEX\\n\";} {print $0 \"\\n\";}", NULL) < 0){
         perror(strerror(errno));
         exit(errno);
     }    
@@ -218,7 +198,7 @@ int main(int argc, char** argv)
     
     //sort the concatenated file   
     sort("temp.txt",  "temp.txt");
-    sortversion("temp.txt", "temp.txt");
+
 
     //join lines started by the same word    
     clean("temp.txt", "temp2.txt");
@@ -227,7 +207,6 @@ int main(int argc, char** argv)
         perror("Couldn't delete temporary file");    
 
     //sort the resulting file
-    sortversion("temp2.txt","temp2.txt");
     sort("temp2.txt","temp2.txt");
     
     format("temp2.txt", strcat(real, "/index.txt"));
