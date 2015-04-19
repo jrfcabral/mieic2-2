@@ -1,3 +1,7 @@
+//SOPE-FEUP Project #1
+//João Cabral & João Mota
+//sw.c
+//created 15th of April 2015
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -5,41 +9,68 @@
 #include <string.h>
 #include <sys/wait.h>
 
+char *buildWordsDir(char *dir){
+	char *wordsDir = (char *)malloc((strlen(dir)+8)*sizeof(char)+3);
+	strcpy(wordsDir, dir);
+	strcat(wordsDir, "/");
+	strcat(wordsDir, "words.txt");
+	
+	return wordsDir;
+}
+
+char *extractFileName(char *filename){
+	char *name = (char *)malloc(strlen(filename)*sizeof(char)+2);
+	strcpy(name, filename);
+	char *dump = strtok(name, ".");
+	return dump;
+}
+
+char* buildResString(char *filename){
+	char *resString = (char *)malloc((4+strlen(filename)+4)*sizeof(char)+2);
+	strcpy(resString, "res_");
+	strcat(resString, filename);
+	strcat(resString, ".txt");
+	return resString;
+}
+
+char* buildGrepName(char *filename, char *dir){
+	char *grepName = (char *)malloc((strlen(filename) + strlen(dir))*sizeof(char)+2);
+	strcpy(grepName, dir);
+	strcat(grepName, "/");
+	strcat(grepName, filename);
+	return grepName;
+}
+
+
 int main(int argc, char **argv){
 	if(argc != 3){
 		printf("Usage: %s file dir\n", argv[0]);
 		exit(-1);	
 	}
-	
 	//building string for words.txt
-	char *wordsDir = (char *)malloc((strlen(argv[2])+8)*sizeof(char)+3);
-	strcpy(wordsDir, argv[2]);
-	strcat(wordsDir, "/");
-	strcat(wordsDir, "words.txt");
+	char *wordsDir = buildWordsDir(argv[2]);
 
 	//opening words.txt
-	FILE *words;
-	words = fopen(wordsDir, "r");
-	if(words == NULL){
+	int words;
+	words = open(wordsDir, O_RDONLY);
+	if(words == -1){
 		perror(wordsDir);
 		exit(-1);	
-	}	
+	}
+	//getting words from words.txt
+	char *wordsContent = (char *)malloc(100*sizeof(char)+1);
+	int n;
+	while((n = read(words, wordsContent, 100)) > 0){
+		wordsContent = (char *)realloc(wordsContent, 100+strlen(wordsContent)*sizeof(char));
+	}
+	close(words);
+	
 	
 	//Extracting the file's name (without file extension)
-	char *name = (char *)malloc(strlen(argv[1])*sizeof(char));
-	strcpy(name, argv[1]);
-	int i;
-	for(i = strlen(name); i > 0; i--){
-		if(name[i] == '.'){
-			name[i] = '\0';			
-		}
-	}
+	char *name = extractFileName(argv[1]);
 	
 	//Building res_ string for receiving file.
-	char *fpath = (char *)malloc((4+strlen(name)+4)*sizeof(char));
-	strcpy(fpath, "res_");
-	strcat(fpath, name);
-	strcat(fpath, ".txt");
+	char *fpath = buildResString(name);
 
 	int search_res;
 	//Opening/Creating receiver file
@@ -50,27 +81,32 @@ int main(int argc, char **argv){
 	}
 		
 	//Building string for grep search	
-	char *grepName = (char *)malloc((strlen(argv[1]) + strlen(argv[2]))*sizeof(char)+2);
-	strcpy(grepName, argv[2]);
-	strcat(grepName, "/");
-	strcat(grepName, argv[1]);
+	char *grepName = buildGrepName(argv[1], argv[2]);
 
 	pid_t pid;
-	char *word = (char *)malloc(256*sizeof(char));
+	char *word, *save_wordptr, *save_dumpptr;
+	int i = 0;
 	int std = dup(STDOUT_FILENO); //Store stdout in a safe location
-	while(!feof(words)){ //grep cycle
+	while(1){ //grep cycle
 		int fd[2];
 		pipe(fd);
-		char *test = fgets(word, 256, words); //get word from words.txt
-		if(test == NULL){
-			break;		
+
+		if(i++ == 0){ 
+			word = strtok_r(wordsContent, "\n", &save_wordptr);
+			if(word == NULL)
+				break;
 		}
-		word[strlen(word) - 1] = '\0';
+		else{
+			word = strtok_r(NULL, "\n", &save_wordptr);
+			if(word == NULL)
+				break;
+		}
+		
 		pid = fork();
 		if(pid == 0){
 			close(fd[0]);
 			dup2(fd[1], STDOUT_FILENO);
-			execlp("grep", "grep", "-no", word, grepName, NULL);
+			execlp("grep", "grep", "-now", word, grepName, NULL);
 			printf("Command not executed.\n");
 			exit(-1); 
 		}
@@ -83,7 +119,7 @@ int main(int argc, char **argv){
 			n = read(fd[0], result, 10000);
 			result[n] = '\0';
 			
-			dump = strtok(result, ":\n");
+			dump = strtok_r(result, ":\n", &save_dumpptr);
 			if(dump != NULL){
 				while(1){
 					write(search_res, word, strlen(word));
@@ -92,14 +128,14 @@ int main(int argc, char **argv){
 					write(search_res, "-", 1);
 					write(search_res, dump, strlen(dump));
 					write(search_res, "\n", 1);
-					if((dump = strtok(NULL, ":\n")) == NULL)
+					if((dump = strtok_r(NULL, ":\n", &save_dumpptr)) == NULL)
 						break;
-					if((dump = strtok(NULL, ":\n")) == NULL)
+					if((dump = strtok_r(NULL, ":\n", &save_dumpptr)) == NULL)
 						break;
 				}
 			}
 			
-		}		
+		}	
 		
 	}
 	
