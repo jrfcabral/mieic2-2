@@ -55,6 +55,24 @@ void sort(char* path, char* outpath){
     }
 }
 
+void sortversion(char* path, char* outpath){
+    int pid = fork();
+    int res;
+    if (pid < 0){
+        perror(strerror(errno));
+        exit(errno);
+    }
+    else if (pid){
+        wait(&res);
+        if (res)
+            puts("sort returned an error code");
+    }
+    else if(execlp("sort", "sort", path, "-o","-V", path, NULL) < 0){
+        perror(strerror(errno));
+        exit(errno);
+    }
+}
+
 //joins lines that have the same first word, inputs from inpath, outputs to outpath
 void clean(char* inpath, char* outpath){    
 	if(!strcmp(inpath, outpath)){
@@ -81,11 +99,12 @@ void clean(char* inpath, char* outpath){
         exit(errno);
     }
     else if (pid){
-       wait(&pid);
-       if (pid)
+       int res;
+       waitpid(pid, &res,0);
+       if (res)
            puts("awk returned an error code");
     }
-    else if (execlp("awk", "awk", "{line=\"\";for(i=2;i <= NF; i++)line = line ($i (i == NF ?\", \" : \" \")); table[$1] = table[$1] line;} END {for (key in table) print key \" \" substr(table[key],0, length(table[key])-2)	;}", NULL) < 0){
+    else if (execlp("awk", "awk", "{line=\"\";for(i=2;i <= NF; i++)line = line ($i (i == NF ?\", \" : \" \")); table[$1] = table[$1] line;} END {for (key in table) print key \" \" substr(table[key],0, length(table[key])-2);}", NULL) < 0){
         perror(strerror(errno));
         exit(errno);
     }    
@@ -108,8 +127,7 @@ int main(int argc, char** argv)
         printf("Usage: csc directory\n");
     char buf[PATH_MAX+1];
     char* real = realpath(currentdir, buf);
-   // printf("opening %s directory\n", real);
-	DIR* dir = opendir(".");
+    DIR* dir = opendir(".");
    	if (dir == NULL){
 	    perror(strerror(errno));
 	    exit(errno);
@@ -155,6 +173,7 @@ int main(int argc, char** argv)
     
     //sort the concatenated file   
     sort("temp.txt",  "temp.txt");
+    sortversion("temp.txt", "temp.txt");
 
     //join lines started by the same word    
     clean("temp.txt", strcat(real,"/index.txt"));
@@ -162,9 +181,12 @@ int main(int argc, char** argv)
     if(unlink("temp.txt"))
         perror("Couldn't delete temporary file");    
     
-    usleep(10000);
+    //usleep(100000);//needed because even after the awk process ends (ie. after wait() has been called on it) the cleaned file still takes some time to appear on disk for some reason
     //sort the resulting file
+    sortversion(real,real);
     sort(real,real);
+
+   
     
     //release allocated memory
     for(;foundSize>0;foundSize--)free(found[foundSize-1]);
