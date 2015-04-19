@@ -67,7 +67,7 @@ void cleanup(){
 		}
 	}
 
-	free(realDir);
+	
 	
 }
 
@@ -160,8 +160,8 @@ int main(int argc, char **argv){
 	} 
 
 	call_csc(real);
-	/*sleep(1);
-	cleanup();*/
+	sleep(1);
+	cleanup();
 	
 	return 0;	
 }
