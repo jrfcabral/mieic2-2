@@ -31,7 +31,7 @@ uniform mat4 uNMatrix;
 uniform bool uLightEnabled;
 uniform bool uLightModelTwoSided;
 
-#define NUMBER_OF_LIGHTS 4
+#define NUMBER_OF_LIGHTS 8
 
 uniform vec4 uGlobalAmbient;
 
