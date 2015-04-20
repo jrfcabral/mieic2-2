@@ -9,7 +9,7 @@
 \date{31-3-2015}
 \author{João Cabral, up20130495\\
 	   João Mota, up201303462\\
-	   Luís Morais, up2013xxxxx}
+	   Luís Morais, up200800621\\}
 
 \begin{document}
 
@@ -70,8 +70,8 @@ não aumentar a duração da pena.
 Pessoa(\underline{idPessoa}, nome)
 Prisioneiro(\underline{número}, idPessoa $\rightarrow$ Pessoa, data de entrada, data de saída, cela $\rightarrow$ Cela)\\
 Funcionário(\underline{idFuncionário}, idPessoa $\rightarrow$ Pessoa, cargo, hora de entrada, hora de saída)\\
-Tempo de Recreio(\underline{idRecompensa $\rightarrow$ Recompensa}, duração, prisioneiro $\rightarrow$ Prisioneiro)\\
-Objeto Pessoal(\underline{idRecompensa $\rightarrow$ Recompensa}, descrição, prisioneiro $\rightarrow$ Prisioneiro)\\
+Tempo de Recreio(\underline{idRecompensa $\rightarrow$ Recompensa}, horaInicío, horaFim )\\
+Objeto Pessoal(\underline{idRecompensa $\rightarrow$ Recompensa}, descrição)\\
 Local(\underline{idLocal},nome, função)\\
 Cela(\underline{número}, idLocal $\rightarrow$ local)\\
 Pena(\underline{idPena}, data de sentença, motivo, prisioneiro $\rightarrow$ Prisioneiro)\\
