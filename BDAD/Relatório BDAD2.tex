@@ -23,7 +23,7 @@
 \section{Introdução}
 No âmbito da unidade curricular de Bases de Dados foi solicitada a elaboração de um
 trabalho prático de tema livre. O presente relatório constitui a primeira das três entregas
-previstas nas regras desse trabalho, focando-se na modeleção conceptual de uma base de
+previstas nas regras desse trabalho, focando-se na modelação conceptual de uma base de
 dados para gestão de um instituto prisional.
 
 
@@ -37,7 +37,7 @@ e a data em que sairá da instituição prisional.
 É ainda associado a cada prisioneiro:
 \begin{itemize}
 \item Uma lista de penas, cada pena contendo uma duração, data de sentença e um motivo;
-\item Uma cela, generalização de local, à qual é atribuida um número de cela;
+\item Uma cela, generalização de local, à qual é atribuída um número de cela;
 \item Um registo de todos os incidentes em que o prisioneiro esteve envolvido ao longo da sua estadia no estabelecimento prisional, cada incidente com uma descrição e uma data e associado a um local, um ou mais funcionários relatores e ainda a uma penalização. Cada penalização pode ainda ser associada a uma pena;
 \item Uma lista de recompensas por bom comportamento, que se resumem a tempo adicional de recreio, sobre o qual se guarda a duração, ou o direito a objetos pessoais, sobre os quais se guarda uma descrição.
 \end{itemize}
@@ -55,7 +55,7 @@ data de fim da pena que tem de cumprir.
 \item[Penalização] Guarda a descrição da penalização de um incidente. As penalizações podem ou
 não aumentar a duração da pena.
 \item[Recompensa] Superclasse que engloba os tipos de recompensa que os prisioneiros podem receber por bom comportamento.
-\item[Tempo de recreio] Subclasse de Recompensa onde é guardado a duração de tempo de recreio atribuido a um prisioneiro por bom comportamento.
+\item[Tempo de recreio] Subclasse de Recompensa onde é guardado a duração de tempo de recreio atribuído a um prisioneiro por bom comportamento.
 \item[Objeto pessoal] Subclasse de Recompensa onde é guardado o objecto cedido a um prisioneiro por bom comportamento.
 \item[Local] Espaço físico da prisão podendo ser dedicado a vários propósitos
 \item[Cela] Subclasse de Local, estando associada a um número de cela. Pode estar vazia ou conter um ou mais prisioneiros.
