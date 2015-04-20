@@ -1,4 +1,4 @@
-PRAGMA foreign_keys=OFF;
+PRAGMA foreign_keys=ON;
 BEGIN TRANSACTION;
 INSERT INTO "Pessoa" VALUES(0, 'Antonio Fortes', '1994-05-22', 'cabo-vardiana');
 INSERT INTO "Pessoa" VALUES(1, 'Nicomedes Lemos', '1996-10-14','cabo-verdiana');
