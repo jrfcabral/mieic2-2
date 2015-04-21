@@ -98,6 +98,9 @@ LightingScene.prototype.init = function(application) {
 	this.clockAppearance.setShininess(100);
 	this.clockAppearance.loadTexture("../resources/images/clock.png");
 	this.clockAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
+
+
+	this.setUpdatePeriod(100);
 };
 
 LightingScene.prototype.initCameras = function() {
@@ -144,6 +147,8 @@ LightingScene.prototype.initLights = function() {
 	
 
 	this.shader.unbind();
+
+
 };
 
 LightingScene.prototype.updateLights = function() {
@@ -259,12 +264,18 @@ LightingScene.prototype.display = function() {
 
 	//Clock
 	this.pushMatrix();
-		this.translate(8, 7, 1);
-		//this.clockAppearance.apply();
+		this.translate(7.2, 7.2, 0.01);
+		this.materialA.apply();
 		this.clock.display();
 	this.popMatrix();
+
+
 
 	// ---- END Primitive drawing section
 
 	this.shader.unbind();
+};
+
+LightingScene.prototype.update = function(currTime){
+	this.clock.update(currTime);
 };

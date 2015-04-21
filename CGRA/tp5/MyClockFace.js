@@ -19,16 +19,17 @@
  	this.vertices = [];
  	this.indices = [];
  	this.normals = [];
+ 	//this.texCoords = [];
  	var ang = 2*Math.PI/this.slices;
-
+	
 
  	for(var i = 0; i < this.slices; i++){
  		var x = Math.cos(ang*i);
  		var y = Math.sin(ang*i);
  		this.vertices.push(x*0.7, y*0.7, 0);
-
+	
  		this.normals.push(0, 0, 1);
- 		
+ 		//this.texCoords.push(x,y);
  	}
  
 	this.vertices.push(0, 0, 0);
@@ -43,13 +44,8 @@
 		this.indices.push(this.slices, i, i+1);
 	}
 
-	/*this.texCoords = [
-		0, 1,
-		1, 1,
-		0, 0,
-		1, 0
-	];*/
-
+	
+	
 
  	this.primitiveType = this.scene.gl.TRIANGLES;
  	this.initGLBuffers();
