@@ -37,7 +37,7 @@ LightingScene.prototype.init = function(application) {
 	this.boardA = new Plane(this, BOARD_A_DIVISIONS,-0.25,1.25,0,1);
 	this.boardB = new Plane(this, BOARD_B_DIVISIONS);
 	this.prism = new MyPrism(this, 8, 20);
-	this.cylinder = new MyCylinder(this, 8, 20, 1, 1);
+	this.cylinder = new MyCylinder(this, 8, 20);
 	this.lamp = new MyLamp(this, 8, 20);
 	this.clock = new MyClock(this, 12, 1);
 	

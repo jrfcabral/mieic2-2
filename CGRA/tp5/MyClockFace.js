@@ -19,21 +19,22 @@
  	this.vertices = [];
  	this.indices = [];
  	this.normals = [];
- 	//this.texCoords = [];
+ 	this.texCoords = [];
  	var ang = 2*Math.PI/this.slices;
 	
 
  	for(var i = 0; i < this.slices; i++){
  		var x = Math.cos(ang*i);
  		var y = Math.sin(ang*i);
- 		this.vertices.push(x*0.7, y*0.7, 0);
+ 		this.vertices.push(x, y, 0);
 	
  		this.normals.push(0, 0, 1);
- 		//this.texCoords.push(x,y);
+ 		this.texCoords.push(0.5*x+0.5, -0.5*y+0.5);
  	}
  
 	this.vertices.push(0, 0, 0);
 	this.normals.push(0, 0, 1);
+	this.texCoords.push(0.5, 0.5);
 
 	//clock face
 	for(var i = 0; i < this.slices; i++){

@@ -2,13 +2,12 @@
  * MyCylinder
  * @constructor
  */
- function MyCylinder(scene, slices, stacks, xmult, zmult) {
+ function MyCylinder(scene, slices, stacks) {
  	CGFobject.call(this,scene);
 	
 	this.slices=slices;
 	this.stacks=stacks+1;
-	this.xmult = xmult;
-	this.zmult = zmult;
+	
  	this.initBuffers();
  };
 
@@ -28,9 +27,9 @@
  		for(var j = 0; j < this.stacks; j++){
  			var x = Math.cos(ang*i);
  			var y = Math.sin(ang*i);
- 			this.vertices.push(x*this.xmult, y*this.xmult, j*this.zmult);
+ 			this.vertices.push(x, y, j);
 
- 			this.normals.push(x*this.xmult, y*this.xmult, 0);
+ 			this.normals.push(x, y, 0);
  		}
  	}
  
