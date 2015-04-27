@@ -65,11 +65,11 @@ MyRobot.prototype.setPod = function(x, y){
 	this.posX = x;
 	this.posY = y;
 }
-MyRobot.prototype.moveForward = function(){
-	this.posZ+=0.01*Math.cos(this.scene.bot.angle*(Math.PI/180));
-	this.posX+=0.01*Math.sin(this.scene.bot.angle*(Math.PI/180));
+MyRobot.prototype.moveForward = function(speed){
+	this.posZ+=speed*Math.cos(this.scene.bot.angle*(Math.PI/180));
+	this.posX+=speed*Math.sin(this.scene.bot.angle*(Math.PI/180));
 }
-MyRobot.prototype.moveBackward = function(){
-	this.posZ-=0.01*Math.cos(this.scene.bot.angle*(Math.PI/180));
-	this.posX-=0.01*Math.sin(this.scene.bot.angle*(Math.PI/180));
+MyRobot.prototype.moveBackward = function(speed){
+	this.posZ-=speed*Math.cos(this.scene.bot.angle*(Math.PI/180));
+	this.posX-=speed*Math.sin(this.scene.bot.angle*(Math.PI/180));
 }

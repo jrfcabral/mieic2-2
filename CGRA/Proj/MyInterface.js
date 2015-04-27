@@ -72,10 +72,10 @@ MyInterface.prototype.processKeyboard = function(event) {
 			this.scene.bot.setAngle(this.scene.bot.angle + 1);
 			break;
 		case(119):
-			this.scene.bot.moveForward();			
+			this.scene.bot.moveForward(this.scene.speed);			
 			break;
 		case(115):
-			this.scene.bot.moveBackward();
+			this.scene.bot.moveBackward(this.scene.speed);
 			break;
 		case(100):
 			this.scene.bot.setAngle(this.scene.bot.angle - 1);
