@@ -67,11 +67,11 @@ MyInterface.prototype.processKeyboard = function(event) {
 	// for better cross-browser support, you may also check suggestions on using event.which in http://www.w3schools.com/jsref/event_key_keycode.asp
 	switch (event.keyCode)
 	{
-		case (65):	// only works for capital 'A', as it is
+		case (97):	// only works for capital 'A', as it is
 			//console.log("Key 'A' pressed");
 			this.scene.bot.setAngle(this.scene.bot.angle + 1);
 			break;
-		case(68):
+		case(100):
 			this.scene.bot.setAngle(this.scene.bot.angle - 1);
 			break;
 	};
