@@ -23,11 +23,11 @@ MyRobot.prototype.constructor=MyRobot;
 
 MyRobot.prototype.initBuffers = function () {
 this.vertices = [
-           0.5, -0.3, 0,
-            -0.5, -0.3, 0,
+           0.5, 0.3, 0,
+            -0.5, 0.3, 0,
             0, 0.3, 2,
-            0.5, -0.3, 0,
-            -0.5, -0.3, 0,
+            0.5, 0.3, 0,
+            -0.5, 0.3, 0,
             0, 0.3, 2
 			];
 			
@@ -64,4 +64,12 @@ MyRobot.prototype.setAngle = function(angle){
 MyRobot.prototype.setPod = function(x, y){
 	this.posX = x;
 	this.posY = y;
+}
+MyRobot.prototype.moveForward = function(){
+	this.posZ+=0.01*Math.cos(this.scene.bot.angle*(Math.PI/180));
+	this.posX+=0.01*Math.sin(this.scene.bot.angle*(Math.PI/180));
+}
+MyRobot.prototype.moveBackward = function(){
+	this.posZ-=0.01*Math.cos(this.scene.bot.angle*(Math.PI/180));
+	this.posX-=0.01*Math.sin(this.scene.bot.angle*(Math.PI/180));
 }
