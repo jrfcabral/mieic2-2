@@ -50,6 +50,14 @@ MyInterface.prototype.init = function(application) {
 	
 	this.gui.add(this.scene, 'speed', -5, 5);
 
+
+	var group2 = this.gui.addFolder("Lights");
+	group2.add(this.scene, 'Light0');
+	group2.add(this.scene, 'Light1');
+	group2.add(this.scene, 'Light2');
+	group2.add(this.scene, 'Light3');
+	
+	this.gui.add(this.scene, 'ToggleClock'); 
 	return true;
 };
 

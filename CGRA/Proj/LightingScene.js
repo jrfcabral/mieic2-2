@@ -25,6 +25,11 @@ LightingScene.prototype.init = function(application) {
 	this.option1=true; 
 	this.option2=false; 	
 	this.speed=3;
+	this.Light0 = true;
+	this.Light1 = true;
+	this.Light2 = true;
+	this.Light3 = true;
+	this.enableClock = true;
 
 	this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	this.gl.clearDepth(100.0);
@@ -134,18 +139,17 @@ LightingScene.prototype.initLights = function() {
 	this.lights[0].setAmbient(0, 0, 0, 1);
 	this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
 	this.lights[0].setSpecular(1.0,1.0,0.0,1.0);
-	this.lights[0].enable();
-
+	
 	this.lights[1].setAmbient(0, 0, 0, 1);
 	this.lights[1].setDiffuse(1.0, 1.0, 1.0, 1.0);
-	this.lights[1].enable();
+	//this.lights[1].enable();
 
 	this.lights[2].setDiffuse(1.0,1.0,1.0,1.0);
 	this.lights[2].setSpecular(1.0,1.0,1.0,1.0);	
 	this.lights[2].setQuadraticAttenuation(0);
 	this.lights[2].setLinearAttenuation(0.2);
 	this.lights[2].setConstantAttenuation(0);
-	this.lights[2].enable();
+	//this.lights[2].enable();
 
 	this.lights[3].setAmbient(0, 0, 0, 1);
 	this.lights[3].setDiffuse(1.0, 1.0, 1.0, 1.0);
@@ -154,7 +158,7 @@ LightingScene.prototype.initLights = function() {
 	this.lights[3].setLinearAttenuation(0.5);
 	this.lights[3].setConstantAttenuation(0.2);
 	this.lights[3].setVisible(true);
-	this.lights[3].enable();
+	//this.lights[3].enable();
 
 	
 
@@ -297,8 +301,47 @@ LightingScene.prototype.display = function() {
 };
 
 LightingScene.prototype.update = function(currTime){
-	this.clock.update(currTime);
+	if(this.enableClock)
+		this.clock.update(currTime);
+
+	if(this.Light0 == true){
+		this.lights[0].enable();
+	}
+	else{
+		this.lights[0].disable();
+	}
+
+	if(this.Light1 == true){
+		this.lights[1].enable();
+	}
+	else{
+		this.lights[1].disable();
+	}
+
+	if(this.Light2 == true){
+		this.lights[2].enable();
+	}
+	else{
+		this.lights[2].disable();
+	}
+
+	if(this.Light3 == true){
+		this.lights[3].enable();
+	}
+	else{
+		this.lights[3].disable();
+	}
+
 };
 
 LightingScene.prototype.doSomething = function ()
 { console.log("Doing something..."); };
+
+LightingScene.prototype.ToggleClock = function(){
+	if(this.enableClock)
+		this.enableClock = false;
+	else{
+		this.enableClock = true;
+	}
+};
+
