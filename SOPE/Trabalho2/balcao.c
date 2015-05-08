@@ -33,11 +33,17 @@ sem_t *sem_id;
 
 int shmTryOpen(char *shmName){ //FALTAM SEMAFOROS E/OU MUTEXES
 	int shmFd = shm_open(shmName, (O_CREAT|O_EXCL|O_RDWR), 0660);
-	if(shmFd < 0){ //shm already exists
+	if(errno == EEXIST){ //shm already exists	
+	    puts("shared memory already exists, opening it instead");    
 		shmFd = shm_open(shmName, (O_RDWR), 0660);
 		lojaPrimUlt = -1;
 	}
+	else if(shmFd < 0){
+	    puts("balcao: fatal error! couldn't open shared memory");
+	    perror(NULL);
+	}
 	else{
+	    puts("shared memory created");
 		lojaPrimUlt = 1;
 		ftruncate(shmFd, sizeof(mem_part));	    	
 	}
@@ -98,4 +104,5 @@ int main(int argc, char **argv){
 	char *fifoName = (char *)malloc(15*sizeof(char));
 	sprintf(fifoName, "/tmp/fb_%d", getpid());
 	mkfifo(fifoName, 0660);
+	puts("exiting normally");
 }
