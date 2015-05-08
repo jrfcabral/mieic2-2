@@ -33,7 +33,7 @@ sem_t *sem_id;
 
 int shmTryOpen(char *shmName){ //FALTAM SEMAFOROS E/OU MUTEXES
 	int shmFd = shm_open(shmName, (O_CREAT|O_EXCL|O_RDWR), 0660);
-	if(errno == EEXIST){ //shm already exists	
+	if(shmFd < 0 && errno == EEXIST){ //shm already exists	
 	    puts("shared memory already exists, opening it instead");    
 		shmFd = shm_open(shmName, (O_RDWR), 0660);
 		lojaPrimUlt = -1;
@@ -53,7 +53,7 @@ int shmTryOpen(char *shmName){ //FALTAM SEMAFOROS E/OU MUTEXES
 int semTryOpen(){
 
 	sem_id = sem_open(SEM_NAME, (O_CREAT|O_EXCL|O_RDWR), 0660, 1);
-	if(errno == EEXIST){ //Semaphore already exists
+	if(sem_id == SEM_FAILED && errno == EEXIST){ //Semaphore already exists
 		puts("semaphore already exists, opening it instead");
 		sem_id = sem_open(SEM_NAME, (O_RDWR), 0660);
 		if (sem_id == SEM_FAILED){
@@ -67,6 +67,12 @@ int semTryOpen(){
 	    }
 		
 	}
+	else if (sem_id == SEM_FAILED){
+	    perror("Balcao:fatal error!");
+	    exit(-1);
+	}
+	else
+		puts("semaphore created");
 	
 	return 0;
 }
@@ -78,7 +84,12 @@ int main(int argc, char **argv){
 	}
 	
 
-	semTryOpen();	
+	semTryOpen();
+	puts("sem openned");
+
+	 int i;
+		    sem_getvalue(sem_id, &i);
+		    printf("opened semaphore with value %d\n", i);
 	sem_wait(sem_id);
 	puts("got past semaphore");
 	int shared = shmTryOpen(argv[1]);
@@ -105,4 +116,5 @@ int main(int argc, char **argv){
 	sprintf(fifoName, "/tmp/fb_%d", getpid());
 	mkfifo(fifoName, 0660);
 	puts("exiting normally");
+	exit(0);
 }
