@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <semaphore.h>
+#include <errno.h>
 
 #define SEM_NAME "/semBalcao"
 
@@ -38,16 +39,29 @@ int shmTryOpen(char *shmName){ //FALTAM SEMAFOROS E/OU MUTEXES
 	}
 	else{
 		lojaPrimUlt = 1;
-		ftruncate(shmFd, sizeof(mem_part));	
+		ftruncate(shmFd, sizeof(mem_part));	    	
 	}
 	return shmFd;
 }
 
 int semTryOpen(){
-	sem_id = sem_open(SEM_NAME, (O_CREAT|O_EXCL|O_RDWR), 0660);
-	if(sem_id < 0){ //Semaphore already exists
+
+	sem_id = sem_open(SEM_NAME, (O_CREAT|O_EXCL|O_RDWR), 0660, 1);
+	if(errno == EEXIST){ //Semaphore already exists
+		puts("semaphore already exists, opening it instead");
 		sem_id = sem_open(SEM_NAME, (O_RDWR), 0660);
+		if (sem_id == SEM_FAILED){
+		    puts("balcao: fatal error! Couldn't open semaphore!");
+		    exit(-1);
+		}
+		else{
+		    int i;
+		    sem_getvalue(sem_id, &i);
+		    printf("opened semaphore with value %d\n", i);		    
+	    }
+		
 	}
+	
 	return 0;
 }
 
@@ -58,9 +72,9 @@ int main(int argc, char **argv){
 	}
 	
 
-	semTryOpen();
-
+	semTryOpen();	
 	sem_wait(sem_id);
+	puts("got past semaphore");
 	int shared = shmTryOpen(argv[1]);
 	sem_post(sem_id);
 	
