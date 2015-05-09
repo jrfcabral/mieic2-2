@@ -11,9 +11,11 @@
 #include <string.h>
 #include <pthread.h>
 
-#define SEM_NAME "/semBalcao"
 #define MAX_LINES 100
+#define SEM_NAME "/semBalcao"
 typedef pthread_mutex_t mutex_t;
+
+
 
 typedef struct _table{
 	int balcao;
@@ -23,18 +25,23 @@ typedef struct _table{
 	char nome_fifo[15];
 	int em_atendimento;
 	int ja_atendidos;
-	int temp_med_atend;
+	int tempo_med_atend;
 	mutex_t mutex;
 }table;
 
 typedef struct _mem_part{
 	time_t data_abert_loja;
 	int nBalcoes;
+	int balcoesDisponiveis;
 	char nome_sem[10];
     table tabelas[MAX_LINES];
 }mem_part;
 
-int lojaPrimUlt; //1 se e o primeiro balcao, 0 se e o ultimo, -1 se nenhum
+typedef struct _infoAtendimento{
+    char fifoName[20];
+    int balcaoNumber;
+    mem_part* mem;
+}infoAtendimento;
 
 int shmTryOpen(char *shmName){ 
 	puts("opening shared memory");
@@ -46,7 +53,6 @@ int shmTryOpen(char *shmName){
 	       perror("balcao: fatal error! couldn't open shared memory");
            return -1;
 	    }
-		lojaPrimUlt = -1;
 	}
 	else if (shmFd < 0){
 	    perror("balcao:fatal error! couldn't open shared memory!");
@@ -55,7 +61,7 @@ int shmTryOpen(char *shmName){
 	    
 	else{
 	    puts("shared memory created");
-		lojaPrimUlt = 1;
+
 		ftruncate(shmFd, sizeof(mem_part));	    	
 	}
 
@@ -75,9 +81,7 @@ sem_t* semTryOpen(){
 		else{
 		    int i;
 		    sem_getvalue(sem_id, &i);
-		    printf("opened semaphore with value %d\n", i);
-		    if (i == 0)
-		        sem_post(sem_id);		    
+		    printf("opened semaphore with value %d\n", i);		   	    
 	    }
 		
 	}
@@ -122,12 +126,16 @@ int createBalcao(mem_part *mem){
     snprintf(tabela->nome_fifo,15, "fb_%d", getpid()); 
     pthread_mutex_unlock(&tabela->mutex);
     mem->nBalcoes++;
+    mem->balcoesDisponiveis++;
     return (mem->nBalcoes-1);
 }
-void encerraBalcao(mem_part *mem, int balcao){
+void encerraBalcao(mem_part *mem, int balcao, sem_t* sem_id){
     pthread_mutex_lock(&mem->tabelas[balcao].mutex);
     mem->tabelas[balcao].encerrado = 1;    
-    pthread_mutex_unlock(&mem->tabelas[balcao].mutex);    
+    pthread_mutex_unlock(&mem->tabelas[balcao].mutex);
+   	sem_wait(sem_id);
+	mem->balcoesDisponiveis--;
+	sem_post(sem_id);    
 }
 void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName){
     int i;
@@ -147,6 +155,23 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName){
     }
     
 }
+void* atendimento(void* arg){
+    infoAtendimento* info = (infoAtendimento*) arg;
+    table *tabela = &info->mem->tabelas[info->balcaoNumber];
+    pthread_mutex_lock(&tabela->mutex);
+    printf("a atender cliente cujo fifo privado é %s\n", info->fifoName);
+    int duracao = tabela->em_atendimento +1;
+    tabela->em_atendimento++;
+    pthread_mutex_unlock(&info->mem->tabelas[info->balcaoNumber].mutex);
+    sleep(duracao);
+    pthread_mutex_lock(&tabela->mutex);
+    printf("atendido cliente cujo fifo privado é %s\n", info->fifoName);
+    tabela->tempo_med_atend = ( tabela->tempo_med_atend*tabela->ja_atendidos + duracao)/(tabela->ja_atendidos+1);
+    tabela->em_atendimento--;   
+    tabela->ja_atendidos++;
+    pthread_mutex_unlock(&tabela->mutex);
+    return NULL;
+}
 int main(int argc, char **argv){
 
 	if(argc != 3){
@@ -164,13 +189,14 @@ int main(int argc, char **argv){
 	close(shared);
 	if (mem == MAP_FAILED){
 	    perror("balcao: fatal error! Couldn't map memory: ");
+	    sem_post(sem_id);
 	    exit(1);
 	}
     if(!mem->nBalcoes)
         initShm(mem);
     int currentBalcao =  createBalcao(mem);
     if (currentBalcao < 0){
-        puts("balcao: fatal error! couldn't create new table line!");
+        puts("balcao: fatal error! couldn't create new table line! Store is probably full.");
         sem_post(sem_id);
         exit(-1);        
     }
@@ -182,10 +208,26 @@ int main(int argc, char **argv){
 	printf("fifo de atendimento criado em %s\n", fifoName);
 	int fifoFd = open(fifoName, (O_RDWR), 0777);
 	char buffer[20];
+	pthread_t *clients = malloc(sizeof(clients));
+	int clientsSize = 0;
 	while(strncmp(buffer, "close", 5) != 0){
-	    read(fifoFd, (void*)buffer, 20);	    
+	    read(fifoFd, (void*)buffer, 20);
+	    if (strncmp(buffer, "fc", 2) == 0)
+	    {
+	        clientsSize++;
+	        if ( (clients = realloc(clients, clientsSize)) == NULL){
+	            perror("balcao: couldn't allocate thread space");
+	            exit(-1);
+	        }
+	        infoAtendimento* info = malloc(sizeof(infoAtendimento));//a ser libertado pelo thread
+	        memcpy(info->fifoName, buffer, 20);
+	        info->balcaoNumber = currentBalcao;
+	        info->mem = mem;
+	        
+	        pthread_create(&clients[clientsSize-1], NULL, atendimento, (void*)info);
+	    }
 	}
-	encerraBalcao(mem, currentBalcao);
+	encerraBalcao(mem, currentBalcao, sem_id);
 	encerraLoja(mem, sem_id, argv[1]);
     sem_close(sem_id);
     unlink(fifoName);
