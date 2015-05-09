@@ -170,6 +170,7 @@ void* atendimento(void* arg){
     tabela->em_atendimento--;   
     tabela->ja_atendidos++;
     pthread_mutex_unlock(&tabela->mutex);
+    free(arg);
     return NULL;
 }
 int main(int argc, char **argv){
@@ -220,7 +221,7 @@ int main(int argc, char **argv){
 	            exit(-1);
 	        }
 	        infoAtendimento* info = malloc(sizeof(infoAtendimento));//a ser libertado pelo thread
-	        memcpy(info->fifoName, buffer, 20);
+	        strncpy(info->fifoName, buffer, 20);
 	        info->balcaoNumber = currentBalcao;
 	        info->mem = mem;
 	        
