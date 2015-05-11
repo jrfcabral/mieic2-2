@@ -42,15 +42,16 @@ LightingScene.prototype.init = function(application) {
 	// Scene elements
 	this.table = new myTable(this);
 	this.floor = new MyQuad(this,0,10,0,12);
-	this.leftwall = new MyQuad(this,-1,2,-0.5,1.5);
+	this.leftwall = new windowWall(this,100);
 	this.planewall = new Plane(this, 100);
 	this.boardA = new Plane(this, BOARD_A_DIVISIONS,-0.25,1.25,0,1);
 	this.boardB = new Plane(this, BOARD_B_DIVISIONS);
 	this.prism = new MyPrism(this, 8, 20);
 	this.cylinder = new MyCylinder(this, 8, 20);
-	this.lamp = new MyLamp(this, 8, 20);
+	this.lamp = new MyLamp(this, 10, 60);
 	this.clock = new MyClock(this, 12, 1);
 	this.bot = new MyRobot(this);
+	this.impostor = new Plane(this, 100);
 	
 
 	// Materials
@@ -116,6 +117,13 @@ LightingScene.prototype.init = function(application) {
 	this.botAppearance.setShininess(1.0, 1.0, 0.1, 1);
 	this.botAppearance.setShininess(120);
 
+	this.impostorAppearance = new CGFappearance(this);
+	this.impostorAppearance.setDiffuse(1,1,1,1);
+	this.impostorAppearance.setSpecular(0,0,0,0);
+	this.impostorAppearance.setShininess(0);
+	this.impostorAppearance.loadTexture("../resources/images/impostor.png");
+	this.impostorAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
+
 
 	this.setUpdatePeriod(100);
 };
@@ -139,9 +147,11 @@ LightingScene.prototype.initLights = function() {
 	this.lights[0].setAmbient(0, 0, 0, 1);
 	this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
 	this.lights[0].setSpecular(1.0,1.0,0.0,1.0);
+	this.lights[0].setVisible(true);
 	
 	this.lights[1].setAmbient(0, 0, 0, 1);
 	this.lights[1].setDiffuse(1.0, 1.0, 1.0, 1.0);
+	this.lights[1].setVisible(true);
 	//this.lights[1].enable();
 
 	this.lights[2].setDiffuse(1.0,1.0,1.0,1.0);
@@ -149,6 +159,7 @@ LightingScene.prototype.initLights = function() {
 	this.lights[2].setQuadraticAttenuation(0);
 	this.lights[2].setLinearAttenuation(0.2);
 	this.lights[2].setConstantAttenuation(0);
+	this.lights[2].setVisible(true);
 	//this.lights[2].enable();
 
 	this.lights[3].setAmbient(0, 0, 0, 1);
@@ -195,7 +206,7 @@ LightingScene.prototype.display = function() {
 	// Draw axis
 	this.axis.display();
 
-	this.materialDefault.apply();
+	//this.materialDefault.apply();
 
 	// ---- END Background, camera and axis setup
 
@@ -262,6 +273,14 @@ LightingScene.prototype.display = function() {
 		this.boardB.display();
 	this.popMatrix();
 
+	//Impostor
+	this.impostorAppearance.apply();
+	this.pushMatrix();
+		this.translate(-3, 3,6);		
+		this.rotate(90*degToRad, 0,1,0);
+		this.scale(20, 10,1);
+		this.impostor.display();
+	this.popMatrix();
 	//Prism and Cylinder
 	/*this.pushMatrix();
 		this.rotate(-90 * degToRad, 1, 0, 0);

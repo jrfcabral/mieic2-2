@@ -17,6 +17,7 @@ serialInclude([
 	'MyClockFace.js',
 	'MyClock.js',
 	'MyRobot.js',
+	'windowWall.js',
 	 
 
 	main=function() {
