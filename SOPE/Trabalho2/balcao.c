@@ -142,6 +142,9 @@ void* atendimento(void* arg){
     pthread_mutex_unlock(&info->mem->tabelas[info->balcaoNumber].mutex);
     sleep(duracao);
     pthread_mutex_lock(&tabela->mutex);
+    int fifo = open(info->fifoName, O_WRONLY, 0777);
+    char mensagem[] = "fim_atendimento";
+    write(fifo, mensagem, strlen(mensagem));
     printf("atendido cliente cujo fifo privado é %s\n", info->fifoName);
     tabela->tempo_med_atend = ( tabela->tempo_med_atend*tabela->ja_atendidos + duracao)/(tabela->ja_atendidos+1);
     tabela->em_atendimento--;   
@@ -158,7 +161,7 @@ void* alarme(void* arg){
     char *fifoName = (char *)malloc(15*sizeof(char));
 	sprintf(fifoName, "/tmp/fb_%d", getpid());
     int fifo = open(fifoName, O_WRONLY, 0777);
-    char* message = "close";
+    char message[] = "close";
     write(fifo, message, strlen(message));
     return(NULL);    
     
