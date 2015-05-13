@@ -6,30 +6,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-
-#define MAX_LINES 100
-typedef pthread_mutex_t mutex_t;
-
-typedef struct _table{
-	int balcao;
-	int encerrado;
-	time_t tempo;
-	int duracao;
-	char nome_fifo[15];
-	int em_atendimento;
-	int ja_atendidos;
-	int tempo_med_atend;
-	mutex_t mutex;
-}table;
-
-typedef struct _mem_part{
-	time_t data_abert_loja;
-	int nBalcoes;
-	int balcoesDisponiveis;
-	char nome_sem[10];
-    table tabelas[MAX_LINES];
-}mem_part;
-
+#include "loja.h"
 
 int shmTryOpen(char *mem_part){
 	int shmFd = shm_open(mem_part, O_RDWR, 0777);
@@ -44,13 +21,14 @@ int shmTryOpen(char *mem_part){
 
 char *mkClientFifo(){
 	char *fifoName = (char *)malloc(15*sizeof(char));
-	sprintf(fifoName, "fc_%d", getpid());
+	sprintf(fifoName, "/tmp/fc_%d", getpid());
 	mkfifo(fifoName, 0777);
 	return fifoName;
 }
 
 
 int genClient(mem_part *mem){
+	puts("making client");
 	char *fifo = mkClientFifo();
 	int j = 0, minClientes = 9999999;
 	for(j = 0; j < mem->nBalcoes; j++){
@@ -59,22 +37,28 @@ int genClient(mem_part *mem){
 			minClientes = atend;
 		}
 	}
-	int clienteFifo = open(fifo, O_RDWR, 0777);
+	int clienteFifo = open(fifo, O_RDWR, 0777);	
 	if(clienteFifo < 0){
+		puts(fifo);
 		perror("Could not open client FIFO. Exiting.\n");
 		exit(-1);
 	}
+	puts("opening balcao fifo");	
+	puts(mem->tabelas[minClientes].nome_fifo);
 	int balcaoFifo = open(mem->tabelas[minClientes].nome_fifo, O_RDWR, 0777);
+	puts("fifo opened");
 	if(balcaoFifo < 0){
+		puts(mem->tabelas[minClientes].nome_fifo);
 		perror("Could not open counter FIFO. Exiting.");
 		exit(-1);
 	}
 	write(balcaoFifo, fifo, strlen(fifo));
+	puts("wrote to fifo");
 	int atendido = 0;
 	char *atendimento = (char *)malloc(20*sizeof(char)+1);	
 	while(!atendido){
 		int n = read(clienteFifo, atendimento, 20);
-		if(!strcmp(atendimento, "fim_atendimento")){
+		if(!strncmp(atendimento, "fim_atendimento",n)){
 			atendido = 1;
 		}		
 	}
@@ -109,4 +93,5 @@ int main(int argc, char **argv){
 			exit(0);
 		}
 	}
+	exit(0);
 }

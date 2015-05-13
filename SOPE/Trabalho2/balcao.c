@@ -11,37 +11,13 @@
 #include <string.h>
 #include <pthread.h>
 
-#define MAX_LINES 100
-#define SEM_NAME "/semBalcao"
-typedef pthread_mutex_t mutex_t;
+#include "loja.h"
 
 
 
-typedef struct _table{
-	int balcao;
-	int encerrado;
-	time_t tempo;
-	int duracao;
-	char nome_fifo[15];
-	int em_atendimento;
-	int ja_atendidos;
-	int tempo_med_atend;
-	mutex_t mutex;
-}table;
 
-typedef struct _mem_part{
-	time_t data_abert_loja;
-	int nBalcoes;
-	int balcoesDisponiveis;
-	char nome_sem[10];
-    table tabelas[MAX_LINES];
-}mem_part;
 
-typedef struct _infoAtendimento{
-    char fifoName[20];
-    int balcaoNumber;
-    mem_part* mem;
-}infoAtendimento;
+
 
 int shmTryOpen(char *shmName){ 
 	puts("opening shared memory");
@@ -123,7 +99,7 @@ int createBalcao(mem_part *mem){
     time(&(tabela->tempo));
     tabela->duracao = -1;
     tabela->encerrado = 0;
-    snprintf(tabela->nome_fifo,15, "fb_%d", getpid()); 
+    snprintf(tabela->nome_fifo,15, "/tmp/fb_%d", getpid()); 
     pthread_mutex_unlock(&tabela->mutex);
     mem->nBalcoes++;
     mem->balcoesDisponiveis++;
@@ -213,10 +189,13 @@ int main(int argc, char **argv){
 	int clientsSize = 0;
 	while(strncmp(buffer, "close", 5) != 0){
 	    read(fifoFd, (void*)buffer, 20);
-	    if (strncmp(buffer, "fc", 2) == 0)
+        puts("read from fifo");
+        puts(buffer);
+	    if (strncmp(buffer, "/tmp/fc", 7) == 0)
 	    {
+            puts("atender");
 	        clientsSize++;
-	        if ( (clients = realloc(clients, clientsSize)) == NULL){
+	        if ( (clients = realloc(clients, clientsSize*sizeof(pthread_t*))) == NULL){
 	            perror("balcao: couldn't allocate thread space");
 	            exit(-1);
 	        }
@@ -228,6 +207,11 @@ int main(int argc, char **argv){
 	        pthread_create(&clients[clientsSize-1], NULL, atendimento, (void*)info);
 	    }
 	}
+    
+    int i;
+    for(i = 0; i < clientsSize; i++)
+        pthread_join(clients[i], NULL);
+    
 	encerraBalcao(mem, currentBalcao, sem_id);
 	encerraLoja(mem, sem_id, argv[1]);
     sem_close(sem_id);
