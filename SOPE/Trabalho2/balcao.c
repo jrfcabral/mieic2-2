@@ -10,6 +10,7 @@
 #include <time.h>
 #include <string.h>
 #include <pthread.h>
+#include <limits.h>
 
 #include "loja.h"
 
@@ -149,12 +150,34 @@ void* atendimento(void* arg){
     free(arg);
     return NULL;
 }
+
+void* alarme(void* arg){
+    infoAlarme* info = (infoAlarme*) arg;
+    printf("vou esperar %d segundos\n", info->tempo);
+    sleep(info->tempo);
+    char *fifoName = (char *)malloc(15*sizeof(char));
+	sprintf(fifoName, "/tmp/fb_%d", getpid());
+    int fifo = open(fifoName, O_WRONLY, 0777);
+    char* message = "close";
+    write(fifo, message, strlen(message));
+    return(NULL);    
+    
+}
 int main(int argc, char **argv){
 
 	if(argc != 3){
 		printf("Usage: %s shared_mem tempo_abertura\n", argv[0]);
 		exit(-1); 	
 	}
+    long int duracao;
+    if ( ((duracao = strtol(argv[2], NULL, 10)) < 1) || (duracao == LONG_MAX && errno == ERANGE) )
+    {
+        printf("balcao: fatal error, invalid duration \"%s\" provided!", argv[2]);
+        if (duracao == 0)
+            puts(" Duration must be an integer > 0.");
+        exit(-1);
+    }
+    
 	sem_t *sem_id =	semTryOpen();
 	sem_wait(sem_id);
 	int shared = shmTryOpen(argv[1]);
@@ -185,7 +208,12 @@ int main(int argc, char **argv){
 	printf("fifo de atendimento criado em %s\n", fifoName);
 	int fifoFd = open(fifoName, (O_RDWR), 0777);
 	char buffer[20];
-	pthread_t *clients = malloc(sizeof(clients));
+	pthread_t *clients = malloc(sizeof(pthread_t));
+    pthread_t alarme_thread;
+    infoAlarme alarmeConfig;
+    alarmeConfig.tempo = duracao;
+    alarmeConfig.balcaoNumber = currentBalcao;
+    pthread_create(&alarme_thread, NULL, alarme, (void*)&alarmeConfig);
 	int clientsSize = 0;
 	while(strncmp(buffer, "close", 5) != 0){
 	    read(fifoFd, (void*)buffer, 20);
@@ -195,7 +223,7 @@ int main(int argc, char **argv){
 	    {
             puts("atender");
 	        clientsSize++;
-	        if ( (clients = realloc(clients, clientsSize*sizeof(pthread_t*))) == NULL){
+	        if ( (clients = realloc(clients, clientsSize*sizeof(pthread_t))) == NULL){
 	            perror("balcao: couldn't allocate thread space");
 	            exit(-1);
 	        }

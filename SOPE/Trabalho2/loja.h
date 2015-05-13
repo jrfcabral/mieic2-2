@@ -27,3 +27,8 @@ typedef struct _infoAtendimento{
     int balcaoNumber;
     mem_part* mem;
 }infoAtendimento;
+
+typedef struct _infoAlarme{
+	int tempo;
+	int balcaoNumber;	
+} infoAlarme;
