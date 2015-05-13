@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <pthread.h>
 #include "loja.h"
 
 int shmTryOpen(char *mem_part){
@@ -27,8 +28,7 @@ char *mkClientFifo(){
 }
 
 
-int genClient(mem_part *mem){
-	puts("making client");
+int genClient(mem_part *mem){	
 	char *fifo = mkClientFifo();
 	int j = 0, minClientes = 9999999;
 	for(j = 0; j < mem->nBalcoes; j++){
@@ -43,21 +43,23 @@ int genClient(mem_part *mem){
 		perror("Could not open client FIFO. Exiting.\n");
 		exit(-1);
 	}
-	puts("opening balcao fifo");	
-	puts(mem->tabelas[minClientes].nome_fifo);
-	int balcaoFifo = open(mem->tabelas[minClientes].nome_fifo, O_RDWR, 0777);
-	puts("fifo opened");
+	printf("trying to open fifo for balcon number: %d, name is %s\n", mem->tabelas[minClientes].balcao, mem->tabelas[minClientes].nome_fifo);	
+	pthread_mutex_lock(&mem->tabelas[minClientes].mutex);
+	int balcaoFifo = open(mem->tabelas[minClientes].nome_fifo, O_WRONLY, 0777);
+	pthread_mutex_unlock(&mem->tabelas[minClientes].mutex);
 	if(balcaoFifo < 0){
-		puts(mem->tabelas[minClientes].nome_fifo);
-		perror("Could not open counter FIFO. Exiting.");
+		printf("name of fifo that could not be opened: %s, \n", mem->tabelas[minClientes].nome_fifo);		
+		perror("Could not open counter FIFO. Exiting.");		
 		exit(-1);
 	}
 	write(balcaoFifo, fifo, strlen(fifo));
-	puts("wrote to fifo");
+	puts("fifo successfully opened");
 	int atendido = 0;
 	char *atendimento = (char *)malloc(20*sizeof(char)+1);	
 	while(!atendido){
+		
 		int n = read(clienteFifo, atendimento, 20);
+		
 		if(!strncmp(atendimento, "fim_atendimento",n)){
 			atendido = 1;
 		}		

@@ -9,9 +9,9 @@ SHELL := /bin/bash
 all: balcao ger_clientes	
 
 balcao: $(OBJECTS_BALCAO) 
-	cc $(OBJECTS_BALCAO) -o bin/balcao -Wall -lpthread -lrt
+	cc $(OBJECTS_BALCAO) -o bin/balcao -Wall -g -O0 -lpthread -lrt
 ger_clientes: $(OBJECTS_GER_CLIENTE) 
-	cc $(OBJECTS_GER_CLIENTE) -o bin/ger_cl -lpthread -lrt 
+	cc $(OBJECTS_GER_CLIENTE) -o bin/ger_cl -Wall -g -O0 -lpthread -lrt 
 
 clean:
 	 @rm -f *.o bin/balcao bin/ger_cl /tmp/fd_* /tmp/fc_*

@@ -47,7 +47,7 @@ int shmTryOpen(char *shmName){
 
 sem_t* semTryOpen(){
 
-	sem_t* sem_id = sem_open(SEM_NAME, (O_CREAT|O_EXCL|O_RDWR), 0777, 1);
+    sem_t* sem_id = sem_open(SEM_NAME, (O_CREAT|O_EXCL|O_RDWR), 0777, 1);
 	if(sem_id == SEM_FAILED && errno == EEXIST){ //Semaphore already exists
 		puts("semaphore already exists, opening it instead");
 		sem_id = sem_open(SEM_NAME, (O_RDWR), 0777);
@@ -218,7 +218,8 @@ int main(int argc, char **argv){
     alarmeConfig.balcaoNumber = currentBalcao;
     pthread_create(&alarme_thread, NULL, alarme, (void*)&alarmeConfig);
 	int clientsSize = 0;
-	while(strncmp(buffer, "close", 5) != 0){
+	while(strncmp(buffer, "close", 6) != 0){
+        memset(buffer, 0, 20);
 	    read(fifoFd, (void*)buffer, 20);
         puts("read from fifo");
         puts(buffer);
@@ -236,7 +237,7 @@ int main(int argc, char **argv){
 	        info->mem = mem;
 	        
 	        pthread_create(&clients[clientsSize-1], NULL, atendimento, (void*)info);
-	    }
+	    }        
 	}
     
     int i;

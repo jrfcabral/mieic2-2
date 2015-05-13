@@ -129,7 +129,8 @@ int main(int argc, char **argv){
 	}	
 	
 	while((src_ent = readdir(src)) != NULL){
-		char *pathedFile = (char *)malloc(strlen(real)+ strlen(src_ent->d_name)*sizeof(char));
+		char *pathedFile = (char *)malloc(strlen(real)+ strlen(src_ent->d_name)*sizeof(char)+2);
+		puts(pathedFile);
 		strcpy(pathedFile, real);
 		strcat(pathedFile, "/");
 		strcat(pathedFile, src_ent->d_name);
