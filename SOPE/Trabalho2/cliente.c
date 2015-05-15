@@ -9,6 +9,14 @@
 #include <pthread.h>
 #include "loja.h"
 
+void exitClient(int msg){
+	char *fifoName = (char *)malloc(20*sizeof(char));
+	sprintf(fifoName, "/tmp/fc_%d", getpid()); 
+	unlink(fifoName);
+	exit(msg);
+}
+
+
 int shmTryOpen(char *mem_part){
 	int shmFd = shm_open(mem_part, O_RDWR, 0777);
 	if(errno == ENOENT){
@@ -41,7 +49,7 @@ int genClient(mem_part *mem){
 	if(clienteFifo < 0){
 		puts(fifo);
 		perror("Could not open client FIFO. Exiting.\n");
-		exit(-1);
+		exitClient(-1);
 	}
 	printf("trying to open fifo for balcon number: %d, name is %s\n", (int)mem->tabelas[minClientes].balcao, mem->tabelas[minClientes].nome_fifo);	
 	pthread_mutex_lock(&mem->tabelas[minClientes].mutex);
@@ -55,7 +63,7 @@ int genClient(mem_part *mem){
 	if(balcaoFifo < 0){
 		printf("name of fifo that could not be opened: %d, \n", balcaoFifo);		
 		perror("Could not open counter FIFO. Exiting.");		
-		exit(-1);
+		exitClient(-1);
 	}
 	write(balcaoFifo, fifo, strlen(fifo));
 	puts("fifo successfully opened");
@@ -67,6 +75,7 @@ int genClient(mem_part *mem){
 		
 		if(!strncmp(atendimento, "fim_atendimento",n)){
 			atendido = 1;
+			puts("Fui atendido");
 		}		
 	}
 	return 0;
@@ -97,7 +106,7 @@ int main(int argc, char **argv){
 		}
 		else if(pid == 0){ //Filho
 			genClient(mem);
-			exit(0);
+			exitClient(0);
 		}
 	}
 	exit(0);
