@@ -78,7 +78,10 @@ int initShm(mem_part *mem){
     time(&(mem->data_abert_loja));  
     int i;
     for (i = 0; i < MAX_LINES;i++){
-        pthread_mutex_init(&(mem->tabelas[i].mutex), NULL);
+        pthread_mutexattr_t attrmutex;
+        pthread_mutexattr_init(&attrmutex);
+        pthread_mutexattr_setpshared(&attrmutex, PTHREAD_PROCESS_SHARED);
+        pthread_mutex_init(&(mem->tabelas[i].mutex), &attrmutex);
         pthread_mutex_lock(&(mem->tabelas[i].mutex));
         mem->tabelas[i].encerrado = 1;
         pthread_mutex_unlock(&(mem->tabelas[i].mutex));
