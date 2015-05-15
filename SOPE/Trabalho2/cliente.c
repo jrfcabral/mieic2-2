@@ -38,11 +38,14 @@ char *mkClientFifo(){
 
 int genClient(mem_part *mem){	
 	char *fifo = mkClientFifo();
-	int j = 0, minClientes = 9999999;
+	int j = 0, minClientes = 9999999, minBalcao = 0;
 	for(j = 0; j < mem->nBalcoes; j++){
+		printf("Num clientes em atendimento no balcao %d: %d\n", j, mem->tabelas[j].em_atendimento);
+		printf("%d\n", minClientes);
 		int atend = mem->tabelas[j].em_atendimento;
 		if(atend < minClientes){
 			minClientes = atend;
+			minBalcao = j;
 		}
 	}
 	int clienteFifo = open(fifo, O_RDWR, 0777);	
@@ -51,15 +54,15 @@ int genClient(mem_part *mem){
 		perror("Could not open client FIFO. Exiting.\n");
 		exitClient(-1);
 	}
-	printf("trying to open fifo for balcon number: %d, name is %s\n", (int)mem->tabelas[minClientes].balcao, mem->tabelas[minClientes].nome_fifo);	
-	pthread_mutex_lock(&mem->tabelas[minClientes].mutex);
-	printf("tamanho da string é %d\n", strlen(mem->tabelas[minClientes].nome_fifo));
+	printf("trying to open fifo for balcon number: %d, name is %s\n", (int)mem->tabelas[minBalcao].balcao, mem->tabelas[minClientes].nome_fifo);	
+	pthread_mutex_lock(&mem->tabelas[minBalcao].mutex);
+	printf("tamanho da string é %d\n", strlen(mem->tabelas[minBalcao].nome_fifo));
 	puts("mutex locked");
-	char* nomeFifo = malloc(1+strlen(mem->tabelas[minClientes].nome_fifo)*sizeof(char));
-	strcpy(nomeFifo, mem->tabelas[minClientes].nome_fifo);
-	int balcaoFifo = open(mem->tabelas[minClientes].nome_fifo, O_WRONLY, 0777);
+	char* nomeFifo = malloc(1+strlen(mem->tabelas[minBalcao].nome_fifo)*sizeof(char));
+	strcpy(nomeFifo, mem->tabelas[minBalcao].nome_fifo);
+	int balcaoFifo = open(mem->tabelas[minBalcao].nome_fifo, O_WRONLY, 0777);
 	puts("gonna unlock");
-	pthread_mutex_unlock(&mem->tabelas[minClientes].mutex);
+	pthread_mutex_unlock(&mem->tabelas[minBalcao].mutex);
 	if(balcaoFifo < 0){
 		printf("name of fifo that could not be opened: %d, \n", balcaoFifo);		
 		perror("Could not open counter FIFO. Exiting.");		

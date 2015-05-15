@@ -17,7 +17,17 @@
 
 
 
-
+int generateStats(sem_t *sem_id, mem_part *mem){
+	int statFile = open("statistics.txt", (O_CREAT|O_TRUNC|O_RDWR), 0777);
+	int totClients = 0, i;
+	sem_wait(sem_id);
+	for(i = 0; i < mem->nBalcoes; i++){
+		totClients += mem->tabelas[i].ja_atendidos;
+	}
+	printf("Total de Clientes: %d\n", totClients);
+	sem_post(sem_id); 
+	return 0;
+}
 
 
 int shmTryOpen(char *shmName){ 
@@ -128,6 +138,7 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName){
         pthread_mutex_unlock(&mem->tabelas[i].mutex);
     }
     if (allClosed){
+		generateStats(sem_id, mem);
         puts("Ultimo balcao a ser encerrado: vou fechar a loja");
         sem_wait(sem_id);
         shm_unlink(shmName);
@@ -139,7 +150,7 @@ void* atendimento(void* arg){
     infoAtendimento* info = (infoAtendimento*) arg;
     table *tabela = &info->mem->tabelas[info->balcaoNumber];
     pthread_mutex_lock(&tabela->mutex);
-    printf("a atender cliente cujo fifo privado é %s\n", info->fifoName);
+    printf("%s a atender cliente cujo fifo privado é %s\n", tabela->nome_fifo, info->fifoName);
     int duracao = tabela->em_atendimento +1;
     tabela->em_atendimento++;
     pthread_mutex_unlock(&info->mem->tabelas[info->balcaoNumber].mutex);
@@ -148,11 +159,13 @@ void* atendimento(void* arg){
     int fifo = open(info->fifoName, O_WRONLY, 0777);
     char mensagem[] = "fim_atendimento";
     write(fifo, mensagem, strlen(mensagem));
-    printf("atendido cliente cujo fifo privado é %s\n", info->fifoName);
+	
+    printf("%s atendido cliente cujo fifo privado é %s\n", tabela->nome_fifo, info->fifoName);
     tabela->tempo_med_atend = ( tabela->tempo_med_atend*tabela->ja_atendidos + duracao)/(tabela->ja_atendidos+1);
     tabela->em_atendimento--;   
     tabela->ja_atendidos++;
     pthread_mutex_unlock(&tabela->mutex);
+	close(fifo);
     free(arg);
     return NULL;
 }
