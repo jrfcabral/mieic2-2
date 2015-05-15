@@ -54,9 +54,9 @@ int genClient(mem_part *mem){
 		perror("Could not open client FIFO. Exiting.\n");
 		exitClient(-1);
 	}
-	printf("trying to open fifo for balcon number: %d, name is %s\n", (int)mem->tabelas[minBalcao].balcao, mem->tabelas[minClientes].nome_fifo);	
+	//printf("trying to open fifo for balcon number: %d, name is %s\n", (int)mem->tabelas[minBalcao].balcao, mem->tabelas[minClientes].nome_fifo);	
 	pthread_mutex_lock(&mem->tabelas[minBalcao].mutex);
-	printf("tamanho da string é %d\n", strlen(mem->tabelas[minBalcao].nome_fifo));
+	//printf("tamanho da string é %d\n", strlen(mem->tabelas[minBalcao].nome_fifo));
 	puts("mutex locked");
 	char* nomeFifo = malloc(1+strlen(mem->tabelas[minBalcao].nome_fifo)*sizeof(char));
 	strcpy(nomeFifo, mem->tabelas[minBalcao].nome_fifo);
@@ -64,7 +64,7 @@ int genClient(mem_part *mem){
 	puts("gonna unlock");
 	pthread_mutex_unlock(&mem->tabelas[minBalcao].mutex);
 	if(balcaoFifo < 0){
-		printf("name of fifo that could not be opened: %d, \n", balcaoFifo);		
+		//printf("name of fifo that could not be opened: %d, \n", balcaoFifo);		
 		perror("Could not open counter FIFO. Exiting.");		
 		exitClient(-1);
 	}

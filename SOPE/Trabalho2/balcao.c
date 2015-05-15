@@ -24,8 +24,12 @@ int generateStats(sem_t *sem_id, mem_part *mem){
 	for(i = 0; i < mem->nBalcoes; i++){
 		totClients += mem->tabelas[i].ja_atendidos;
 	}
+	sem_post(sem_id);
 	printf("Total de Clientes: %d\n", totClients);
-	sem_post(sem_id); 
+	write(statFile, "Total de Clientes atendidos: ", strlen("Total de Clientes atendidos: "));
+	write(statFile, &totClients, sizeof(int));
+	write(statFile, "\n", 1); 
+	close(statFile);
 	return 0;
 }
 
