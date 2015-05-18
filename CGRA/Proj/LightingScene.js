@@ -51,6 +51,7 @@ LightingScene.prototype.init = function(application) {
 	this.lamp = new MyLamp(this, 8, 20);
 	this.clock = new MyClock(this, 12, 1);
 	this.bot = new MyRobot(this);
+	this.wheel = new MyRobotPart(this);
 	
 
 	// Materials
@@ -130,8 +131,8 @@ LightingScene.prototype.initLights = function() {
 	this.shader.bind();
 	
 	// Positions for four lights
-	this.lights[0].setPosition(4, 6.0, 1, 1);
-	this.lights[1].setPosition(10.5, 6.0, 1.0, 1.0);
+	this.lights[0].setPosition(0, 0, 0, 1);
+	this.lights[1].setPosition(10.5, 2.0, 3.0, 1.0);
 	this.lights[2].setPosition(10.5, 2.0, 5.0, 1.0);
 	this.lights[3].setPosition(8, 8, 8, 1.0);
 
@@ -209,7 +210,7 @@ LightingScene.prototype.display = function() {
 
 	
 	// Floor
-	this.materialFloor.apply();
+	/*this.materialFloor.apply();
 	this.pushMatrix();
 		this.translate(7.5, 0, 7.5);
 		this.rotate(-90 * degToRad, 1, 0, 0);
@@ -235,7 +236,7 @@ LightingScene.prototype.display = function() {
 	this.popMatrix();
 
 	// First Table
-	/*this.pushMatrix();
+	this.pushMatrix();
 		this.translate(5, 0, 8);
 		this.table.display();
 	this.popMatrix();
@@ -244,7 +245,7 @@ LightingScene.prototype.display = function() {
 	this.pushMatrix();
 		this.translate(12, 0, 8);
 		this.table.display();
-	this.popMatrix();*/
+	this.popMatrix();
 
 	// Board A
 	this.pushMatrix();
@@ -253,7 +254,7 @@ LightingScene.prototype.display = function() {
 		this.slidesAppearance.apply();
 		this.boardA.display();
 	this.popMatrix();
-
+	
 	// Board B
 	this.pushMatrix();
 		this.translate(10.5, 4.5, 0.2);
@@ -263,13 +264,13 @@ LightingScene.prototype.display = function() {
 	this.popMatrix();
 
 	//Prism and Cylinder
-	/*this.pushMatrix();
+	this.pushMatrix();
 		this.rotate(-90 * degToRad, 1, 0, 0);
 		this.translate(2, -12, 0);
 		this.prism.display();
 		this.translate(12, 0, 0);
 		this.cylinder.display();
-	this.popMatrix();*/
+	this.popMatrix();
 	
 	//Lamp
 	this.pushMatrix();
@@ -283,7 +284,7 @@ LightingScene.prototype.display = function() {
 		this.translate(7.2, 7.2, 0.01);
 		this.materialA.apply();
 		this.clock.display();
-	this.popMatrix();
+	this.popMatrix();*/
 
 	//Robot
 	this.pushMatrix();
@@ -292,6 +293,7 @@ LightingScene.prototype.display = function() {
 		this.botAppearance.apply();
 		this.bot.display();
 	this.popMatrix();
+
 
 
 

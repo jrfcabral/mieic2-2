@@ -6,7 +6,7 @@
  	CGFobject.call(this,scene);
 
 	this.cylinder = new MyCylinder(this.scene, 12, 1, 1.0, 1.0);
-	this.clockFace = new MyClockFace(this.scene, 12);
+	this.clockFace = new MyCylinderTop(this.scene, 12);
 	this.secondHand = new MyClockHand(this.scene);
 	this.minuteHand = new MyClockHand(this.scene);
 	this.hourHand = new MyClockHand(this.scene);

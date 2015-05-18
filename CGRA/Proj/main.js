@@ -14,9 +14,10 @@ serialInclude([
 	'MyCylinder.js',
 	'MyLamp.js',
 	'MyClockHand.js',
-	'MyCYlinderTop.js',
+	'MyCylinderTop.js',
 	'MyClock.js',
 	'MyRobot.js',
+	'MyRobotPart.js',
 	 
 
 	main=function() {
