@@ -51,7 +51,7 @@ LightingScene.prototype.init = function(application) {
 	this.lamp = new MyLamp(this, 10, 60);
 	this.clock = new MyClock(this, 12, 1);
 	this.bot = new MyRobot(this);
-	this.impostor = new Plane(this, 100);
+	this.impostor = new Plane(this, 1);
 	
 
 	// Materials
@@ -119,8 +119,8 @@ LightingScene.prototype.init = function(application) {
 
 	this.impostorAppearance = new CGFappearance(this);
 	this.impostorAppearance.setDiffuse(1,1,1,1);
-	this.impostorAppearance.setSpecular(0,0,0,0);
-	this.impostorAppearance.setShininess(0);
+	this.impostorAppearance.setSpecular(0,0,0,1);
+	this.impostorAppearance.setShininess(1);
 	this.impostorAppearance.loadTexture("../resources/images/impostor.png");
 	this.impostorAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
 
@@ -276,9 +276,9 @@ LightingScene.prototype.display = function() {
 	//Impostor
 	this.impostorAppearance.apply();
 	this.pushMatrix();
-		this.translate(-3, 3,6);		
+		this.translate(-2.5, 4,6);		
 		this.rotate(90*degToRad, 0,1,0);
-		this.scale(20, 10,1);
+		this.scale(35, 25,1);
 		this.impostor.display();
 	this.popMatrix();
 	//Prism and Cylinder

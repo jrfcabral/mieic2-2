@@ -6,14 +6,14 @@ function windowWall(scene, nrDivs){
     this.materialLeftWall = new CGFappearance(this);
 	this.materialLeftWall.setAmbient(0.2,0.03,0,1);
 	this.materialLeftWall.setDiffuse(0.2,0.3,0.27,1);
-	this.materialLeftWall.setSpecular(0.01,0.01,0.01,1);	
+	this.materialLeftWall.setSpecular(0.0,0.1,0.01,1);	
 	this.materialLeftWall.setShininess(10);
 	//this.materialLeftWall.loadTexture("../resources/images/window.png");
 	//this.materialLeftWall.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
-	this.leftPortion = new Plane(scene, nrDivs);
-	this.rightPortion = new Plane(scene,nrDivs);
-	this.topPortion = new Plane(scene,nrDivs);
-	this.bottomPortion = new Plane(scene,nrDivs);
+	this.leftPortion = new Plane(scene, nrDivs,-0.5,0.040,-0.82,1.82);
+	this.rightPortion = new Plane(scene,nrDivs,0.960, 1.5, -0.82,1.82);
+	this.topPortion = new Plane(scene,nrDivs,0.1,0.9,-0.5,0.040);
+	this.bottomPortion = new Plane(scene,nrDivs,0.1,0.9,0.960,1.5);
 
 }
 
