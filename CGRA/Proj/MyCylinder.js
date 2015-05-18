@@ -20,6 +20,7 @@
  	this.vertices = [];
  	this.indices = [];
  	this.normals = [];
+ 	this.texCoords = [];
  	var ang = 2*Math.PI/this.slices;
 
 
@@ -30,6 +31,7 @@
  			this.vertices.push(x, y, j);
 
  			this.normals.push(x, y, 0);
+ 			this.texCoords.push(i/this.slices,j/this.stacks);
  		}
  	}
  

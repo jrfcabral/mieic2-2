@@ -52,6 +52,8 @@ LightingScene.prototype.init = function(application) {
 	this.clock = new MyClock(this, 12, 1);
 	this.bot = new MyRobot(this);
 	this.impostor = new Plane(this, 1);
+	this.wheel = new MyRobotPart(this);
+
 	
 
 	// Materials
@@ -95,7 +97,7 @@ LightingScene.prototype.init = function(application) {
 	this.slidesAppearance.setSpecular(0.05, 0.05,0.05,1);
 	this.slidesAppearance.setDiffuse(1,1,1,1);
 	this.slidesAppearance.setShininess(10);
-	this.slidesAppearance.loadTexture("../resources/images/slides.png");
+	this.slidesAppearance.loadTexture("../resources/images/slides.PNG");
 	this.slidesAppearance.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
 	
 	this.boardAppearance = new CGFappearance(this);
@@ -138,8 +140,8 @@ LightingScene.prototype.initLights = function() {
 	this.shader.bind();
 	
 	// Positions for four lights
-	this.lights[0].setPosition(4, 6.0, 1, 1);
-	this.lights[1].setPosition(10.5, 6.0, 1.0, 1.0);
+	this.lights[0].setPosition(0, 0, 0, 1);
+	this.lights[1].setPosition(10.5, 2.0, 3.0, 1.0);
 	this.lights[2].setPosition(10.5, 2.0, 5.0, 1.0);
 	this.lights[3].setPosition(8, 8, 8, 1.0);
 
@@ -206,25 +208,14 @@ LightingScene.prototype.display = function() {
 	// Draw axis
 	this.axis.display();
 
-	//this.materialDefault.apply();
+	this.materialDefault.apply();
 
-	// ---- END Background, camera and axis setup
-
-	
-	// ---- BEGIN Geometric transformation section
-
-	// ---- END Geometric transformation section
-
-
-	// ---- BEGIN Primitive drawing section
-
-	
 	// Floor
 	this.materialFloor.apply();
 	this.pushMatrix();
 		this.translate(7.5, 0, 7.5);
 		this.rotate(-90 * degToRad, 1, 0, 0);
-		this.scale(15, 15, 0.2);
+		this.scale(15, 15, 1);
 		this.floor.display();
 	this.popMatrix();
 
@@ -246,7 +237,7 @@ LightingScene.prototype.display = function() {
 	this.popMatrix();
 
 	// First Table
-	/*this.pushMatrix();
+	this.pushMatrix();
 		this.translate(5, 0, 8);
 		this.table.display();
 	this.popMatrix();
@@ -255,7 +246,7 @@ LightingScene.prototype.display = function() {
 	this.pushMatrix();
 		this.translate(12, 0, 8);
 		this.table.display();
-	this.popMatrix();*/
+	this.popMatrix();
 
 	// Board A
 	this.pushMatrix();
@@ -264,7 +255,7 @@ LightingScene.prototype.display = function() {
 		this.slidesAppearance.apply();
 		this.boardA.display();
 	this.popMatrix();
-
+	
 	// Board B
 	this.pushMatrix();
 		this.translate(10.5, 4.5, 0.2);
@@ -281,15 +272,7 @@ LightingScene.prototype.display = function() {
 		this.scale(35, 25,1);
 		this.impostor.display();
 	this.popMatrix();
-	//Prism and Cylinder
-	/*this.pushMatrix();
-		this.rotate(-90 * degToRad, 1, 0, 0);
-		this.translate(2, -12, 0);
-		this.prism.display();
-		this.translate(12, 0, 0);
-		this.cylinder.display();
-	this.popMatrix();*/
-	
+		
 	//Lamp
 	this.pushMatrix();
 		this.rotate(-90 * degToRad, 1, 0, 0);
@@ -305,12 +288,14 @@ LightingScene.prototype.display = function() {
 	this.popMatrix();
 
 	//Robot
+	this.slidesAppearance.apply();
 	this.pushMatrix();
 		this.translate(this.bot.posX, 0, this.bot.posZ);
 		this.rotate(this.bot.angle*degToRad, 0, 1, 0);
-		this.botAppearance.apply();
+		//this.botAppearance.apply();
 		this.bot.display();
 	this.popMatrix();
+
 
 
 
