@@ -19,7 +19,9 @@ function MyRobot(scene, minS, maxS, minT, maxT) {
 	this.degToRad = Math.PI / 180.0;
 	this.angle = 0;
 	this.posX = 0;
-	this.posZ = 0; 
+	this.posZ = 0;
+	this.armAngle = 0;
+	this.motion = 0; //0 = increase; 1 = decrease
 	
 	this.initBuffers();
 };
@@ -73,10 +75,17 @@ MyRobot.prototype.display = function () {
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
+		
+		
+
+		this.scene.pushMatrix();
 			this.scene.translate(0, 1.8, 0.7);
 			this.scene.rotate(90*degToRad, 1, 0, 0);
+			this.scene.rotate(this.armAngle*degToRad, 0, 1, 0);
 			this.scene.scale(0.2,0.2,1.7);
 			this.leftArm.display();
+		this.scene.popMatrix();
+
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
@@ -85,14 +94,20 @@ MyRobot.prototype.display = function () {
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.rightShoulder.display();
 		this.scene.popMatrix();
+		
+		this.scene.pushMatrix();
 
+		
 
 		this.scene.pushMatrix();
 			this.scene.translate(0, 1.8, -0.7);
 			this.scene.rotate(-90*degToRad, 1, 0, 0);
-			this.scene.scale(0.2,0.2,1.7);;
+			this.scene.rotate(this.armAngle*degToRad, 0, 1, 0);
+			this.scene.scale(0.2,0.2,1.7);
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.rightArm.display();
+		this.scene.popMatrix();
+
 		this.scene.popMatrix();
 
 	this.scene.popMatrix();
@@ -109,8 +124,43 @@ MyRobot.prototype.setPod = function(x, y){
 MyRobot.prototype.moveForward = function(speed){
 	this.posZ+=speed*Math.cos(this.scene.bot.angle*(Math.PI/180));
 	this.posX+=speed*Math.sin(this.scene.bot.angle*(Math.PI/180));
+	if(this.motion == 0){
+		if(this.armAngle <= 90){
+			this.armAngle +=5;
+		}
+		else{
+			this.motion = 1;
+		}
+	}
+	else if(this.motion = 1){
+		if(this.armAngle >= -90){
+			this.armAngle -=5;
+		}
+		else{
+			this.motion = 0;
+		}
+	}
+	
 }
 MyRobot.prototype.moveBackward = function(speed){
 	this.posZ-=speed*Math.cos(this.scene.bot.angle*(Math.PI/180));
 	this.posX-=speed*Math.sin(this.scene.bot.angle*(Math.PI/180));
+
+	if(this.motion == 0){
+		if(this.armAngle <= 90){
+			this.armAngle +=5;
+		}
+		else{
+			this.motion = 1;
+		}
+	}
+	else if(this.motion = 1){
+		if(this.armAngle >= -90){
+			this.armAngle -=5;
+		}
+		else{
+			this.motion = 0;
+		}
+	}
+	
 }

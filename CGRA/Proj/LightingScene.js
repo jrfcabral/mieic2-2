@@ -24,7 +24,7 @@ LightingScene.prototype.init = function(application) {
 
 	this.option1=true; 
 	this.option2=false; 	
-	this.speed=3;
+	this.speed=0.2;
 	this.Light0 = true;
 	this.Light1 = true;
 	this.Light2 = true;
