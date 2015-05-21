@@ -183,6 +183,7 @@ int createBalcao(mem_part *mem){
     time(&(tabela->tempo));
     tabela->duracao = -1;
     tabela->encerrado = 0;
+    //tabela->tempo = time(NULL);
     snprintf(tabela->nome_fifo,15, "/tmp/fb_%d", getpid()); 
     pthread_mutex_unlock(&tabela->mutex);
     mem->nBalcoes++;
@@ -191,7 +192,8 @@ int createBalcao(mem_part *mem){
 }
 void encerraBalcao(mem_part *mem, int balcao, sem_t* sem_id){
     pthread_mutex_lock(&mem->tabelas[balcao].mutex);
-    mem->tabelas[balcao].encerrado = 1;    
+    mem->tabelas[balcao].encerrado = 1; 
+    mem->tabelas[balcao].duracao = time(NULL) - mem->tabelas[balcao].tempo;
     pthread_mutex_unlock(&mem->tabelas[balcao].mutex);
    	sem_wait(sem_id);
 	mem->balcoesDisponiveis--;
