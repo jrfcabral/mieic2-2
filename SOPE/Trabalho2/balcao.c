@@ -47,7 +47,7 @@ int generateStats(sem_t *sem_id, mem_part *mem){
 		
 	}
 	tempoMedAtend /= mem->nBalcoes;
-	duracaoLoja = 3; //to be continued
+	duracaoLoja = time(NULL) - mem->data_abert_loja;
 
 	sem_post(sem_id);
 	
@@ -214,7 +214,8 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName){
         puts("Ultimo balcao a ser encerrado: vou fechar a loja");
         sem_wait(sem_id);
         shm_unlink(shmName);
-        sem_post(sem_id);        
+        sem_post(sem_id);
+        sem_unlink(mem->nome_sem);        
     }
     
 }
@@ -285,6 +286,7 @@ int main(int argc, char **argv){
 	}
     if(!mem->nBalcoes)
         initShm(mem);
+        mem->data_abert_loja = time(NULL);
     int currentBalcao =  createBalcao(mem);
     if (currentBalcao < 0){
         puts("balcao: fatal error! couldn't create new table line! Store is probably full.");
