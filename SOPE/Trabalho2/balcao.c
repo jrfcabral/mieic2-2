@@ -19,16 +19,82 @@
 
 int generateStats(sem_t *sem_id, mem_part *mem){
 	int statFile = open("statistics.txt", (O_CREAT|O_TRUNC|O_RDWR), 0777);
-	int totClients = 0, i;
+	int totClients = 0, tempoMedAtend = 0, i;
+	int **totClientsBalcao = (int **) malloc(mem->nBalcoes*sizeof(int*));
+	int **tempoMedAtendBalcao = (int **)malloc(mem->nBalcoes*sizeof(int*));
+	int duracaoLoja;
+	int **duracaoBalcao = (int **)malloc(mem->nBalcoes*sizeof(int*));	
+
+	char *totalClients = (char *)malloc(100*sizeof(char));
+	char **totalClientsBalcao = (char **)malloc(mem->nBalcoes*sizeof(char*));
+	char *tempoMedioAtend = (char *)malloc(100*sizeof(char));
+	char **tempoMedioAtendBalcao = (char **)malloc(mem->nBalcoes*sizeof(char));
+	char *durLoja = (char *)malloc(100*sizeof(char));
+	char **durBalcao = (char **)malloc(mem->nBalcoes*sizeof(char));
+
+
 	sem_wait(sem_id);
 	for(i = 0; i < mem->nBalcoes; i++){
+		totClientsBalcao[i] = malloc(sizeof(int));
+		tempoMedAtendBalcao[i] = malloc(sizeof(int));
+		duracaoBalcao[i] = malloc(sizeof(int));
+		
 		totClients += mem->tabelas[i].ja_atendidos;
+		tempoMedAtend += mem->tabelas[i].tempo_med_atend;
+		*totClientsBalcao[i] = mem->tabelas[i].ja_atendidos;
+		*tempoMedAtendBalcao[i] = mem->tabelas[i].tempo_med_atend;
+		*duracaoBalcao[i] = mem->tabelas[i].duracao;
+		
 	}
+	tempoMedAtend /= mem->nBalcoes;
+	duracaoLoja = 3; //to be continued
+
 	sem_post(sem_id);
+	
 	printf("Total de Clientes: %d\n", totClients);
-	write(statFile, "Total de Clientes atendidos: ", strlen("Total de Clientes atendidos: "));
-	write(statFile, &totClients, sizeof(int));
-	write(statFile, "\n", 1); 
+	sprintf(totalClients, "Total de Clientes: %d\n", totClients);
+	write(statFile, totalClients, strlen(totalClients));
+	free(totalClients);
+	
+	for(i = 0; i < mem->nBalcoes; i++){
+		printf("Clientes no balcao %d : %d\n", i, *totClientsBalcao[i]);
+		totalClientsBalcao[i] = malloc(50*sizeof(char));
+		sprintf(totalClientsBalcao[i], "Clientes no balcao %d : %d\n", i, *totClientsBalcao[i]);
+		write(statFile, totalClientsBalcao[i], strlen(totalClientsBalcao[i]));
+		free(totalClientsBalcao[i]);
+		free(totClientsBalcao[i]);
+	}
+	
+	printf("Tempo medio de atendimento: %d\n", tempoMedAtend);
+	sprintf(tempoMedioAtend, "Tempo medio de atendimento: %d\n", tempoMedAtend);
+	write(statFile, tempoMedioAtend, strlen(tempoMedioAtend));
+	free(tempoMedioAtend);
+
+	for(i = 0; i < mem->nBalcoes; i++){
+		tempoMedioAtendBalcao[i] = malloc(100*sizeof(char));
+		printf("Tempo medio de atendimento no balcao %d: %d\n", i, *tempoMedAtendBalcao[i]);
+		sprintf(tempoMedioAtendBalcao[i], "Tempo medio de atendimento no balcao%d: %d\n", i, *tempoMedAtendBalcao[i]);
+		write(statFile, tempoMedioAtendBalcao[i], strlen(tempoMedioAtendBalcao[i]));
+		free(tempoMedioAtendBalcao[i]);
+		free(tempoMedAtendBalcao[i]);
+		
+	}
+
+	printf("Tempo de abertura da loja: %d\n", duracaoLoja);
+	sprintf(durLoja, "Tempo de abertura da loja: %d\n", duracaoLoja);
+	write(statFile, durLoja, strlen(durLoja));
+	free(durLoja);
+
+	for(i = 0; i < mem->nBalcoes; i++){
+		durBalcao[i] = malloc(100*sizeof(char));
+		printf("Tempo de abertura do balcao %d: %d\n", i, *duracaoBalcao[i]);
+		sprintf(durBalcao[i], "Tempo de abertura do balcao %d: %d\n", i, *duracaoBalcao[i]);
+		write(statFile, durBalcao[i], strlen(durBalcao[i]));
+		free(durBalcao[i]);
+		free(duracaoBalcao[i]);
+	}
+	
+
 	close(statFile);
 	return 0;
 }
