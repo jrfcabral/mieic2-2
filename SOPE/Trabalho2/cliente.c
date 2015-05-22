@@ -14,6 +14,7 @@ void exitClient(int msg){
 	char *fifoName = (char *)malloc(20*sizeof(char));
 	sprintf(fifoName, "/tmp/fc_%d", getpid()); 
 	unlink(fifoName);
+	free(fifoName);
 	exit(msg);
 }
 
@@ -48,7 +49,7 @@ sem_t* semTryOpen(){
 char *mkClientFifo(){
 	char *fifoName = (char *)malloc(15*sizeof(char));
 	sprintf(fifoName, "/tmp/fc_%d", getpid());
-	mkfifo(fifoName, 0777);
+	mkfifo(fifoName, 0777);	
 	return fifoName;
 }
 
@@ -77,9 +78,10 @@ int genClient(mem_part *mem, sem_t *sem){
 	pthread_mutex_lock(&mem->tabelas[minBalcao].mutex);
 	//printf("tamanho da string é %d\n", strlen(mem->tabelas[minBalcao].nome_fifo));
 	puts("mutex locked");
-	char* nomeFifo = malloc(1+strlen(mem->tabelas[minBalcao].nome_fifo)*sizeof(char));
+	char* nomeFifo = malloc(strlen(mem->tabelas[minBalcao].nome_fifo)*sizeof(char)+1);
 	strcpy(nomeFifo, mem->tabelas[minBalcao].nome_fifo);
 	int balcaoFifo = open(mem->tabelas[minBalcao].nome_fifo, O_WRONLY, 0777);
+	free(nomeFifo);
 	puts("gonna unlock");
 	pthread_mutex_unlock(&mem->tabelas[minBalcao].mutex);
 	if(balcaoFifo < 0){
@@ -102,6 +104,8 @@ int genClient(mem_part *mem, sem_t *sem){
 			puts("Fui atendido");
 		}		
 	}
+	free(atendimento);
+	free(fifo);
 	return 0;
 }
 
@@ -132,8 +136,14 @@ int main(int argc, char **argv){
 		}
 		else if(pid == 0){ //Filho
 			genClient(mem, sem);
+			sem_close(sem);
+			if ( ( munmap(mem, sizeof(mem_part)) ) == -1)
+				perror("ger_cl:couldn't unmap shared memory");		
 			exitClient(0);
 		}
 	}
+	sem_close(sem);
+	if ( ( munmap(mem, sizeof(mem_part)) ) == -1)
+		perror("ger_cl:couldn't unmap shared memory");
 	exit(0);
 }

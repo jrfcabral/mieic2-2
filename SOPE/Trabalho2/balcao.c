@@ -128,30 +128,20 @@ int shmTryOpen(char *shmName){
 }
 
 sem_t* semTryOpen(){
-
-    sem_t* sem_id = sem_open(SEM_NAME, (O_CREAT|O_EXCL|O_RDWR), 0777, 1);
-	if(sem_id == SEM_FAILED && errno == EEXIST){ //Semaphore already exists
-		puts("semaphore already exists, opening it instead");
-		sem_id = sem_open(SEM_NAME, (O_RDWR), 0777);
-		if (sem_id == SEM_FAILED){
-		    perror("balcao: fatal error! Couldn't open semaphore!");
-		    exit(-1);
-		}
-		else{
-		    int i;
-		    sem_getvalue(sem_id, &i);
-		    printf("opened semaphore with value %d\n", i);		   	    
-	    }
-		
-	}
-	else if (sem_id == SEM_FAILED){
-	    perror("Balcao:fatal error! couldn't open semaphore!");
-	    exit(-1);
-	}
-	else    
-		puts("semaphore created");
-	
-	return sem_id;
+   
+   sem_t *sem_id = sem_open(SEM_NAME, O_CREAT | O_RDWR |O_EXCL, 0777, 1);
+   //if the semaphore already exists open it
+   if (sem_id == SEM_FAILED && errno == EEXIST){        
+        sem_id = sem_open(SEM_NAME, (O_RDWR),0777);
+    
+   }
+   //if it still can't be opened or couldn't be opened to begin with, print error
+   if (sem_id == SEM_FAILED){
+        perror("Failed to open semaphore");
+        exit(-1);        	
+   }
+   
+   return sem_id;
 } 
 
 int initShm(mem_part *mem){
@@ -216,7 +206,7 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName){
         pthread_mutex_unlock(&mem->tabelas[i].mutex);
     }
     if (allClosed){
-		generateStats(sem_id, mem);
+		//generateStats(sem_id, mem);
         puts("Ultimo balcao a ser encerrado: vou fechar a loja");
         sem_wait(sem_id);
         shm_unlink(shmName);
@@ -256,6 +246,7 @@ void* atendimento(void* arg){
 }
 
 void* alarme(void* arg){
+    pthread_detach(pthread_self());
     infoAlarme* info = (infoAlarme*) arg;
     printf("vou esperar %d segundos\n", info->tempo);
     sleep(info->tempo);
@@ -264,6 +255,7 @@ void* alarme(void* arg){
     int fifo = open(fifoName, O_WRONLY, 0777);
     char message[] = "close";
     write(fifo, message, strlen(message));
+    free(fifoName);
     return(NULL);    
     
 }
@@ -283,6 +275,9 @@ int main(int argc, char **argv){
     }
     
 	sem_t *sem_id =	semTryOpen();
+    if(sem_id == SEM_FAILED)
+        puts("failure");
+    printf("%d\n", &sem_id);
 	sem_wait(sem_id);
 	int shared = shmTryOpen(argv[1]);
 	if (shared < -1){
@@ -312,21 +307,20 @@ int main(int argc, char **argv){
 	mkfifo(fifoName, 0777);
 	printf("fifo de atendimento criado em %s\n", fifoName);
 	int fifoFd = open(fifoName, (O_RDWR), 0777);
-	char buffer[20];
+	char buffer[20] = {0};
 	pthread_t *clients = malloc(sizeof(pthread_t));
     pthread_t alarme_thread;
     infoAlarme alarmeConfig;
     alarmeConfig.tempo = duracao;
     alarmeConfig.balcaoNumber = currentBalcao;
-    pthread_create(&alarme_thread, NULL, alarme, (void*)&alarmeConfig);
+    pthread_create(&alarme_thread, NULL, alarme, (void*)&alarmeConfig);    
 	int clientsSize = 0;
 
 
 	while(strncmp(buffer, "close", 6) != 0){
         memset(buffer, 0, 20);
 	    read(fifoFd, (void*)buffer, 20);
-        puts("read from fifo");
-        puts(buffer);
+        puts("read from fifo");       
 	    if (strncmp(buffer, "/tmp/fc", 7) == 0)
 	    {
             puts("atender");
@@ -347,6 +341,7 @@ int main(int argc, char **argv){
     int i;
     for(i = 0; i < clientsSize; i++)
         pthread_join(clients[i], NULL);
+    
     
 	encerraBalcao(mem, currentBalcao, sem_id);
 	encerraLoja(mem, sem_id, argv[1]);

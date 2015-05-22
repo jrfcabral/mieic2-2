@@ -32,3 +32,8 @@ typedef struct _infoAlarme{
 	int tempo;
 	int balcaoNumber;	
 } infoAlarme;
+
+typedef struct _mensagemBalcao{
+	char fifoName[100];
+	int close;
+} mensagemBalcao;
