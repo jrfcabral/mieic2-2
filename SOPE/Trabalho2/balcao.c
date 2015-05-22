@@ -166,7 +166,7 @@ int initShm(mem_part *mem){
         mem->tabelas[i].encerrado = 1;
         pthread_mutex_unlock(&(mem->tabelas[i].mutex));
     }
-    
+    mem->data_abert_loja = time(NULL);
     return 0;
 }
 
@@ -224,7 +224,12 @@ void* atendimento(void* arg){
     table *tabela = &info->mem->tabelas[info->balcaoNumber];
     pthread_mutex_lock(&tabela->mutex);
     printf("%s a atender cliente cujo fifo privado é %s\n", tabela->nome_fifo, info->fifoName);
+
     int duracao = tabela->em_atendimento +1;
+	if(duracao > 10)
+		duracao = 10;
+
+
     tabela->em_atendimento++;
     pthread_mutex_unlock(&info->mem->tabelas[info->balcaoNumber].mutex);
     sleep(duracao);
@@ -286,7 +291,7 @@ int main(int argc, char **argv){
 	}
     if(!mem->nBalcoes)
         initShm(mem);
-        mem->data_abert_loja = time(NULL);
+        
     int currentBalcao =  createBalcao(mem);
     if (currentBalcao < 0){
         puts("balcao: fatal error! couldn't create new table line! Store is probably full.");
@@ -308,6 +313,8 @@ int main(int argc, char **argv){
     alarmeConfig.balcaoNumber = currentBalcao;
     pthread_create(&alarme_thread, NULL, alarme, (void*)&alarmeConfig);
 	int clientsSize = 0;
+
+
 	while(strncmp(buffer, "close", 6) != 0){
         memset(buffer, 0, 20);
 	    read(fifoFd, (void*)buffer, 20);

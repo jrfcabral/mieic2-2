@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <string.h>
 #include <pthread.h>
+#include <semaphore.h>
 #include "loja.h"
 
 void exitClient(int msg){
@@ -27,6 +28,22 @@ int shmTryOpen(char *mem_part){
 	return shmFd;
 }
 
+sem_t* semTryOpen(){
+	sem_t *sem_id;
+	sem_id = sem_open(SEM_NAME, (O_RDWR), 0777);
+	if (sem_id == SEM_FAILED){
+	    perror("cliente: fatal error! Couldn't open semaphore!");
+	    exit(-1);
+	}
+	else{
+	    int i;
+	    sem_getvalue(sem_id, &i);
+	    printf("opened semaphore with value %d\n", i);		   	    
+	}
+	return sem_id;
+}
+
+
 
 char *mkClientFifo(){
 	char *fifoName = (char *)malloc(15*sizeof(char));
@@ -36,9 +53,10 @@ char *mkClientFifo(){
 }
 
 
-int genClient(mem_part *mem){	
+int genClient(mem_part *mem, sem_t *sem){	
 	char *fifo = mkClientFifo();
 	int j = 0, minClientes = 9999999, minBalcao = 0;
+	sem_wait(sem);	
 	for(j = 0; j < mem->nBalcoes; j++){
 		printf("Num clientes em atendimento no balcao %d: %d\n", j, mem->tabelas[j].em_atendimento);
 		printf("%d\n", minClientes);
@@ -48,6 +66,7 @@ int genClient(mem_part *mem){
 			minBalcao = j;
 		}
 	}
+	sem_post(sem);
 	int clienteFifo = open(fifo, O_RDWR, 0777);	
 	if(clienteFifo < 0){
 		puts(fifo);
@@ -68,14 +87,16 @@ int genClient(mem_part *mem){
 		perror("Could not open counter FIFO. Exiting.");		
 		exitClient(-1);
 	}
+
+	sem_wait(sem);
 	write(balcaoFifo, fifo, strlen(fifo));
+	sem_post(sem);
+
 	puts("fifo successfully opened");
 	int atendido = 0;
 	char *atendimento = (char *)malloc(20*sizeof(char)+1);	
 	while(!atendido){
-		
 		int n = read(clienteFifo, atendimento, 20);
-		
 		if(!strncmp(atendimento, "fim_atendimento",n)){
 			atendido = 1;
 			puts("Fui atendido");
@@ -91,7 +112,8 @@ int main(int argc, char **argv){
 	}
 
 	int shm = shmTryOpen(argv[1]);
-	
+	sem_t *sem;	
+
 	mem_part *mem = mmap(NULL, sizeof(mem_part), (PROT_READ|PROT_WRITE), MAP_SHARED, shm, 0);	
 	close(shm);
 	if(mem == MAP_FAILED){
@@ -99,6 +121,7 @@ int main(int argc, char **argv){
 		exit(-1);
 	}
 
+	sem = semTryOpen();
 
 	int i;
 	for(i = 0; i < atoi(argv[2]); i++){
@@ -108,7 +131,7 @@ int main(int argc, char **argv){
 			exit(-1);
 		}
 		else if(pid == 0){ //Filho
-			genClient(mem);
+			genClient(mem, sem);
 			exitClient(0);
 		}
 	}
