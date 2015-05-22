@@ -21,7 +21,7 @@ int generateStats(sem_t *sem_id, mem_part *mem){
 	int statFile = open("statistics.txt", (O_CREAT|O_TRUNC|O_RDWR), 0777);
 	int totClients = 0, tempoMedAtend = 0, i;
 	int **totClientsBalcao = (int **) malloc(mem->nBalcoes*sizeof(int*));
-	int **tempoMedAtendBalcao = (int **)malloc(mem->nBalcoes*sizeof(int*));
+	float **tempoMedAtendBalcao = (float **)malloc(mem->nBalcoes*sizeof(float*));
 	int duracaoLoja;
 	int **duracaoBalcao = (int **)malloc(mem->nBalcoes*sizeof(int*));	
 
@@ -74,8 +74,8 @@ int generateStats(sem_t *sem_id, mem_part *mem){
 
 	for(i = 0; i < mem->nBalcoes; i++){
 		tempoMedioAtendBalcao[i] = malloc(100*sizeof(char));
-		printf("Tempo medio de atendimento no balcao %d: %d\n", i, *tempoMedAtendBalcao[i]);
-		sprintf(tempoMedioAtendBalcao[i], "Tempo medio de atendimento no balcao%d: %d\n", i, *tempoMedAtendBalcao[i]);
+		printf("Tempo medio de atendimento no balcao %d: %.2f\n", i, *tempoMedAtendBalcao[i]);
+		sprintf(tempoMedioAtendBalcao[i], "Tempo medio de atendimento no balcao%d: %.2f\n", i, *tempoMedAtendBalcao[i]);
 		write(statFile, tempoMedioAtendBalcao[i], strlen(tempoMedioAtendBalcao[i]));
 		free(tempoMedioAtendBalcao[i]);
 		free(tempoMedAtendBalcao[i]);
@@ -152,7 +152,7 @@ sem_t* semTryOpen(){
 		puts("semaphore created");
 	
 	return sem_id;
-}
+} 
 
 int initShm(mem_part *mem){
     puts("initing shared memory");    
