@@ -10,7 +10,7 @@ typedef struct _table{
 	char nome_fifo[15];
 	int em_atendimento;
 	int ja_atendidos;
-	int tempo_med_atend;
+	float tempo_med_atend;
 	mutex_t mutex;
 }table;
 

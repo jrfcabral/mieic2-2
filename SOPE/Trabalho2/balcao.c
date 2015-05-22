@@ -47,6 +47,8 @@ int generateStats(sem_t *sem_id, mem_part *mem){
 		
 	}
 	tempoMedAtend /= mem->nBalcoes;
+	printf("encerrar - %d - %d\n", mem->data_abert_loja, time(NULL));
+	
 	duracaoLoja = time(NULL) - mem->data_abert_loja;
 
 	sem_post(sem_id);
@@ -154,7 +156,7 @@ sem_t* semTryOpen(){
 
 int initShm(mem_part *mem){
     puts("initing shared memory");    
-    strncpy(mem->nome_sem, SEM_NAME,10);
+    strncpy(mem->nome_sem, SEM_NAME,strlen(SEM_NAME)+1);
     time(&(mem->data_abert_loja));  
     int i;
     for (i = 0; i < MAX_LINES;i++){
@@ -162,11 +164,13 @@ int initShm(mem_part *mem){
         pthread_mutexattr_init(&attrmutex);
         pthread_mutexattr_setpshared(&attrmutex, PTHREAD_PROCESS_SHARED);
         pthread_mutex_init(&(mem->tabelas[i].mutex), &attrmutex);
+        pthread_mutexattr_destroy(&attrmutex);
         pthread_mutex_lock(&(mem->tabelas[i].mutex));
         mem->tabelas[i].encerrado = 1;
         pthread_mutex_unlock(&(mem->tabelas[i].mutex));
     }
-    
+    mem->data_abert_loja = time(NULL);
+    printf("%d\n", mem->data_abert_loja);
     return 0;
 }
 
@@ -223,8 +227,9 @@ void* atendimento(void* arg){
     infoAtendimento* info = (infoAtendimento*) arg;
     table *tabela = &info->mem->tabelas[info->balcaoNumber];
     pthread_mutex_lock(&tabela->mutex);
-    printf("%s a atender cliente cujo fifo privado é %s\n", tabela->nome_fifo, info->fifoName);
+    printf("%s a atender cliente cujo fifo privado é %s", tabela->nome_fifo, info->fifoName);
     int duracao = tabela->em_atendimento +1;
+    printf("e vai esperar %d segundos\n", duracao);
     tabela->em_atendimento++;
     pthread_mutex_unlock(&info->mem->tabelas[info->balcaoNumber].mutex);
     sleep(duracao);
@@ -234,11 +239,12 @@ void* atendimento(void* arg){
     write(fifo, mensagem, strlen(mensagem));
 	
     printf("%s atendido cliente cujo fifo privado é %s\n", tabela->nome_fifo, info->fifoName);
-    tabela->tempo_med_atend = ( tabela->tempo_med_atend*tabela->ja_atendidos + duracao)/(tabela->ja_atendidos+1);
+    tabela->tempo_med_atend = ( (tabela->tempo_med_atend*(float)tabela->ja_atendidos + (float)duracao)/((float)tabela->ja_atendidos+1) );
+    printf("tempo médio %f\n", tabela->tempo_med_atend);
     tabela->em_atendimento--;   
     tabela->ja_atendidos++;
     pthread_mutex_unlock(&tabela->mutex);
-	close(fifo);
+	 close(fifo);
     free(arg);
     return NULL;
 }
@@ -248,7 +254,7 @@ void* alarme(void* arg){
     printf("vou esperar %d segundos\n", info->tempo);
     sleep(info->tempo);
     char *fifoName = (char *)malloc(15*sizeof(char));
-	sprintf(fifoName, "/tmp/fb_%d", getpid());
+	 sprintf(fifoName, "/tmp/fb_%d", getpid());
     int fifo = open(fifoName, O_WRONLY, 0777);
     char message[] = "close";
     write(fifo, message, strlen(message));
@@ -285,8 +291,7 @@ int main(int argc, char **argv){
 	    exit(1);
 	}
     if(!mem->nBalcoes)
-        initShm(mem);
-        mem->data_abert_loja = time(NULL);
+        initShm(mem);        
     int currentBalcao =  createBalcao(mem);
     if (currentBalcao < 0){
         puts("balcao: fatal error! couldn't create new table line! Store is probably full.");
@@ -336,10 +341,10 @@ int main(int argc, char **argv){
     
 	encerraBalcao(mem, currentBalcao, sem_id);
 	encerraLoja(mem, sem_id, argv[1]);
-    sem_close(sem_id);
-    unlink(fifoName);
-    if (munmap(mem, sizeof(mem_part)) == -1)
-        perror("balcao: error, couldn't unmap shared memory:");
+   sem_close(sem_id);
+   unlink(fifoName);
+   if (munmap(mem, sizeof(mem_part)) == -1)
+       perror("balcao: error, couldn't unmap shared memory:");
 	puts("exiting normally");	
 	exit(0);
 }
