@@ -1,85 +1,66 @@
 #include "loja.h"
 
 
-
-int generateStats(sem_t *sem_id, mem_part *mem){
-	int statFile = open("statistics.txt", (O_CREAT|O_TRUNC|O_RDWR), 0666);
-	int totClients = 0, tempoMedAtend = 0, i;
-	int **totClientsBalcao = (int **) malloc(mem->nBalcoes*sizeof(int*));
-	float **tempoMedAtendBalcao = (float **)malloc(mem->nBalcoes*sizeof(float*));
-	int duracaoLoja;
-	int **duracaoBalcao = (int **)malloc(mem->nBalcoes*sizeof(int*));	
-
-	char *totalClients = (char *)malloc(100*sizeof(char));
-	char **totalClientsBalcao = (char **)malloc(mem->nBalcoes*sizeof(char*));
-	char *tempoMedioAtend = (char *)malloc(100*sizeof(char));
-	char **tempoMedioAtendBalcao = (char **)malloc(mem->nBalcoes*sizeof(char));
-	char *durLoja = (char *)malloc(100*sizeof(char));
-	char **durBalcao = (char **)malloc(mem->nBalcoes*sizeof(char));
+int genStats(sem_t *sem_id, mem_part *mem){
+	int statFile = open("statistics.txt", (O_CREAT|O_TRUNC|O_RDWR), 0777);
+	int totClients = 0, i;
+	float totAvgTendTime = 0;
 
 
-	sem_wait(sem_id);
 	for(i = 0; i < mem->nBalcoes; i++){
-		totClientsBalcao[i] = malloc(sizeof(int));
-		tempoMedAtendBalcao[i] = malloc(sizeof(int));
-		duracaoBalcao[i] = malloc(sizeof(int));
-		
+		char *totalClientsPerBalcon = (char *)malloc(100*sizeof(char));
 		totClients += mem->tabelas[i].ja_atendidos;
-		tempoMedAtend += mem->tabelas[i].tempo_med_atend;
-		*totClientsBalcao[i] = mem->tabelas[i].ja_atendidos;
-		*tempoMedAtendBalcao[i] = mem->tabelas[i].tempo_med_atend;
-		*duracaoBalcao[i] = mem->tabelas[i].duracao;
-		
+		sprintf(totalClientsPerBalcon, "Clientes atendidos no balcao %d: %d\n", i, mem->tabelas[i].ja_atendidos);
+		write(statFile, totalClientsPerBalcon, strlen(totalClientsPerBalcon));
+		free(totalClientsPerBalcon);
 	}
-	tempoMedAtend /= mem->nBalcoes;	
-	
-	duracaoLoja = time(NULL) - mem->data_abert_loja;
-
-	sem_post(sem_id);
-	
-	printf("Total de Clientes: %d\n", totClients);
-	sprintf(totalClients, "Total de Clientes: %d\n", totClients);
-	write(statFile, totalClients, strlen(totalClients));
+		
+	char *totalClients = (char *)malloc(100*sizeof(char));
+	sprintf(totalClients, "Total de Clientes: %d\n\n", totClients);
+	write(statFile, totalClients, strlen(totalClients));	
 	free(totalClients);
-	
-	for(i = 0; i < mem->nBalcoes; i++){
-		printf("Clientes no balcao %d : %d\n", i, *totClientsBalcao[i]);
-		totalClientsBalcao[i] = malloc(50*sizeof(char));
-		sprintf(totalClientsBalcao[i], "Clientes no balcao %d : %d\n", i, *totClientsBalcao[i]);
-		write(statFile, totalClientsBalcao[i], strlen(totalClientsBalcao[i]));
-		free(totalClientsBalcao[i]);
-		free(totClientsBalcao[i]);
-	}
-	
-	printf("Tempo medio de atendimento: %d\n", tempoMedAtend);
-	sprintf(tempoMedioAtend, "Tempo medio de atendimento: %d\n", tempoMedAtend);
-	write(statFile, tempoMedioAtend, strlen(tempoMedioAtend));
-	free(tempoMedioAtend);
 
 	for(i = 0; i < mem->nBalcoes; i++){
-		tempoMedioAtendBalcao[i] = malloc(100*sizeof(char));
-		printf("Tempo medio de atendimento no balcao %d: %.2f\n", i, *tempoMedAtendBalcao[i]);
-		sprintf(tempoMedioAtendBalcao[i], "Tempo medio de atendimento no balcao%d: %.2f\n", i, *tempoMedAtendBalcao[i]);
-		write(statFile, tempoMedioAtendBalcao[i], strlen(tempoMedioAtendBalcao[i]));
-		free(tempoMedioAtendBalcao[i]);
-		free(tempoMedAtendBalcao[i]);
-		
-	}
-
-	printf("Tempo de abertura da loja: %d\n", duracaoLoja);
-	sprintf(durLoja, "Tempo de abertura da loja: %d\n", duracaoLoja);
-	write(statFile, durLoja, strlen(durLoja));
-	free(durLoja);
-
-	for(i = 0; i < mem->nBalcoes; i++){
-		durBalcao[i] = malloc(100*sizeof(char));
-		printf("Tempo de abertura do balcao %d: %d\n", i, *duracaoBalcao[i]);
-		sprintf(durBalcao[i], "Tempo de abertura do balcao %d: %d\n", i, *duracaoBalcao[i]);
-		write(statFile, durBalcao[i], strlen(durBalcao[i]));
-		free(durBalcao[i]);
-		free(duracaoBalcao[i]);
+		char *avgTendTimePerBalcon = (char *)malloc(100*sizeof(char));
+		totAvgTendTime += mem->tabelas[i].tempo_med_atend;
+		sprintf(avgTendTimePerBalcon, "Tempo medio de atendimento no balcao %d: %.2f\n", i, mem->tabelas[i].tempo_med_atend);
+		write(statFile, avgTendTimePerBalcon, strlen(avgTendTimePerBalcon));
+		free(avgTendTimePerBalcon);		
 	}
 	
+	char *totalAvgTendTime = (char *)malloc(100*sizeof(char));
+	sprintf(totalAvgTendTime, "Tempo medio de atendimento na loja: %.2f\n\n", (totAvgTendTime/(float)mem->nBalcoes));
+	write(statFile, totalAvgTendTime, strlen(totalAvgTendTime));
+	free(totalAvgTendTime);
+
+	for(i = 0; i < mem->nBalcoes; i++){
+		char *timeRemainedOpenBalcon = (char *)malloc(100*sizeof(char));
+		sprintf(timeRemainedOpenBalcon, "Duracao de abertura do balcao %d: %d\n", i, mem->tabelas[i].duracao);
+		write(statFile, timeRemainedOpenBalcon, strlen(timeRemainedOpenBalcon));
+		free(timeRemainedOpenBalcon);
+	}
+
+	char *timeRemainedOpenStore = (char *)malloc(100*sizeof(char));
+	int duration = time(NULL) - mem->data_abert_loja;
+	sprintf(timeRemainedOpenStore, "Duracao de abertura da loja: %d\n\n", duration);
+	write(statFile, timeRemainedOpenStore, strlen(timeRemainedOpenStore));
+	free(timeRemainedOpenStore);
+
+	for(i = 0; i < mem->nBalcoes; i++){
+		struct tm time;
+		localtime_r(&(mem->tabelas[i].tempo), &time);
+		char *timeOfCreationBalcon = (char *)malloc(100*sizeof(char));
+		sprintf(timeOfCreationBalcon, "Data de abertura do balcao %d: %d/%d/%d %d:%d:%d\n", i, time.tm_mday, time.tm_mon, time.tm_year+1900, time.tm_hour, time.tm_min, time.tm_sec);
+		write(statFile, timeOfCreationBalcon, strlen(timeOfCreationBalcon));
+		free(timeOfCreationBalcon);
+	}
+	
+	struct tm time;
+	localtime_r(&(mem->data_abert_loja), &time);
+	char *timeOfCreationStore = (char *)malloc(100*sizeof(char));
+	sprintf(timeOfCreationStore, "Data de abertura da loja: %d/%d/%d %d:%d:%d\n", time.tm_mday, time.tm_mon, time.tm_year+1900, time.tm_hour, time.tm_min, time.tm_sec);
+	write(statFile, timeOfCreationStore, strlen(timeOfCreationStore));
+	free(timeOfCreationStore);
 
 	close(statFile);
 	return 0;
@@ -191,8 +172,9 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName, int balcao){
         pthread_mutex_unlock(&mem->tabelas[i].mutex);
     }
     if (allClosed){
-		//generateStats(sem_id, mem);
+	genStats(sem_id, mem);
         puts("Ultimo balcao a ser encerrado: vou fechar a loja");
+		puts("Estatisticas disponiveis no ficheiro statistics.txt");
         sem_wait(sem_id);
         shm_unlink(shmName);
         sem_post(sem_id);
