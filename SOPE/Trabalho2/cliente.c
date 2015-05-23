@@ -93,7 +93,7 @@ int genClient(mem_part *mem, sem_t *sem){
 	 
 		
 	write(balcaoFifo, &msg, sizeof(mensagemBalcao));
-	
+	printLog(mem->nome_mem, "Cliente", minBalcao, "pede_atendimento", fifo);
 	//esperar por atendimento	
 	puts("vou esperar para ser atendido");
 	int atendido = 0;
@@ -101,12 +101,12 @@ int genClient(mem_part *mem, sem_t *sem){
 	while(!atendido){
 		int n = read(clienteFifo, atendimento, 20);
 		if(!strncmp(atendimento, "fim_atendimento",n)){
-			atendido = 1;			
+			atendido = 1;
+			printLog(mem->nome_mem, "Cliente", minBalcao, "fim_atendimento", fifo);			
 		}		
 	}
 	free(atendimento);
-	free(fifo);
-	puts("fui atendido");
+	free(fifo);	
 	return 0;
 }
 
