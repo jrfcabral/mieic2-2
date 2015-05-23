@@ -28,6 +28,7 @@ void printLog(char* name, char* who, int number, char* what, char* channel){
 	snprintf(line ,len+1, "%04d-%02d-%02d %02d:%02d:%02d |%-10s|%-6d|%-20s|%-30s\n", time.tm_year+1900,time.tm_mon,time.tm_mday,
 	time.tm_hour,time.tm_min, time.tm_sec, who,number, what, channel);
 	write(fd, line, len);
+	close(fd);
 	free(line);
 	return;
 }
