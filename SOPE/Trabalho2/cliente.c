@@ -74,38 +74,39 @@ int genClient(mem_part *mem, sem_t *sem){
 		perror("Could not open client FIFO. Exiting.\n");
 		exitClient(-1);
 	}
-	//printf("trying to open fifo for balcon number: %d, name is %s\n", (int)mem->tabelas[minBalcao].balcao, mem->tabelas[minClientes].nome_fifo);	
-	pthread_mutex_lock(&mem->tabelas[minBalcao].mutex);
-	//printf("tamanho da string é %d\n", strlen(mem->tabelas[minBalcao].nome_fifo));
-	puts("mutex locked");
+	
+	//preparar mensagem
+	mensagemBalcao msg;
+	msg.close = 0;
+	memset(msg.fifoName, 0, 100);
+	strncpy(msg.fifoName, fifo, 100);
 	char* nomeFifo = malloc(strlen(mem->tabelas[minBalcao].nome_fifo)*sizeof(char)+1);
-	strcpy(nomeFifo, mem->tabelas[minBalcao].nome_fifo);
+	pthread_mutex_lock(&mem->tabelas[minBalcao].mutex);		
 	int balcaoFifo = open(mem->tabelas[minBalcao].nome_fifo, O_WRONLY, 0777);
-	free(nomeFifo);
-	puts("gonna unlock");
 	pthread_mutex_unlock(&mem->tabelas[minBalcao].mutex);
-	if(balcaoFifo < 0){
-		//printf("name of fifo that could not be opened: %d, \n", balcaoFifo);		
+	free(nomeFifo);	
+	if(balcaoFifo < 0){				
 		perror("Could not open counter FIFO. Exiting.");		
 		exitClient(-1);
 	}
-
-	sem_wait(sem);
-	write(balcaoFifo, fifo, strlen(fifo));
-	sem_post(sem);
-
-	puts("fifo successfully opened");
+	
+	 
+		
+	write(balcaoFifo, &msg, sizeof(mensagemBalcao));
+	
+	//esperar por atendimento	
+	puts("vou esperar para ser atendido");
 	int atendido = 0;
 	char *atendimento = (char *)malloc(20*sizeof(char)+1);	
 	while(!atendido){
 		int n = read(clienteFifo, atendimento, 20);
 		if(!strncmp(atendimento, "fim_atendimento",n)){
-			atendido = 1;
-			puts("Fui atendido");
+			atendido = 1;			
 		}		
 	}
 	free(atendimento);
 	free(fifo);
+	puts("fui atendido");
 	return 0;
 }
 

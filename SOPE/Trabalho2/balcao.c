@@ -14,9 +14,6 @@
 
 #include "loja.h"
 
-
-
-
 int generateStats(sem_t *sem_id, mem_part *mem){
 	int statFile = open("statistics.txt", (O_CREAT|O_TRUNC|O_RDWR), 0777);
 	int totClients = 0, tempoMedAtend = 0, i;
@@ -46,8 +43,7 @@ int generateStats(sem_t *sem_id, mem_part *mem){
 		*duracaoBalcao[i] = mem->tabelas[i].duracao;
 		
 	}
-	tempoMedAtend /= mem->nBalcoes;
-	printf("encerrar - %d - %d\n", mem->data_abert_loja, time(NULL));
+	tempoMedAtend /= mem->nBalcoes;	
 	
 	duracaoLoja = time(NULL) - mem->data_abert_loja;
 
@@ -160,9 +156,6 @@ int initShm(mem_part *mem){
         pthread_mutex_unlock(&(mem->tabelas[i].mutex));
     }
     mem->data_abert_loja = time(NULL);
-
-    printf("%d\n", mem->data_abert_loja);
-
     return 0;
 }
 
@@ -231,6 +224,8 @@ void* atendimento(void* arg){
     sleep(duracao);
     pthread_mutex_lock(&tabela->mutex);
     int fifo = open(info->fifoName, O_WRONLY, 0777);
+    if (fifo < 0)
+        puts("feitiçaria negra");
     char mensagem[] = "fim_atendimento";
     write(fifo, mensagem, strlen(mensagem));
 	
@@ -247,20 +242,24 @@ void* atendimento(void* arg){
 
 void* alarme(void* arg){
     pthread_detach(pthread_self());
-    infoAlarme* info = (infoAlarme*) arg;
-    printf("vou esperar %d segundos\n", info->tempo);
+    infoAlarme* info = (infoAlarme*) arg;    
     sleep(info->tempo);
+    
     char *fifoName = (char *)malloc(15*sizeof(char));
-	 sprintf(fifoName, "/tmp/fb_%d", getpid());
+	sprintf(fifoName, "/tmp/fb_%d", getpid());
     int fifo = open(fifoName, O_WRONLY, 0777);
-    char message[] = "close";
-    write(fifo, message, strlen(message));
+    
+    mensagemBalcao msg;
+    msg.close = 1;
+    
+    write(fifo, &msg, sizeof(mensagemBalcao));
+    
     free(fifoName);
     return(NULL);    
     
 }
 int main(int argc, char **argv){
-
+    //verifica e valida argumentos do programa
 	if(argc != 3){
 		printf("Usage: %s shared_mem tempo_abertura\n", argv[0]);
 		exit(-1); 	
@@ -274,10 +273,10 @@ int main(int argc, char **argv){
         exit(-1);
     }
     
+    //abrir/criar e mapear memoria partilhada e abrir/criar o semaforo com nome
 	sem_t *sem_id =	semTryOpen();
     if(sem_id == SEM_FAILED)
-        puts("failure");
-    printf("%d\n", &sem_id);
+        puts("failure");    
 	sem_wait(sem_id);
 	int shared = shmTryOpen(argv[1]);
 	if (shared < -1){
@@ -293,7 +292,8 @@ int main(int argc, char **argv){
 	}
     if(!mem->nBalcoes)
         initShm(mem);                
-
+    
+    //criar um novo balcao
     int currentBalcao =  createBalcao(mem);
     if (currentBalcao < 0){
         puts("balcao: fatal error! couldn't create new table line! Store is probably full.");
@@ -302,26 +302,36 @@ int main(int argc, char **argv){
     }
     sem_post(sem_id);
     
+    //abre o fifo de atendimento
 	char *fifoName = (char *)malloc(15*sizeof(char));
 	sprintf(fifoName, "/tmp/fb_%d", getpid());
 	mkfifo(fifoName, 0777);
 	printf("fifo de atendimento criado em %s\n", fifoName);
 	int fifoFd = open(fifoName, (O_RDWR), 0777);
-	char buffer[20] = {0};
+	
+    
+    //prepara array que vai receber a informação dos threads de atendimento
 	pthread_t *clients = malloc(sizeof(pthread_t));
+    int clientsSize = 0;
+    
+    //configura um alarme para encerrar o balcao
     pthread_t alarme_thread;
     infoAlarme alarmeConfig;
     alarmeConfig.tempo = duracao;
     alarmeConfig.balcaoNumber = currentBalcao;
-    pthread_create(&alarme_thread, NULL, alarme, (void*)&alarmeConfig);    
-	int clientsSize = 0;
+    pthread_create(&alarme_thread, NULL, alarme, (void*)&alarmeConfig);
+        
+	
 
-
-	while(strncmp(buffer, "close", 6) != 0){
-        memset(buffer, 0, 20);
-	    read(fifoFd, (void*)buffer, 20);
-        puts("read from fifo");       
-	    if (strncmp(buffer, "/tmp/fc", 7) == 0)
+    //le as mensagens recebidas e gera threads de atendimento
+    mensagemBalcao msg;
+    msg.close = 0;
+	while(!msg.close){
+        
+	    read(fifoFd, (void*)&msg, sizeof(mensagemBalcao));
+        puts("read from fifo"); 
+        puts(msg.fifoName);      
+	    if (!msg.close)
 	    {
             puts("atender");
 	        clientsSize++;
@@ -330,7 +340,7 @@ int main(int argc, char **argv){
 	            exit(-1);
 	        }
 	        infoAtendimento* info = malloc(sizeof(infoAtendimento));//a ser libertado pelo thread
-	        strncpy(info->fifoName, buffer, 20);
+	        strncpy(info->fifoName, msg.fifoName, 100);
 	        info->balcaoNumber = currentBalcao;
 	        info->mem = mem;
 	        
@@ -342,7 +352,7 @@ int main(int argc, char **argv){
     for(i = 0; i < clientsSize; i++)
         pthread_join(clients[i], NULL);
     
-    
+    //fecha balcao, fecha loja caso seja o ultimo balcao a fechar e apaga os fifos do balcao
 	encerraBalcao(mem, currentBalcao, sem_id);
 	encerraLoja(mem, sem_id, argv[1]);
    sem_close(sem_id);

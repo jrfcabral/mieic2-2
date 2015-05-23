@@ -23,7 +23,7 @@ typedef struct _mem_part{
 }mem_part;
 
 typedef struct _infoAtendimento{
-    char fifoName[20];
+    char fifoName[100];
     int balcaoNumber;
     mem_part* mem;
 }infoAtendimento;
