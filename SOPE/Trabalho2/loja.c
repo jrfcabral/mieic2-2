@@ -13,7 +13,7 @@ void printLog(char* name, char* who, int number, char* what, char* channel){
 	if (fd > 0){
 		char* firstLine = malloc(sizeof(char)*(len+2));
 		snprintf(firstLine, len+1, "%-20s|%-10s|%-6s|%-20s|%-30s\n", "quando", "quem", "balcao", "o_que", "canal criado/usado");		
-		write(fd, firstLine, strlen(firstLine)+1);
+		write(fd, firstLine, strlen(firstLine));
 		free(firstLine);
 	}
 	if (fd < 0 && errno == EEXIST)
@@ -27,7 +27,7 @@ void printLog(char* name, char* who, int number, char* what, char* channel){
 	char* line = malloc(sizeof(char)*(len+1));
 	snprintf(line ,len+1, "%04d-%02d-%02d %02d:%02d:%02d |%-10s|%-6d|%-20s|%-30s\n", time.tm_year+1900,time.tm_mon,time.tm_mday,
 	time.tm_hour,time.tm_min, time.tm_sec, who,number, what, channel);
-	write(fd, line, len+1);
+	write(fd, line, len);
 	free(line);
 	return;
 }
