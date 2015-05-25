@@ -78,19 +78,20 @@ MyRobot.prototype.display = function () {
 			this.leftShoulder.display();
 		this.scene.popMatrix();
 
-		this.scene.pushMatrix();
 		
 		
 
 		this.scene.pushMatrix();
 			this.scene.translate(0, 1.8, 0.7);
 			this.scene.rotate(90*degToRad, 1, 0, 0);
-			this.scene.rotate(this.armAngle*degToRad, 0, 1, 0);
+			if(!this.waving){
+				this.scene.rotate(this.armAngle*degToRad, 0, 1, 0);
+			}
 			this.scene.scale(0.2,0.2,1.7);
 			this.leftArm.display();
 		this.scene.popMatrix();
 
-		this.scene.popMatrix();
+		
 
 		this.scene.pushMatrix();
 			this.scene.translate(0, 1.8, -0.5);
@@ -98,8 +99,6 @@ MyRobot.prototype.display = function () {
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.rightShoulder.display();
 		this.scene.popMatrix();
-		
-		this.scene.pushMatrix();
 
 		
 
@@ -123,7 +122,7 @@ MyRobot.prototype.display = function () {
 			this.rightArm.display();
 		this.scene.popMatrix();
 
-		this.scene.popMatrix();
+		
 
 	this.scene.popMatrix();
 }
