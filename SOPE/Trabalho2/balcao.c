@@ -209,9 +209,10 @@ void* atendimento(void* arg){
     tabela->em_atendimento--;   
     tabela->ja_atendidos++;
     pthread_mutex_unlock(&tabela->mutex);
-	 close(fifo);
+	close(fifo);
     free(arg);
-    return NULL;
+    pthread_exit(NULL);
+
 }
 
 void* alarme(void* arg){
@@ -318,7 +319,12 @@ int main(int argc, char **argv){
 	        info->balcaoNumber = currentBalcao;
 	        info->mem = mem;
 	        
-	        pthread_create(&clients[clientsSize-1], NULL, atendimento, (void*)info);
+	        if(pthread_create(&clients[clientsSize-1], NULL, atendimento, (void*)info)){
+	        clientsSize--;
+			free(info);
+			perror("Couldn't start new thread:");
+		}	
+
 	    }        
 	}
     
