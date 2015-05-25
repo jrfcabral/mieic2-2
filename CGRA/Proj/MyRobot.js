@@ -8,9 +8,8 @@ function MyRobot(scene, minS, maxS, minT, maxT) {
 	
 	this.wheelLeft = new MyRobotPart(this.scene, 20, 1);
 	this.wheelRight = new MyRobotPart(this.scene, 20, 1);
-	this.bodyTop = new MyRobotPart(this.scene, 20);
 	this.bodyBottom = new MyRobotPart(this.scene, 20);
-	this.head = new MyLamp(this.scene, 20, 20);
+	this.head = new MyLamp(this.scene, 200, 200);
 	this.leftArm = new MyRobotPart(this.scene, 20, 1);
 	this.rightArm = new MyRobotPart(this.scene, 20, 1);
 	this.leftShoulder = new MyLamp(this.scene, 20, 20);
@@ -46,17 +45,10 @@ MyRobot.prototype.display = function () {
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, 1.3, 0);
-			this.scene.scale(0.8, 1.5, 0.8)
+			this.scene.translate(0, 2.05, 0);
+			this.scene.scale(0.8, 3.2, 0.8)
 			this.scene.rotate(90*degToRad, 1, 0, 0);
 			this.bodyBottom.display();
-		this.scene.popMatrix();
-
-		this.scene.pushMatrix();
-			this.scene.translate(0, 1.3, 0);
-			this.scene.scale(0.8, 1.5, 0.8);
-			this.scene.rotate(-90*degToRad, 1, 0, 0);
-			this.bodyTop.display();
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();

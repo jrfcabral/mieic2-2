@@ -97,7 +97,7 @@ LightingScene.prototype.init = function(application) {
 	this.slidesAppearance.setSpecular(0.05, 0.05,0.05,1);
 	this.slidesAppearance.setDiffuse(1,1,1,1);
 	this.slidesAppearance.setShininess(10);
-	this.slidesAppearance.loadTexture("../resources/images/slides.PNG");
+	this.slidesAppearance.loadTexture("../resources/images/metalhead.png");
 	this.slidesAppearance.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
 	
 	this.boardAppearance = new CGFappearance(this);
@@ -236,7 +236,7 @@ LightingScene.prototype.display = function() {
 		this.planewall.display();
 	this.popMatrix();
 
-	// First Table
+	/*	// First Table
 	this.pushMatrix();
 		this.translate(5, 0, 8);
 		this.table.display();
@@ -246,7 +246,7 @@ LightingScene.prototype.display = function() {
 	this.pushMatrix();
 		this.translate(12, 0, 8);
 		this.table.display();
-	this.popMatrix();
+	this.popMatrix();*/
 
 	// Board A
 	this.pushMatrix();
