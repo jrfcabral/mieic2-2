@@ -334,6 +334,8 @@ LightingScene.prototype.update = function(currTime){
 		this.lights[3].disable();
 	}
 
+	this.bot.update();
+
 };
 
 LightingScene.prototype.doSomething = function ()

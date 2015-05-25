@@ -88,5 +88,8 @@ MyInterface.prototype.processKeyboard = function(event) {
 		case(100):
 			this.scene.bot.setAngle(this.scene.bot.angle - 1);
 			break;
+		case(104):
+			this.scene.bot.waving = 1;
+			break;
 	};
 };
