@@ -29,9 +29,9 @@ int shmTryOpen(char *mem_part){
 	return shmFd;
 }
 
-sem_t* semTryOpen(){
+sem_t* semTryOpen(mem_part *mem){
 	sem_t *sem_id;
-	sem_id = sem_open(SEM_NAME, (O_RDWR), 0777);
+	sem_id = sem_open(mem->nome_sem, (O_RDWR), 0777);
 	if (sem_id == SEM_FAILED){
 	    perror("cliente: fatal error! Couldn't open semaphore!");
 	    exit(-1);
@@ -127,7 +127,7 @@ int main(int argc, char **argv){
 		exit(-1);
 	}
 
-	sem = semTryOpen();
+	sem = semTryOpen(mem);
 
 	int i;
 	for(i = 0; i < atoi(argv[2]); i++){

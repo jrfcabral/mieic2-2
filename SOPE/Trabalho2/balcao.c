@@ -92,12 +92,16 @@ int shmTryOpen(char *shmName){
 	return shmFd;
 }
 
-sem_t* semTryOpen(){
-   
-   sem_t *sem_id = sem_open(SEM_NAME, O_CREAT | O_RDWR |O_EXCL, 0666, 1);
+sem_t* semTryOpen(char *shmName){
+   	
+	char *semName = (char *)malloc(strlen(shmName)+5*sizeof(char));
+	strcpy(semName, shmName);
+	strcat(semName, "Sem");
+
+   sem_t *sem_id = sem_open(semName, O_CREAT | O_RDWR |O_EXCL, 0666, 1);
    //if the semaphore already exists open it
    if (sem_id == SEM_FAILED && errno == EEXIST){        
-        sem_id = sem_open(SEM_NAME, (O_RDWR),0666);
+        sem_id = sem_open(semName, (O_RDWR),0666);
     
    }
    //if it still can't be opened or couldn't be opened to begin with, print error
@@ -105,14 +109,19 @@ sem_t* semTryOpen(){
         perror("Failed to open semaphore");
         exit(-1);        	
    }
-   
+   free(semName);
    return sem_id;
 } 
 
 int initShm(mem_part *mem, char* shmName){
     printLog(shmName+1, "Balcao ", 0, "inicializa_mempart", "-", &mem->logmutex);
-    puts("initing shared memory");    
-    strncpy(mem->nome_sem, SEM_NAME,strlen(SEM_NAME)+1);
+    puts("initing shared memory");
+	
+	char *semName = (char *)malloc(strlen(shmName)+5*sizeof(char));
+	strcpy(semName, shmName);
+	strcat(semName, "Sem");
+	    
+    strncpy(mem->nome_sem, semName, strlen(semName)+1);
     time(&(mem->data_abert_loja));
     strncpy(mem->nome_mem, shmName+1, strlen(shmName)+1);
     pthread_mutexattr_t attrmutex;
@@ -129,6 +138,8 @@ int initShm(mem_part *mem, char* shmName){
     }
     mem->data_abert_loja = time(NULL);
     pthread_mutexattr_destroy(&attrmutex);
+	free(semName);
+	
     return 0;
 }
 
@@ -256,7 +267,7 @@ int main(int argc, char **argv){
     //alterar a umask para permitir que outros utilizadores acedam aos recursos criados por este process
     umask((mode_t) 0000);
     //abrir/criar e mapear memoria partilhada e abrir/criar o semaforo com nome
-	sem_t *sem_id =	semTryOpen();
+	sem_t *sem_id =	semTryOpen(argv[1]);
     if(sem_id == SEM_FAILED)
         puts("failure");    
 	sem_wait(sem_id);

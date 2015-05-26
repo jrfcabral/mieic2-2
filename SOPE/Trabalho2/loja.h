@@ -15,7 +15,7 @@
 
 #define MAX_LINES 100
 #define CLIENTE_TIMEOUT 11
-#define SEM_NAME "/semBalcao"
+
 typedef pthread_mutex_t mutex_t;
 
 typedef struct _table{
