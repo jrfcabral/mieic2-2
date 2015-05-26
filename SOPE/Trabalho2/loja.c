@@ -10,7 +10,10 @@ void printLog(char* name, char* who, int number, char* what, char* channel, mute
 	
 	//try to create file, open if it already exists
 	pthread_mutex_lock(mut);
-	int fd = open(name, (O_CREAT|O_EXCL|O_WRONLY), 0777);
+	char* filename = malloc(sizeof(char)*(strlen(".log")+strlen(name)+1));
+	sprintf(filename, "%s%s", name, ".log");
+	int fd = open(filename, (O_CREAT|O_EXCL|O_WRONLY), 0777);
+
 	
 	if (fd > 0){
 		char* firstLine = malloc(sizeof(char)*(len+2));
@@ -19,14 +22,15 @@ void printLog(char* name, char* who, int number, char* what, char* channel, mute
 		free(firstLine);
 	}
 	if (fd < 0 && errno == EEXIST)
-		fd = open(name, O_WRONLY |O_APPEND, 0777);
+		fd = open(filename, O_WRONLY |O_APPEND, 0777);
 	if (fd < 0){
+		free(filename);
 		pthread_mutex_unlock(mut);
 		perror("loja.c:Couldn't open log file");
 		return;
 	} 
 	
-	
+	free(filename);
 	char* line = malloc(sizeof(char)*(len+1));
 	snprintf(line ,len+1, "%04d-%02d-%02d %02d:%02d:%02d |%-10s|%-6d|%-20s|%-30s\n", time.tm_year+1900,time.tm_mon,time.tm_mday,
 	time.tm_hour,time.tm_min, time.tm_sec, who,number, what, channel);
