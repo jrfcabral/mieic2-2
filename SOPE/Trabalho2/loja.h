@@ -14,7 +14,7 @@
 #include <sys/file.h>
 
 #define MAX_LINES 100
-#define CLIENTE_TIMEOUT 11
+#define CLIENTE_TIMEOUT 1000
 
 typedef pthread_mutex_t mutex_t;
 

@@ -357,7 +357,7 @@ int main(int argc, char **argv){
     int i;
     for(i = 0; i < clientsSize; i++)
         pthread_join(clients[i], NULL);
-    
+    puts("qualquer");
     //fecha balcao, fecha loja caso seja o ultimo balcao a fechar e apaga os fifos do balcao
 	encerraBalcao(mem, currentBalcao, sem_id);
 	encerraLoja(mem, sem_id, argv[1], currentBalcao);
