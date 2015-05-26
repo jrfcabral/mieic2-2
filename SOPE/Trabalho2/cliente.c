@@ -54,7 +54,8 @@ char *mkClientFifo(){
 }
 
 
-int genClient(mem_part *mem, sem_t *sem){	
+int genClient(mem_part *mem, sem_t *sem){
+    alarm(CLIENTE_TIMEOUT);	
 	char *fifo = mkClientFifo();
 	int j = 0, minClientes = 9999999, minBalcao = 0;
 	sem_wait(sem);	
@@ -93,7 +94,7 @@ int genClient(mem_part *mem, sem_t *sem){
 	 
 		
 	write(balcaoFifo, &msg, sizeof(mensagemBalcao));
-	printLog(mem->nome_mem, "Cliente", minBalcao, "pede_atendimento", fifo);
+	printLog(mem->nome_mem, "Cliente", minBalcao, "pede_atendimento", fifo, &mem->logmutex);
 	//esperar por atendimento	
 	puts("vou esperar para ser atendido");
 	int atendido = 0;
@@ -102,7 +103,7 @@ int genClient(mem_part *mem, sem_t *sem){
 		int n = read(clienteFifo, atendimento, 20);
 		if(!strncmp(atendimento, "fim_atendimento",n)){
 			atendido = 1;
-			printLog(mem->nome_mem, "Cliente", minBalcao, "fim_atendimento", fifo);			
+			printLog(mem->nome_mem, "Cliente", minBalcao, "fim_atendimento", fifo, &mem->logmutex);			
 		}		
 	}
 	free(atendimento);

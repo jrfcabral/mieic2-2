@@ -1,6 +1,6 @@
 #include "loja.h"
 
-void printLog(char* name, char* who, int number, char* what, char* channel){
+void printLog(char* name, char* who, int number, char* what, char* channel, mutex_t *mut){
 	time_t now = time(NULL);
 	struct tm time;
 	localtime_r(&now, &time);
@@ -9,7 +9,9 @@ void printLog(char* name, char* who, int number, char* what, char* channel){
 	time.tm_hour,time.tm_min, time.tm_sec, who,number, what, channel);	
 	
 	//try to create file, open if it already exists
+	pthread_mutex_lock(mut);
 	int fd = open(name, (O_CREAT|O_EXCL|O_WRONLY), 0777);
+	
 	if (fd > 0){
 		char* firstLine = malloc(sizeof(char)*(len+2));
 		snprintf(firstLine, len+1, "%-20s|%-10s|%-6s|%-20s|%-30s\n", "quando", "quem", "balcao", "o_que", "canal criado/usado");		
@@ -19,6 +21,7 @@ void printLog(char* name, char* who, int number, char* what, char* channel){
 	if (fd < 0 && errno == EEXIST)
 		fd = open(name, O_WRONLY |O_APPEND, 0777);
 	if (fd < 0){
+		pthread_mutex_unlock(mut);
 		perror("loja.c:Couldn't open log file");
 		return;
 	} 
@@ -29,6 +32,7 @@ void printLog(char* name, char* who, int number, char* what, char* channel){
 	time.tm_hour,time.tm_min, time.tm_sec, who,number, what, channel);
 	write(fd, line, len);
 	close(fd);
+	pthread_mutex_unlock(mut);
 	free(line);
 	return;
 }

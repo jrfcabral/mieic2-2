@@ -110,23 +110,25 @@ sem_t* semTryOpen(){
 } 
 
 int initShm(mem_part *mem, char* shmName){
-    printLog(shmName+1, "Balcao ", 0, "inicializa_mempart", "-");
+    printLog(shmName+1, "Balcao ", 0, "inicializa_mempart", "-", &mem->logmutex);
     puts("initing shared memory");    
     strncpy(mem->nome_sem, SEM_NAME,strlen(SEM_NAME)+1);
     time(&(mem->data_abert_loja));
-    strncpy(mem->nome_mem, shmName+1, strlen(shmName)+1);  
+    strncpy(mem->nome_mem, shmName+1, strlen(shmName)+1);
+    pthread_mutexattr_t attrmutex;
+    pthread_mutexattr_init(&attrmutex);
+    pthread_mutexattr_setpshared(&attrmutex, PTHREAD_PROCESS_SHARED);
+    pthread_mutex_init(&mem->logmutex, &attrmutex);  
     int i;
     for (i = 0; i < MAX_LINES;i++){
-        pthread_mutexattr_t attrmutex;
-        pthread_mutexattr_init(&attrmutex);
-        pthread_mutexattr_setpshared(&attrmutex, PTHREAD_PROCESS_SHARED);
         pthread_mutex_init(&(mem->tabelas[i].mutex), &attrmutex);
-        pthread_mutexattr_destroy(&attrmutex);
+
         pthread_mutex_lock(&(mem->tabelas[i].mutex));
         mem->tabelas[i].encerrado = 1;
         pthread_mutex_unlock(&(mem->tabelas[i].mutex));
     }
     mem->data_abert_loja = time(NULL);
+    pthread_mutexattr_destroy(&attrmutex);
     return 0;
 }
 
@@ -148,7 +150,7 @@ int createBalcao(mem_part *mem){
     pthread_mutex_unlock(&tabela->mutex);
     mem->nBalcoes++;
     mem->balcoesDisponiveis++;
-    printLog(mem->nome_mem, "Balcao ", mem->nBalcoes-1, "cria_linha_mempart", tabela->nome_fifo);
+    printLog(mem->nome_mem, "Balcao ", mem->nBalcoes-1, "cria_linha_mempart", tabela->nome_fifo, &mem->logmutex);
     return (mem->nBalcoes-1);
 }
 void encerraBalcao(mem_part *mem, int balcao, sem_t* sem_id){
@@ -158,8 +160,9 @@ void encerraBalcao(mem_part *mem, int balcao, sem_t* sem_id){
     pthread_mutex_unlock(&mem->tabelas[balcao].mutex);
    	sem_wait(sem_id);
 	mem->balcoesDisponiveis--;
+    printLog(mem->nome_mem, "Balcao", balcao, "fecha_balcao", mem->tabelas[balcao].nome_fifo, &mem->logmutex);
 	sem_post(sem_id);    
-    printLog(mem->nome_mem, "Balcao", balcao, "fecha_balcao", mem->tabelas[balcao].nome_fifo);
+
 }
 void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName, int balcao){
     int i;
@@ -171,16 +174,19 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName, int balcao){
             allClosed = 0;
         pthread_mutex_unlock(&mem->tabelas[i].mutex);
     }
-    if (allClosed){
+    sem_wait(sem_id);    
+    if (mem->balcoesDisponiveis == 0){
 	genStats(sem_id, mem);
         puts("Ultimo balcao a ser encerrado: vou fechar a loja");
 		puts("Estatisticas disponiveis no ficheiro statistics.txt");
-        sem_wait(sem_id);
+        printLog(mem->nome_mem, "Balcao", balcao, "fecha_loja", mem->tabelas[balcao].nome_fifo, &mem->logmutex);        
         shm_unlink(shmName);
         sem_post(sem_id);
         sem_unlink(mem->nome_sem);
-        printLog(mem->nome_mem, "Balcao", balcao, "fecha_loja", mem->tabelas[balcao].nome_fifo);        
+        
     }
+    else
+        sem_post(sem_id);
     
 }
 void* atendimento(void* arg){
@@ -196,7 +202,7 @@ void* atendimento(void* arg){
 
     tabela->em_atendimento++;
     pthread_mutex_unlock(&info->mem->tabelas[info->balcaoNumber].mutex);
-    printLog(info->mem->nome_mem, "Balcao", info->balcaoNumber, "inicia_atend_cli", info->fifoName);
+    printLog(info->mem->nome_mem, "Balcao", info->balcaoNumber, "inicia_atend_cli", info->fifoName, &info->mem->logmutex);
     sleep(duracao);
     pthread_mutex_lock(&tabela->mutex);
     int fifo = open(info->fifoName, O_WRONLY, 0666);        
