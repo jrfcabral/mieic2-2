@@ -1,8 +1,16 @@
 #include "loja.h"
 
 
-int genStats(sem_t *sem_id, mem_part *mem){
-	int statFile = open("statistics.txt", (O_CREAT|O_TRUNC|O_RDWR), 0777);
+int genStats(sem_t *sem_id, mem_part *mem, char *shmName){
+	char *statFileName = (char *)malloc(strlen(shmName)+1+strlen("statistics.txt")+1*sizeof(char));
+	strcpy(statFileName, shmName+1);
+	strcat(statFileName, "Statistics.txt"); 
+	puts(statFileName);
+	int statFile = open(statFileName, (O_CREAT|O_TRUNC|O_RDWR), 0777);
+	if(statFile < 0){
+		perror("Couldn't open stat file: ");
+	}
+
 	int totClients = 0, i;
 	float totAvgTendTime = 0;
 
@@ -61,8 +69,9 @@ int genStats(sem_t *sem_id, mem_part *mem){
 	sprintf(timeOfCreationStore, "Data de abertura da loja: %d/%d/%d %d:%d:%d\n", time.tm_mday, time.tm_mon, time.tm_year+1900, time.tm_hour, time.tm_min, time.tm_sec);
 	write(statFile, timeOfCreationStore, strlen(timeOfCreationStore));
 	free(timeOfCreationStore);
-
+	
 	close(statFile);
+	free(statFileName);
 	return 0;
 }
 
@@ -187,9 +196,9 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName, int balcao){
     }
     sem_wait(sem_id);    
     if (mem->balcoesDisponiveis == 0){
-	genStats(sem_id, mem);
+	genStats(sem_id, mem, shmName);
         puts("Ultimo balcao a ser encerrado: vou fechar a loja");
-		puts("Estatisticas disponiveis no ficheiro statistics.txt");
+		puts("Estatisticas disponiveis no ficheiro [nome mem_partilhada]statistics.txt");
         printLog(mem->nome_mem, "Balcao", balcao, "fecha_loja", mem->tabelas[balcao].nome_fifo, &mem->logmutex);        
         shm_unlink(shmName);
         sem_post(sem_id);
