@@ -1,5 +1,5 @@
 PRAGMA foreign_keys=ON;
-BEGIN TRANSACTION;
+
 CREATE TABLE Pessoa(
 idPessoa INTEGER PRIMARY KEY,
 nome NVARCHAR(50) NOT NULL,
@@ -67,5 +67,6 @@ PRIMARY KEY(idPena, idIncidente));
 CREATE TABLE Recompensa(
 idRecompensa INTEGER PRIMARY KEY,
 motivo NVARCHAR(100),
-idPrisioneiro INTEGER REFERENCES Prisioneiro(idPessoa));
-COMMIT;
+idPrisioneiro INTEGER REFERENCES Prisioneiro(idPessoa)),
+idPessoa INTEGER REFERENCES Prisioneiro(idPessoa);
+

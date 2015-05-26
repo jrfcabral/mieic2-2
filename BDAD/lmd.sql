@@ -34,7 +34,7 @@ INSERT INTO "PrisioneiroIncidente" VALUES(0, 0);
 
 INSERT INTO "Pena" VALUES(2, '2015-14-02', 'Tentativa de Agrassao', 0);
 
-INSERT INTO "Penalizacao" VALUES(0, 0, 'Por tentativa de agrassao, o prisioneiro Fortes esta condenado meio ano de prisao');
+INSERT INTO "Penalizacao" VALUES(0, 0, 'Por tentativa de agrassao, o prisioneiro Fortes esta condenado meio ano de prisao',0);
 
 
 
