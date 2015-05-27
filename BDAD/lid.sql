@@ -55,26 +55,32 @@ ORDER BY Pessoa.nome;
 --Mostra todos os prisioneiros cuja primeira sentença foi pronunciada este mês
 SELECT Pessoa.nome, MIN(Pena.dataDeSentenca) as dataDePrimeiraSentenca, Pena.motivo FROM Pena INNER JOIN Pessoa ON Pena.idPessoa = Pessoa.idPessoa
 GROUP BY (Pessoa.idPessoa)
-HAVING MIN(Pena.dataDeSentenca) >= datetime('now', '-1 months');
+HAVING MIN(Pena.dataDeSentenca) >= datetime('now', '-1 months'); --max???
 
 --Mostrar numero de objetos pessoais que os presos estao autorizados a ter em cada cela
 SELECT Cela.numero AS NumeroCela, COUNT(ObjetoPessoal.idRecompensa) AS NumeroDeObjetos FROM Cela INNER JOIN Prisioneiro ON Prisioneiro.cela = Cela.numero INNER JOIN Recompensa ON Recompensa.idPrisioneiro = Prisioneiro.idPessoa INNER JOIN ObjetoPessoal ON ObjetoPessoal.idRecompensa = Recompensa.idRecompensa
 GROUP BY (Cela.numero);
 
 --Mostrar celas em que pelo menos 2 prisioneiros estiveram envolvidos no mesmo incidente
-SELECT Cela.numero, COUNT(Pessoa.idPessoa) AS NumeroDePrisioneirosInvolvidosNoMesmoIncidente FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN Cela ON Prisioneiro.cela = Cela.numero INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Prisioneiro.idPessoa 
+SELECT Cela.numero, COUNT(Pessoa.idPessoa) AS NumeroDePrisioneirosEnvolvidosNoMesmoIncidente FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN Cela ON Prisioneiro.cela = Cela.numero INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Prisioneiro.idPessoa 
 INNER JOIN Incidente ON Incidente.idIncidente = PrisioneiroIncidente.incidente
 GROUP BY idIncidente, cela
 HAVING COUNT(Pessoa.idPessoa) > 1;
 
---Mostra todos os prisioneiros que não se involveram num incidente há pelo menos um ano
+--Mostra todos os prisioneiros que não se envolvem num incidente há pelo menos um ano
 SELECT Pessoa.nome FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa LEFT OUTER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Pessoa.idPessoa LEFT OUTER JOIN Incidente ON Incidente.idIncidente = PrisioneiroIncidente.incidente
 GROUP BY Pessoa.idPessoa
-HAVING MIN(Incidente.data) < (datetime('now', '-1 years')) OR Incidente.data IS NULL;
+HAVING MIN(Incidente.data) < (datetime('now', '-1 years')) OR Incidente.data IS NULL; --max????
 
 --Mostra todos os funcionarios cujo rendimento está acima da média do rendimento dos funcionarios da prisão e por quanto
 SELECT Pessoa.nome, Funcionario.vencimento, Funcionario.cargo, Funcionario.vencimento - (SELECT AVG(Funcionario.vencimento) FROM Funcionario) AS VencimentoAcimaDaMedia FROM Pessoa INNER JOIN Funcionario ON Pessoa.idPessoa = Funcionario.idPessoa
 WHERE (SELECT AVG(Funcionario.vencimento) FROM Funcionario) < Funcionario.vencimento;
 
 --Mostrar todas as penas a que está associado um incidente ocorrido na prisão
-SELECT Pena.idPena, Pessoa.nome, Pena.motivo, * FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Prisioneiro.idPessoa INNER JOIN Pena ON Pena.idPessoa = Prisioneiro.idPessoa INNER JOIN Penalizacao ON Penalizacao.idPrisioneiro = Prisioneiro.idPessoa AND Penalizacao.idPena = Pena.idPena;
+SELECT Pena.idPena, Pessoa.nome, Pena.motivo FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Prisioneiro.idPessoa INNER JOIN Pena ON Pena.idPessoa = Prisioneiro.idPessoa INNER JOIN Penalizacao ON Penalizacao.idPessoa = Prisioneiro.idPessoa AND Penalizacao.idPena = Pena.idPena;
+
+--mostrar todos os pares de prisioneiros que estao na cela 0
+SELECT DISTINCT a.nome, b.nome FROM Pessoa a, Pessoa b, Prisioneiro
+WHERE a.idPessoa < b.idPessoa AND ( SELECT cela FROM Prisioneiro WHERE a.idPessoa = idPessoa) == 0 AND ( SELECT cela FROM Prisioneiro WHERE b.idPessoa = idPessoa) = 0;
+
+

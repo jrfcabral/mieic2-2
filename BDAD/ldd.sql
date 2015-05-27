@@ -19,8 +19,7 @@ cargo NVARCHAR(50) NOT NULL,
 horaDeEntrada NVARCHAR(8),
 horaDeSaida NVARCHAR(8),
 dataContratacao NVARCHAR(10) NOT NULL,
-vencimento INTEGER NOT NULL,
-CHECK(julianday(horaDeEntrada) < julianday(horaDeSaida)));
+vencimento INTEGER NOT NULL);
 
 CREATE TABLE TempoDeRecreio(
 idRecompensa INTEGER PRIMARY KEY REFERENCES Recompensa(idRecompensa),
@@ -63,7 +62,7 @@ idPena INTEGER REFERENCES Pena(idPena),
 idIncidente INTEGER REFERENCES Incidente(idIncidente),
 idPessoa INTEGER REFERENCES Prisioneiro(idPessoa),
 descricao NVARCHAR(100),
-PRIMARY KEY(idPena, idPessoa));
+PRIMARY KEY(idIncidente, idPessoa));
 
 CREATE TABLE Recompensa(
 idRecompensa INTEGER PRIMARY KEY,
