@@ -44,7 +44,7 @@ GROUP BY Pessoa.idPessoa
 HAVING COUNT(Pena.idPena) > 1;
 
 --Mostra celas com mais do que um prisioneiro
-SELECT Local.nome, Local.funcao, COUNT(Prisioneiro.idPessoa) AS NumeroDePrisioneiros FROM Prisioneiro INNER JOIN Pessoa ON Prisioneiro.idPessoa = Pessoa.idPessoa INNER JOIN Cela ON Prisioneiro.cela = Cela.idLocal INNER JOIN Local ON Local.idLocal = Cela.idLocal
+SELECT Local.nome, Local.funcao, COUNT(Prisioneiro.idPessoa) AS NumeroDePrisioneiros FROM Prisioneiro INNER JOIN Pessoa ON Prisioneiro.idPessoa = Pessoa.idPessoa INNER JOIN Cela ON Prisioneiro.cela = Cela.numero INNER JOIN Local ON Local.idLocal = Cela.idLocal
 GROUP BY Cela.idLocal
 HAVING COUNT(Prisioneiro.idPessoa) > 1;
 
@@ -62,7 +62,7 @@ SELECT Cela.numero, COUNT(ObjetoPessoal.idRecompensa) AS NumeroDeObjetos FROM Ce
 GROUP BY (Cela.numero);
 
 --Mostrar celas em que pelo menos 2 prisioneiros estiveram envolvidos no mesmo incidente
-SELECT Cela.numero, COUNT(Pessoa.idPessoa) AS NumeroDePrisioneirosInvolvidosNoMesmoIncidente FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN Cela ON Prisioneiro.cela = Cela.idLocal INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Prisioneiro.idPessoa 
+SELECT Cela.numero, COUNT(Pessoa.idPessoa) AS NumeroDePrisioneirosInvolvidosNoMesmoIncidente FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN Cela ON Prisioneiro.cela = Cela.numero INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Prisioneiro.idPessoa 
 INNER JOIN Incidente ON Incidente.idIncidente = PrisioneiroIncidente.incidente
 GROUP BY idIncidente, cela
 HAVING COUNT(Pessoa.idPessoa) > 1;
