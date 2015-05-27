@@ -68,6 +68,4 @@ PRIMARY KEY(idPena, idPessoa));
 CREATE TABLE Recompensa(
 idRecompensa INTEGER PRIMARY KEY,
 motivo NVARCHAR(100),
-idPrisioneiro INTEGER REFERENCES Prisioneiro(idPessoa),
-idPessoa INTEGER REFERENCES Prisioneiro(idPessoa));
-
+idPrisioneiro INTEGER REFERENCES Prisioneiro(idPessoa));

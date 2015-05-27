@@ -58,7 +58,7 @@ GROUP BY (Pessoa.idPessoa)
 HAVING MIN(Pena.dataDeSentenca) >= datetime('now', '-1 months');
 
 --Mostrar numero de objetos pessoais que os presos estao autorizados a ter em cada cela
-SELECT Cela.numero, COUNT(ObjetoPessoal.idRecompensa) AS NumeroDeObjetos FROM Cela INNER JOIN Prisioneiro ON Prisioneiro.cela = Cela.numero INNER JOIN Recompensa ON Recompensa.idPrisioneiro = Prisioneiro.idPessoa INNER JOIN ObjetoPessoal ON ObjetoPessoal.idRecompensa = Recompensa.idRecompensa
+SELECT Cela.numero AS NumeroCela, COUNT(ObjetoPessoal.idRecompensa) AS NumeroDeObjetos FROM Cela INNER JOIN Prisioneiro ON Prisioneiro.cela = Cela.numero INNER JOIN Recompensa ON Recompensa.idPrisioneiro = Prisioneiro.idPessoa INNER JOIN ObjetoPessoal ON ObjetoPessoal.idRecompensa = Recompensa.idRecompensa
 GROUP BY (Cela.numero);
 
 --Mostrar celas em que pelo menos 2 prisioneiros estiveram envolvidos no mesmo incidente
@@ -68,9 +68,9 @@ GROUP BY idIncidente, cela
 HAVING COUNT(Pessoa.idPessoa) > 1;
 
 --Mostra todos os prisioneiros que não se involveram num incidente há pelo menos um ano
-SELECT Pessoa.nome FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Pessoa.idPessoa INNER JOIN Incidente ON Incidente.idIncidente = PrisioneiroIncidente.incidente
+SELECT Pessoa.nome FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa LEFT OUTER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Pessoa.idPessoa LEFT OUTER JOIN Incidente ON Incidente.idIncidente = PrisioneiroIncidente.incidente
 GROUP BY Pessoa.idPessoa
-HAVING MIN(Incidente.data) < (datetime('now', '-1 years'));
+HAVING MIN(Incidente.data) < (datetime('now', '-1 years')) OR Incidente.data IS NULL;
 
 --Mostra todos os funcionarios cujo rendimento está acima da média do rendimento dos funcionarios da prisão e por quanto
 SELECT Pessoa.nome, Funcionario.vencimento, Funcionario.cargo, Funcionario.vencimento - (SELECT AVG(Funcionario.vencimento) FROM Funcionario) AS VencimentoAcimaDaMedia FROM Pessoa INNER JOIN Funcionario ON Pessoa.idPessoa = Funcionario.idPessoa
