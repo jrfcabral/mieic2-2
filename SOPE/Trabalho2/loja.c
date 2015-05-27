@@ -21,8 +21,12 @@ void printLog(char* name, char* who, int number, char* what, char* channel, mute
 		write(fd, firstLine, strlen(firstLine));
 		free(firstLine);
 	}
-	if (fd < 0 && errno == EEXIST)
-		fd = open(filename, O_WRONLY |O_APPEND, 0777);
+	if (fd < 0 && errno == EEXIST){
+	   if(!strncmp(what, "inicializa_mempart", strlen(what)))
+   		fd = open(filename, O_WRONLY |O_APPEND | O_TRUNC, 0777);
+   	else
+  			fd = open(filename, O_WRONLY |O_APPEND, 0777);
+   }
 	if (fd < 0){
 		free(filename);
 		pthread_mutex_unlock(mut);

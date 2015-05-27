@@ -39,7 +39,6 @@ sem_t* semTryOpen(mem_part *mem){
 	else{
 	    int i;
 	    sem_getvalue(sem_id, &i);
-	    printf("opened semaphore with value %d\n", i);		   	    
 	}
 	return sem_id;
 }
@@ -59,14 +58,14 @@ int genClient(mem_part *mem, sem_t *sem){
 	char *fifo = mkClientFifo();
 	int j = 0, minClientes = 9999999, minBalcao = 0;
 	sem_wait(sem);	
-	for(j = 0; j < mem->nBalcoes; j++){
-		printf("Num clientes em atendimento no balcao %d: %d\n", j, mem->tabelas[j].em_atendimento);
-		printf("%d\n", minClientes);
+	for(j = 0; j < mem->nBalcoes; j++){		
+		pthread_mutex_lock(&mem->tabelas[j].mutex);
 		int atend = mem->tabelas[j].em_atendimento;
-		if(atend < minClientes){
-			minClientes = atend;
-			minBalcao = j;
+		if(atend <= minClientes && mem->tabelas[j].encerrado == 0){
+  			minClientes = atend;
+		   minBalcao = j;			
 		}
+   	pthread_mutex_unlock(&mem->tabelas[j].mutex);
 	}
 	sem_post(sem);
 	int clienteFifo = open(fifo, O_RDWR, 0777);	
@@ -95,8 +94,7 @@ int genClient(mem_part *mem, sem_t *sem){
 		
 	write(balcaoFifo, &msg, sizeof(mensagemBalcao));
 	printLog(mem->nome_mem, "Cliente", minBalcao, "pede_atendimento", fifo, &mem->logmutex);
-	//esperar por atendimento	
-	puts("vou esperar para ser atendido");
+	//esperar por atendimento		
 	int atendido = 0;
 	char *atendimento = (char *)malloc(20*sizeof(char)+1);	
 	while(!atendido){

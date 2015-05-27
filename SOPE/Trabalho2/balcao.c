@@ -77,10 +77,10 @@ int genStats(sem_t *sem_id, mem_part *mem, char *shmName){
 
 
 int shmTryOpen(char *shmName){ 
-	puts("opening shared memory");
+
 	int shmFd = shm_open(shmName, (O_CREAT|O_EXCL|O_RDWR), 0666);
 	if(shmFd < 0 && errno == EEXIST){ //shm already exists	
-	    puts("shared memory already exists, opening it instead");    
+
 		shmFd = shm_open(shmName, (O_RDWR), 0666);
 		if(shmFd < 0){
 	       perror("balcao: fatal error! couldn't open shared memory");
@@ -92,11 +92,9 @@ int shmTryOpen(char *shmName){
 	    return -1;
 	}
 	    
-	else{
-	    puts("shared memory created");
-
+	else
 		ftruncate(shmFd, sizeof(mem_part));	    	
-	}
+	
 
 	return shmFd;
 }
@@ -124,7 +122,7 @@ sem_t* semTryOpen(char *shmName){
 
 int initShm(mem_part *mem, char* shmName){
     printLog(shmName+1, "Balcao ", 0, "inicializa_mempart", "-", &mem->logmutex);
-    puts("initing shared memory");
+    
 	
 	char *semName = (char *)malloc(strlen(shmName)+5*sizeof(char));
 	strcpy(semName, shmName);
@@ -159,13 +157,11 @@ int createBalcao(mem_part *mem){
     while(pthread_mutex_trylock(&tabela->mutex) == EBUSY){
         mem->nBalcoes++;
         tabela = mem->tabelas+mem->nBalcoes;
-    }
-    printf("creating balcao %d\n", mem->nBalcoes);  
+    }   
     tabela->balcao = mem->nBalcoes;
     time(&(tabela->tempo));
     tabela->duracao = -1;
     tabela->encerrado = 0;
-    //tabela->tempo = time(NULL);
     snprintf(tabela->nome_fifo,15, "/tmp/fb_%d", getpid()); 
     pthread_mutex_unlock(&tabela->mutex);
     mem->nBalcoes++;
@@ -197,7 +193,7 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName, int balcao){
     sem_wait(sem_id);    
     if (mem->balcoesDisponiveis == 0){
 	genStats(sem_id, mem, shmName);
-        puts("Ultimo balcao a ser encerrado: vou fechar a loja");
+        puts("Ultimo balcao a ser encerrado: a encerrar loja");
 		puts("Estatisticas disponiveis no ficheiro [nome mem_partilhada]statistics.txt");
         printLog(mem->nome_mem, "Balcao", balcao, "fecha_loja", mem->tabelas[balcao].nome_fifo, &mem->logmutex);        
         shm_unlink(shmName);
@@ -214,11 +210,11 @@ void* atendimento(void* arg){
     table *tabela = &info->mem->tabelas[info->balcaoNumber];
     pthread_mutex_lock(&tabela->mutex);
 
-    printf("%s a atender cliente cujo fifo privado é %s", tabela->nome_fifo, info->fifoName);
+    
     int duracao = tabela->em_atendimento +1;
 	 if(duracao > 10)
 	 	duracao = 10;
-    printf("e vai esperar %d segundos\n", duracao);
+    
 
     tabela->em_atendimento++;
     pthread_mutex_unlock(&info->mem->tabelas[info->balcaoNumber].mutex);
@@ -227,25 +223,17 @@ void* atendimento(void* arg){
     pthread_mutex_lock(&tabela->mutex);
     int fifo = open(info->fifoName, O_WRONLY | O_NONBLOCK, 0666);        
     if (fifo < 0)
-    {
-        puts("Couldn't open client fifo, it probably already ceased to exist by now");
+    {     
+       // perror("Couldn't open client fifo, it probably already ceased to exist by now");
         free(arg);
         pthread_mutex_unlock(&tabela->mutex);
         pthread_exit(NULL);
         
     }
     char mensagem[] = "fim_atendimento";
-    if (write(fifo, mensagem, strlen(mensagem)) == -1){
-        perror("The client fifo had already closed!");
-        free(arg);
-        pthread_mutex_unlock(&tabela->mutex);
-        close(fifo);
-        pthread_exit(NULL);
-    }
+    write(fifo, mensagem, strlen(mensagem));
 	
-    printf("%s atendido cliente cujo fifo privado é %s\n", tabela->nome_fifo, info->fifoName);
     tabela->tempo_med_atend = ( (tabela->tempo_med_atend*(float)tabela->ja_atendidos + (float)duracao)/((float)tabela->ja_atendidos+1) );
-    printf("tempo médio %f\n", tabela->tempo_med_atend);
     tabela->em_atendimento--;   
     tabela->ja_atendidos++;
     pthread_mutex_unlock(&tabela->mutex);
@@ -297,8 +285,10 @@ int main(int argc, char **argv){
     umask((mode_t) 0000);
     //abrir/criar e mapear memoria partilhada e abrir/criar o semaforo com nome
 	sem_t *sem_id =	semTryOpen(argv[1]);
-    if(sem_id == SEM_FAILED)
-        puts("failure");    
+    if(sem_id == SEM_FAILED){
+        perror("Couldn't open semaphore");
+        exit(-1);
+    }
 	sem_wait(sem_id);
 	int shared = shmTryOpen(argv[1]);
 	if (shared < -1){
@@ -327,8 +317,7 @@ int main(int argc, char **argv){
     //abre o fifo de atendimento    
 	char *fifoName = (char *)malloc(15*sizeof(char));
 	sprintf(fifoName, "/tmp/fb_%d", getpid());
-	mkfifo(fifoName, 0666);
-	printf("fifo de atendimento criado em %s\n", fifoName);
+	mkfifo(fifoName, 0666);	
 	int fifoFd = open(fifoName, (O_RDWR), 0666);	
     
     //prepara array que vai receber a informação dos threads de atendimento
@@ -350,11 +339,8 @@ int main(int argc, char **argv){
 	while(!msg.close){
         
 	    read(fifoFd, (void*)&msg, sizeof(mensagemBalcao));
-        puts("read from fifo"); 
-        puts(msg.fifoName);      
 	    if (!msg.close)
-	    {
-            puts("atender");
+	    {           
 	        clientsSize++;
 	        if ( (clients = realloc(clients, clientsSize*sizeof(pthread_t))) == NULL){
 	            perror("balcao: couldn't allocate thread space");
@@ -375,9 +361,14 @@ int main(int argc, char **argv){
 	}
     
     int i;
-    for(i = 0; i < clientsSize; i++)
+    puts("saiu do loop");
+    for(i = 0; i < clientsSize-1; i++){
+        setbuf(stdout, NULL);
+        printf("joining with thread %d\n", i);
         pthread_join(clients[i], NULL);
-    puts("qualquer");
+        printf("joined with thread %d\n", i);
+    }
+
     //fecha balcao, fecha loja caso seja o ultimo balcao a fechar e apaga os fifos do balcao
 	encerraBalcao(mem, currentBalcao, sem_id);
 	encerraLoja(mem, sem_id, argv[1], currentBalcao);
@@ -385,6 +376,6 @@ int main(int argc, char **argv){
    unlink(fifoName);
    if (munmap(mem, sizeof(mem_part)) == -1)
        perror("balcao: error, couldn't unmap shared memory:");
-	puts("exiting normally");	
+
 	exit(0);
 }
