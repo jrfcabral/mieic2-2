@@ -225,9 +225,23 @@ void* atendimento(void* arg){
     printLog(info->mem->nome_mem, "Balcao", info->balcaoNumber, "inicia_atend_cli", info->fifoName, &info->mem->logmutex);
     sleep(duracao);
     pthread_mutex_lock(&tabela->mutex);
-    int fifo = open(info->fifoName, O_WRONLY, 0666);        
+    int fifo = open(info->fifoName, O_WRONLY | O_NONBLOCK, 0666);        
+    if (fifo < 0)
+    {
+        puts("Couldn't open client fifo, it probably already ceased to exist by now");
+        free(arg);
+        pthread_mutex_unlock(&tabela->mutex);
+        pthread_exit(NULL);
+        
+    }
     char mensagem[] = "fim_atendimento";
-    write(fifo, mensagem, strlen(mensagem));
+    if (write(fifo, mensagem, strlen(mensagem)) == -1){
+        perror("The client fifo had already closed!");
+        free(arg);
+        pthread_mutex_unlock(&tabela->mutex);
+        close(fifo);
+        pthread_exit(NULL);
+    }
 	
     printf("%s atendido cliente cujo fifo privado é %s\n", tabela->nome_fifo, info->fifoName);
     tabela->tempo_med_atend = ( (tabela->tempo_med_atend*(float)tabela->ja_atendidos + (float)duracao)/((float)tabela->ja_atendidos+1) );
@@ -273,6 +287,12 @@ int main(int argc, char **argv){
             puts(" Duration must be an integer > 0.");
         exit(-1);
     }
+     if (*argv[1] != '/'){
+            printf("balcao: fatal error, invalid memory name \"%s\" provided! Memory name must start with a /", argv[2]);
+            exit(-1);
+    }
+   
+    
     //alterar a umask para permitir que outros utilizadores acedam aos recursos criados por este process
     umask((mode_t) 0000);
     //abrir/criar e mapear memoria partilhada e abrir/criar o semaforo com nome
