@@ -181,6 +181,9 @@ void encerraBalcao(mem_part *mem, int balcao, sem_t* sem_id){
 }
 void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName, int balcao){
     int i;
+    pthread_mutex_lock(&mem->tabelas[balcao].mutex);
+    mem->tabelas[balcao].duracao = time(NULL) - mem->tabelas[balcao].tempo;
+    pthread_mutex_unlock(&mem->tabelas[balcao].mutex);
     int allClosed = 1;
     for (i = 0; i < MAX_LINES && allClosed;i++)
     {
