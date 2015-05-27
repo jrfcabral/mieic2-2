@@ -174,10 +174,9 @@ void encerraBalcao(mem_part *mem, int balcao, sem_t* sem_id){
     mem->tabelas[balcao].encerrado = 1; 
     mem->tabelas[balcao].duracao = time(NULL) - mem->tabelas[balcao].tempo;
     pthread_mutex_unlock(&mem->tabelas[balcao].mutex);
-   	sem_wait(sem_id);
-	mem->balcoesDisponiveis--;
+	
     printLog(mem->nome_mem, "Balcao", balcao, "fecha_balcao", mem->tabelas[balcao].nome_fifo, &mem->logmutex);
-	sem_post(sem_id);    
+
 
 }
 void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName, int balcao){
@@ -191,8 +190,9 @@ void encerraLoja(mem_part *mem, sem_t *sem_id, char* shmName, int balcao){
         pthread_mutex_unlock(&mem->tabelas[i].mutex);
     }
     sem_wait(sem_id);    
+    mem->balcoesDisponiveis--;
     if (mem->balcoesDisponiveis == 0){
-	genStats(sem_id, mem, shmName);
+	    genStats(sem_id, mem, shmName);
         puts("Ultimo balcao a ser encerrado: a encerrar loja");
 		puts("Estatisticas disponiveis no ficheiro [nome mem_partilhada]statistics.txt");
         printLog(mem->nome_mem, "Balcao", balcao, "fecha_loja", mem->tabelas[balcao].nome_fifo, &mem->logmutex);        
@@ -336,6 +336,7 @@ int main(int argc, char **argv){
     //le as mensagens recebidas e gera threads de atendimento
     mensagemBalcao msg;
     msg.close = 0;
+    int count = 0;
 	while(!msg.close){
         
 	    read(fifoFd, (void*)&msg, sizeof(mensagemBalcao));
@@ -350,27 +351,30 @@ int main(int argc, char **argv){
 	        strncpy(info->fifoName, msg.fifoName, 100);
 	        info->balcaoNumber = currentBalcao;
 	        info->mem = mem;
+		count++;
+		if (count > 15200)
+		printf("%d\n", count);
 	        
 	        if(pthread_create(&clients[clientsSize-1], NULL, atendimento, (void*)info)){
 	        clientsSize--;
 			free(info);
 			perror("Couldn't start new thread:");
-		}	
+		}
 
 	    }        
 	}
     
     int i;
-    puts("saiu do loop");
-    for(i = 0; i < clientsSize-1; i++){
-        setbuf(stdout, NULL);
-        printf("joining with thread %d\n", i);
-        pthread_join(clients[i], NULL);
-        printf("joined with thread %d\n", i);
-    }
-
-    //fecha balcao, fecha loja caso seja o ultimo balcao a fechar e apaga os fifos do balcao
+    
 	encerraBalcao(mem, currentBalcao, sem_id);
+    for(i = 0; i < clientsSize; i++){
+        pthread_join(clients[i], NULL);
+	
+        
+    }
+    printf("balcao %d encerrado\n", currentBalcao);
+    //fecha balcao, fecha loja caso seja o ultimo balcao a fechar e apaga os fifos do balcao
+
 	encerraLoja(mem, sem_id, argv[1], currentBalcao);
    sem_close(sem_id);
    unlink(fifoName);
