@@ -336,7 +336,7 @@ int main(int argc, char **argv){
     //le as mensagens recebidas e gera threads de atendimento
     mensagemBalcao msg;
     msg.close = 0;
-    int count = 0;
+
 	while(!msg.close){
         
 	    read(fifoFd, (void*)&msg, sizeof(mensagemBalcao));
@@ -351,15 +351,14 @@ int main(int argc, char **argv){
 	        strncpy(info->fifoName, msg.fifoName, 100);
 	        info->balcaoNumber = currentBalcao;
 	        info->mem = mem;
-		count++;
-		if (count > 15200)
-		printf("%d\n", count);
+		  
+		  
 	        
 	        if(pthread_create(&clients[clientsSize-1], NULL, atendimento, (void*)info)){
-	        clientsSize--;
-			free(info);
-			perror("Couldn't start new thread:");
-		}
+	            clientsSize--;
+			    free(info);
+			    perror("Couldn't start new thread:");
+		    }
 
 	    }        
 	}
