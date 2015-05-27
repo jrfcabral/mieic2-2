@@ -58,7 +58,7 @@ GROUP BY (Pessoa.idPessoa)
 HAVING MIN(Pena.dataDeSentenca) >= datetime('now', '-1 months');
 
 --Mostrar numero de objetos pessoais que os presos estao autorizados a ter em cada cela
-SELECT Cela.numero, COUNT(ObjetoPessoal.idRecompensa) AS NumeroDeObjetos FROM Cela INNER JOIN Prisioneiro ON Prisioneiro.cela = Cela.idLocal INNER JOIN Recompensa ON Recompensa.idPrisioneiro = Prisioneiro.idPessoa INNER JOIN ObjetoPessoal ON ObjetoPessoal.idRecompensa = Recompensa.idRecompensa
+SELECT Cela.numero, COUNT(ObjetoPessoal.idRecompensa) AS NumeroDeObjetos FROM Cela INNER JOIN Prisioneiro ON Prisioneiro.cela = Cela.numero INNER JOIN Recompensa ON Recompensa.idPrisioneiro = Prisioneiro.idPessoa INNER JOIN ObjetoPessoal ON ObjetoPessoal.idRecompensa = Recompensa.idRecompensa
 GROUP BY (Cela.numero);
 
 --Mostrar celas em que pelo menos 2 prisioneiros estiveram envolvidos no mesmo incidente
