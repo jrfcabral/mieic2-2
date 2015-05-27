@@ -1,5 +1,5 @@
 PRAGMA foreign_keys=ON;
-BEGIN TRANSACTION;
+
 INSERT INTO "Pessoa" VALUES(0, 'Antonio Fortes', '1994-05-22', 'cabo-vardiana');
 INSERT INTO "Pessoa" VALUES(1, 'Nicomedes Lemos', '1996-10-14','cabo-verdiana');
 INSERT INTO "Pessoa" VALUES(2, 'Joao Corca', '1979-02-12', 'portuguesa');
@@ -34,8 +34,5 @@ INSERT INTO "PrisioneiroIncidente" VALUES(0, 0);
 
 INSERT INTO "Pena" VALUES(2, '2015-14-02', 'Tentativa de Agrassao', 0);
 
-INSERT INTO "Penalizacao" VALUES(0, 0, 'Por tentativa de agrassao, o prisioneiro Fortes esta condenado meio ano de prisao',0);
+INSERT INTO "Penalizacao" VALUES(0, 0, 0, 'Por tentativa de agrassao, o prisioneiro Fortes esta condenado meio ano de prisao');
 
-
-
-COMMIT;

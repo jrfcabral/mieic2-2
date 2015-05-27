@@ -61,8 +61,9 @@ PRIMARY KEY(prisioneiro, incidente));
 CREATE TABLE Penalizacao(
 idPena INTEGER REFERENCES Pena(idPena),
 idIncidente INTEGER REFERENCES Incidente(idIncidente),
+idPessoa INTEGER REFERENCES Prisioneiro(idPessoa),
 descricao NVARCHAR(100),
-PRIMARY KEY(idPena, idIncidente));
+PRIMARY KEY(idPena, idPessoa));
 
 CREATE TABLE Recompensa(
 idRecompensa INTEGER PRIMARY KEY,

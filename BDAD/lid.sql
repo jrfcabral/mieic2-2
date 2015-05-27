@@ -1,4 +1,4 @@
---impossibilita adicionar recompensas a prisioneiros castigados nos ultimos 30 dias
+--impossibilita que se adicione recompensas a prisioneiros castigados nos ultimos 30 dias
 CREATE TRIGGER periodoDeNojo
 BEFORE INSERT ON Recompensa
 FOR EACH ROW
@@ -10,7 +10,7 @@ THEN RAISE(ABORT, 'Prisioneiro não pode ser recompensado pois cometeu infraçã
 END;
 END;
 
---remove recompensas quando é aplicada uma penalizaçao
+--remove todas as recompensas de um quando lhe é aplicada uma penalizaçao
 CREATE TRIGGER removeRecompensas
 AFTER INSERT ON Penalizacao
 BEGIN
@@ -66,3 +66,15 @@ SELECT Cela.numero, COUNT(Pessoa.idPessoa) AS NumeroDePrisioneirosInvolvidosNoMe
 INNER JOIN Incidente ON Incidente.idIncidente = PrisioneiroIncidente.incidente
 GROUP BY idIncidente, cela
 HAVING COUNT(Pessoa.idPessoa) > 1;
+
+--Mostra todos os prisioneiros que não se involveram num incidente há pelo menos um ano
+SELECT Pessoa.nome FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Pessoa.idPessoa INNER JOIN Incidente ON Incidente.idIncidente = PrisioneiroIncidente.incidente
+GROUP BY Pessoa.idPessoa
+HAVING MIN(Incidente.data) < (datetime('now', '-1 years'));
+
+--Mostra todos os funcionarios cujo rendimento está acima da média do rendimento dos funcionarios da prisão e por quanto
+SELECT Pessoa.nome, Funcionario.vencimento, Funcionario.cargo, Funcionario.vencimento - (SELECT AVG(Funcionario.vencimento) FROM Funcionario) AS VencimentoAcimaDaMedia FROM Pessoa INNER JOIN Funcionario ON Pessoa.idPessoa = Funcionario.idPessoa
+WHERE (SELECT AVG(Funcionario.vencimento) FROM Funcionario) < Funcionario.vencimento;
+
+--Mostrar todas as penas a que está associado um incidente ocorrido na prisão
+SELECT Pena.idPena, Pessoa.nome, Pena.motivo, * FROM Pessoa INNER JOIN Prisioneiro ON Pessoa.idPessoa = Prisioneiro.idPessoa INNER JOIN PrisioneiroIncidente ON PrisioneiroIncidente.prisioneiro = Prisioneiro.idPessoa INNER JOIN Pena ON Pena.idPessoa = Prisioneiro.idPessoa INNER JOIN Penalizacao ON Penalizacao.idPrisioneiro = Prisioneiro.idPessoa AND Penalizacao.idPena = Pena.idPena;

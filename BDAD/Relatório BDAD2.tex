@@ -77,7 +77,7 @@ Cela(\underline{número}, idLocal $\rightarrow$ local)\\
 Pena(\underline{idPena}, data de sentença, motivo, prisioneiro $\rightarrow$ Prisioneiro)\\
 Incidente(\underline{idIncidente}, descrição, data, local $\rightarrow$ Local, relator $\rightarrow$ Funcionário )\\
 PrisioneiroIncidente(\underline{prisioneiro $\rightarrow$ Prisioneiro}, \underline{incidente $\rightarrow$ Incidente})\\
-Penalização(\underline{idPena}$\rightarrow$ Pena, \underline{idIncidente} $\rightarrow$ Incidente, descrição)\\
+Penalização(\underline{idPessoa}$\rightarrow$ Prisioneiro, \underline{idIncidente} $\rightarrow$ Incidente, {idPena}$\rightarrow$ Pena, descrição)\\
 Recompensa(\underline{idRecompensa}, motivo, idPrisioneiro $\rightarrow$ Prisioneiro)\\
 
 
