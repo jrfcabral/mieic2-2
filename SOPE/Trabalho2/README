@@ -1,0 +1,5 @@
+Devido às limitações inerentes à forma como o enunciado impoe a geração de processos, bem como a outros fatores limitadores da API do linux nomeadamente no querespeita à geração de threads pode-se verificar que o programa balcao não consegue gerar threads de atendimento suficientes quando confrontado com um numero de clientes muito elevado simultaneamente. O numero maximo de clientes que o programa consegue comportar varia de computador para computador, aparentemente dependente da quantidade de memoria RAM disponivel, sendo que nos computadores disponiveis na FEUP esse limite parece rondar os 9000 a 10000 clientes.
+
+Os processos cliente desistirão de obter resposta por parte do balcao após tempo razoavel definido no ficheiro loja.h como "CLIENTE_TIMEOUT" e encerrarão por forma a evitar esgotar os pids disponiveis.
+
+O ficheiro de registo exemplo foi gerado correndo o bash script example.sh que encontra na pasta principal do trabalho.
