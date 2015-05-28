@@ -22,9 +22,10 @@
 \newpage
 \section{Introdução}
 No âmbito da unidade curricular de Bases de Dados foi solicitada a elaboração de um
-trabalho prático de tema livre. O presente relatório constitui a primeira das três entregas
-previstas nas regras desse trabalho, focando-se na modelação conceptual de uma base de
-dados para gestão de um instituto prisional.
+trabalho prático de tema livre. O presente relatório constitui a terceira das três entregas
+previstas nas regras desse trabalho, focando-se na síntese de queries pertinentes à 
+base de dados desenvolvida nas entregas anteriores, bem como
+à concepção de triggers que permitam maior segurança na base de dados acima referida.
 
 
 \section{Descrição de Contexto}
@@ -67,15 +68,15 @@ não aumentar a duração da pena.
 \end{center}
 \newpage
 \section{Esquema Relacional}
-Pessoa(\underline{idPessoa}, nome)
-Prisioneiro(\underline{número}, idPessoa $\rightarrow$ Pessoa, data de entrada, data de saída, cela $\rightarrow$ Cela)\\
-Funcionário(\underline{idFuncionário}, idPessoa $\rightarrow$ Pessoa, cargo, hora de entrada, hora de saída)\\
+Pessoa(\underline{idPessoa}, nome, dataNascimento, nacionalidade)\\
+Prisioneiro(\underline{ idPessoa} $\rightarrow$ Pessoa, data de entrada, data de saída, cela $\rightarrow$ Cela)\\
+Funcionário(\underline{idPessoa} $\rightarrow$ Pessoa, cargo, hora de entrada, hora de saída, dataContratação, vencimento)\\
 Tempo de Recreio(\underline{idRecompensa $\rightarrow$ Recompensa}, horaInicío, horaFim )\\
 Objeto Pessoal(\underline{idRecompensa $\rightarrow$ Recompensa}, descrição)\\
 Local(\underline{idLocal},nome, função)\\
 Cela(\underline{número}, idLocal $\rightarrow$ local)\\
-Pena(\underline{idPena}, data de sentença, motivo, prisioneiro $\rightarrow$ Prisioneiro)\\
-Incidente(\underline{idIncidente}, descrição, data, local $\rightarrow$ Local, relator $\rightarrow$ Funcionário )\\
+Pena(\underline{idPena}, data de sentença, motivo, idPessoa $\rightarrow$ Prisioneiro)\\
+Incidente(\underline{idIncidente}, descrição, data, idLocal $\rightarrow$ Local, relator $\rightarrow$ Funcionário )\\
 PrisioneiroIncidente(\underline{prisioneiro $\rightarrow$ Prisioneiro}, \underline{incidente $\rightarrow$ Incidente})\\
 Penalização(\underline{idPessoa}$\rightarrow$ Prisioneiro, \underline{idIncidente} $\rightarrow$ Incidente, {idPena}$\rightarrow$ Pena, descrição)\\
 Recompensa(\underline{idRecompensa}, motivo, idPrisioneiro $\rightarrow$ Prisioneiro)\\
