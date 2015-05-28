@@ -31,7 +31,7 @@ MyRobot.prototype.display = function () {
 		
 		this.scene.rotate(90*degToRad, 0, 1, 0);
 
-		this.scene.pushMatrix();
+		/*this.scene.pushMatrix();
 			this.scene.translate(0, 0.5, 0.5);
 			this.scene.scale(0.5, 0.5, 0.3);
 			this.wheelLeft.display();
@@ -49,18 +49,19 @@ MyRobot.prototype.display = function () {
 			this.scene.scale(0.8, 3.2, 0.8)
 			this.scene.rotate(90*degToRad, 1, 0, 0);
 			this.bodyBottom.display();
-		this.scene.popMatrix();
+		this.scene.popMatrix();*/
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, 2, 0);
-			this.scene.scale(0.55, 0.6, 0.55);
-			this.scene.rotate(-90*degToRad, 1, 0, 0);
+			this.scene.translate(0, 2.7, 0);
+			this.scene.scale(0.33, 0.4, 0.33);
+			this.scene.boardAppearance.apply();
 			this.head.display();
 		this.scene.popMatrix();
 
-		this.scene.pushMatrix();
-			this.scene.translate(0, 1.8, 0.5);
-			this.scene.scale(0.2, 0.2, 0.4);
+		/*this.scene.pushMatrix();
+			this.scene.translate(0, 1.8, 0.9);
+			this.scene.scale(0.12, 0.12, 0.35);
+			this.scene.rotate(90*degToRad, 1, 0, 0);
 			this.leftShoulder.display();
 		this.scene.popMatrix();
 
@@ -72,8 +73,9 @@ MyRobot.prototype.display = function () {
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, 1.8, -0.5);
-			this.scene.scale(0.2, 0.2, 0.4);
+			this.scene.translate(0, 1.8, -0.9);
+			this.scene.scale(0.12, 0.12, 0.35);
+			this.scene.rotate(-90*degToRad, 1, 0, 0);
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.rightShoulder.display();
 		this.scene.popMatrix();
@@ -85,7 +87,7 @@ MyRobot.prototype.display = function () {
 			this.scene.scale(0.2,0.2,1.7);;
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.rightArm.display();
-		this.scene.popMatrix();
+		this.scene.popMatrix();*/
 
 	this.scene.popMatrix();
 }

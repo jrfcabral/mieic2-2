@@ -274,11 +274,11 @@ LightingScene.prototype.display = function() {
 	this.popMatrix();
 		
 	//Lamp
-	this.pushMatrix();
+	/*this.pushMatrix();
 		this.rotate(-90 * degToRad, 1, 0, 0);
 		this.translate(8, -8, 8);
 		this.lamp.display();
-	this.popMatrix();
+	this.popMatrix();*/
 
 	//Clock
 	this.pushMatrix();
