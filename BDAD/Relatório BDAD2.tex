@@ -64,13 +64,13 @@ não aumentar a duração da pena.
 \newpage
 \section{Esquema Conceptual}
 \begin{center}
-  \makebox[\textwidth]{\includegraphics[width=\paperwidth]{losdiagramas.png}}
+  \makebox[\textwidth]{\includegraphics[width=\paperwidth]{los diagramas.png}}
 \end{center}
 \newpage
 \section{Esquema Relacional}
 Pessoa(\underline{idPessoa}, nome, dataNascimento, nacionalidade)\\
-Prisioneiro(\underline{ idPessoa} $\rightarrow$ Pessoa, dataEntrada, dataSaída, cela $\rightarrow$ Cela)\\
-Funcionário(\underline{idPessoa} $\rightarrow$ Pessoa, cargo, horaEntrada, horaSaída, dataContratação, vencimento)\\
+Prisioneiro(\underline{ idPessoa} $\rightarrow$ Pessoa, dataDeEntrada, dataDeSaída, cela $\rightarrow$ Cela)\\
+Funcionário(\underline{idPessoa} $\rightarrow$ Pessoa, cargo, horaDeEntrada, horaDeSaída, dataContratação, vencimento)\\
 Tempo de Recreio(\underline{idRecompensa $\rightarrow$ Recompensa}, horaInicío, horaFim )\\
 Objeto Pessoal(\underline{idRecompensa $\rightarrow$ Recompensa}, descrição)\\
 Local(\underline{idLocal},nome, função)\\
