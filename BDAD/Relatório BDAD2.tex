@@ -69,13 +69,13 @@ não aumentar a duração da pena.
 \newpage
 \section{Esquema Relacional}
 Pessoa(\underline{idPessoa}, nome, dataNascimento, nacionalidade)\\
-Prisioneiro(\underline{ idPessoa} $\rightarrow$ Pessoa, data de entrada, data de saída, cela $\rightarrow$ Cela)\\
-Funcionário(\underline{idPessoa} $\rightarrow$ Pessoa, cargo, hora de entrada, hora de saída, dataContratação, vencimento)\\
+Prisioneiro(\underline{ idPessoa} $\rightarrow$ Pessoa, dataEntrada, dataSaída, cela $\rightarrow$ Cela)\\
+Funcionário(\underline{idPessoa} $\rightarrow$ Pessoa, cargo, horaEntrada, horaSaída, dataContratação, vencimento)\\
 Tempo de Recreio(\underline{idRecompensa $\rightarrow$ Recompensa}, horaInicío, horaFim )\\
 Objeto Pessoal(\underline{idRecompensa $\rightarrow$ Recompensa}, descrição)\\
 Local(\underline{idLocal},nome, função)\\
 Cela(\underline{número}, idLocal $\rightarrow$ local)\\
-Pena(\underline{idPena}, data de sentença, motivo, idPessoa $\rightarrow$ Prisioneiro)\\
+Pena(\underline{idPena}, dataSentença, motivo, idPessoa $\rightarrow$ Prisioneiro)\\
 Incidente(\underline{idIncidente}, descrição, data, idLocal $\rightarrow$ Local, relator $\rightarrow$ Funcionário )\\
 PrisioneiroIncidente(\underline{prisioneiro $\rightarrow$ Prisioneiro}, \underline{incidente $\rightarrow$ Incidente})\\
 Penalização(\underline{idPessoa}$\rightarrow$ Prisioneiro, \underline{idIncidente} $\rightarrow$ Incidente, {idPena}$\rightarrow$ Pena, descrição)\\
