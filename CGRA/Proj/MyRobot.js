@@ -161,7 +161,7 @@ MyRobot.prototype.moveForward = function(speed){
 		return;
 
 	if(this.motion == 0){
-		if(this.armAngle <= 90){
+		if(this.armAngle <= 45){
 			this.armAngle +=5;
 		}
 		else{
@@ -169,7 +169,7 @@ MyRobot.prototype.moveForward = function(speed){
 		}
 	}
 	else if(this.motion = 1){
-		if(this.armAngle >= -90){
+		if(this.armAngle >= -45){
 			this.armAngle -=5;
 		}
 		else{
@@ -190,7 +190,7 @@ MyRobot.prototype.moveBackward = function(speed){
 		return;
 
 	if(this.motion == 0){
-		if(this.armAngle <= 90){
+		if(this.armAngle <= 45){
 			this.armAngle +=5;
 		}
 		else{
@@ -198,7 +198,7 @@ MyRobot.prototype.moveBackward = function(speed){
 		}
 	}
 	else if(this.motion = 1){
-		if(this.armAngle >= -90){
+		if(this.armAngle >= -45){
 			this.armAngle -=5;
 		}
 		else{
