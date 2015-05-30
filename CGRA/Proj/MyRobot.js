@@ -5,20 +5,23 @@
  */
 function MyRobot(scene, minS, maxS, minT, maxT) {
 	CGFobject.call(this,scene);
-	
-	this.wheelLeft = new MyRobotPart(this.scene, 20, 1);
-	this.wheelRight = new MyRobotPart(this.scene, 20, 1);
-	this.bodyTop = new MyRobotPart(this.scene, 20);
-	this.bodyBottom = new MyRobotPart(this.scene, 20);
-	this.head = new MyLamp(this.scene, 20, 20);
-	this.leftArm = new MyRobotPart(this.scene, 20, 1);
-	this.rightArm = new MyRobotPart(this.scene, 20, 1);
+	this.currTexture = 1;
+
+
+ 	
+	this.wheelLeft = new MyWheel(this.scene);
+	this.wheelRight = new MyWheel(this.scene);
+	this.bodyBottom = new MyRobotPart(this.scene);
+	this.head = new MyLamp(this.scene, 190, 190);
+	this.leftArm = new MyRobotPart(this.scene);
+	this.rightArm = new MyRobotPart(this.scene);
 	this.leftShoulder = new MyLamp(this.scene, 20, 20);
 	this.rightShoulder= new MyLamp(this.scene, 20, 20);
 
 	this.degToRad = Math.PI / 180.0;
 	this.angle = 0;
 	this.posX = 0;
+
 	this.posZ = 0;
 	this.armAngle = 0;
 	this.waveAngle = 0;
@@ -28,7 +31,6 @@ function MyRobot(scene, minS, maxS, minT, maxT) {
 	this.waveCount = 0;
 	this.lftWheelAngle = 0;
 	this.rgtWheelAngle = 0;
-
 	this.initBuffers();
 };
 
@@ -39,7 +41,7 @@ MyRobot.prototype.display = function () {
 	this.scene.pushMatrix();
 		
 		this.scene.rotate(90*degToRad, 0, 1, 0);
-
+		//this.materialTire.apply();
 		this.scene.pushMatrix();
 			this.scene.translate(0, 0.5, 0.5);
 			this.scene.scale(0.5, 0.5, 0.3);
@@ -56,31 +58,36 @@ MyRobot.prototype.display = function () {
 			this.wheelRight.display();
 		this.scene.popMatrix();
 
+
 		this.scene.pushMatrix();
 			this.scene.translate(0, 1.3, 0);
-			this.scene.scale(0.8, 1.5, 0.8);
+			this.scene.scale(0.79, 1.5, 0.79);
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.scene.rotate(90*degToRad, 1, 0, 0);
 			this.bodyBottom.display();
 		this.scene.popMatrix();
 
-		this.scene.pushMatrix();
-			this.scene.translate(0, 1.3, 0);
-			this.scene.scale(0.8, 1.5, 0.8);
-			this.scene.rotate(-90*degToRad, 1, 0, 0);
-			this.bodyTop.display();
-		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, 2, 0);
-			this.scene.scale(0.55, 0.6, 0.55);
-			this.scene.rotate(-90*degToRad, 1, 0, 0);
+			this.scene.translate(0, 2.7, 0);
+			this.scene.scale(0.325, 0.4, 0.325);
+			this.scene.loadHeadTexture();
 			this.head.display();
 		this.scene.popMatrix();
+	
+		this.scene.loadBodyTexture();
+		this.scene.pushMatrix();
+			this.scene.translate(0, 2.05, 0);
+			this.scene.scale(0.8, 3.2, 0.8)
+			this.scene.rotate(90*degToRad, 1, 0, 0);
+			this.bodyBottom.display();
+		this.scene.popMatrix();
+
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, 1.8, 0.5);
-			this.scene.scale(0.2, 0.2, 0.4);
+			this.scene.translate(0, 1.8, 0.9);
+			this.scene.scale(0.12, 0.12, 0.35);
+			this.scene.rotate(90*degToRad, 1, 0, 0);
 			this.leftShoulder.display();
 		this.scene.popMatrix();
 
@@ -100,8 +107,9 @@ MyRobot.prototype.display = function () {
 		
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, 1.8, -0.5);
-			this.scene.scale(0.2, 0.2, 0.4);
+			this.scene.translate(0, 1.8, -0.9);
+			this.scene.scale(0.12, 0.12, 0.35);
+			this.scene.rotate(-90*degToRad, 1, 0, 0);
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.rightShoulder.display();
 		this.scene.popMatrix();
@@ -137,7 +145,7 @@ MyRobot.prototype.setAngle = function(angle){
 	this.angle = angle;
 }
 
-MyRobot.prototype.setPod = function(x, y){
+MyRobot.prototype.setPos = function(x, y){
 	this.posX = x;
 	this.posY = y;
 }
@@ -250,3 +258,5 @@ MyRobot.prototype.turn = function(val){
 	}
 		
 };
+
+

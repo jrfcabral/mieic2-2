@@ -17,7 +17,10 @@ serialInclude([
 	'MyCylinderTop.js',
 	'MyClock.js',
 	'MyRobot.js',
+	'windowWall.js',
 	'MyRobotPart.js',
+	'MyWheel.js',
+
 	 
 
 	main=function() {
