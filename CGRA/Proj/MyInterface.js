@@ -61,7 +61,7 @@ MyInterface.prototype.processKeyboard = function(event) {
 	switch (event.keyCode)
 	{
 		case (97):	// only works for capital 'A', as it is
-			this.scene.bot.turn(1);
+			this.scene.bot.turn(this.scene.speed * 17);
 			break;
 		case(119):
 			this.scene.bot.moveForward(this.scene.speed);			
@@ -70,7 +70,7 @@ MyInterface.prototype.processKeyboard = function(event) {
 			this.scene.bot.moveBackward(this.scene.speed);
 			break;
 		case(100):
-			this.scene.bot.turn(-1);
+			this.scene.bot.turn(-this.scene.speed*17);
 			break;
 		case(111):
 			this.scene.bot.waving = 1;

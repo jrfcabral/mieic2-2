@@ -20,9 +20,8 @@ function MyRobot(scene, minS, maxS, minT, maxT) {
 
 	this.degToRad = Math.PI / 180.0;
 	this.angle = 0;
-	this.posX = 0;
-
-	this.posZ = 0;
+	this.posX = 8; //middle of the room
+	this.posZ = 8;
 	this.armAngle = 0;
 	this.waveAngle = 0;
 	this.motion = 0; //0 = increase; 1 = decrease
@@ -85,8 +84,8 @@ MyRobot.prototype.display = function () {
 
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, 1.8, 0.9);
-			this.scene.scale(0.12, 0.12, 0.35);
+			this.scene.translate(0, 1.8, 0.85);
+			this.scene.scale(0.12, 0.12, 0.30);
 			this.scene.rotate(90*degToRad, 1, 0, 0);
 			this.leftShoulder.display();
 		this.scene.popMatrix();
@@ -107,8 +106,8 @@ MyRobot.prototype.display = function () {
 		
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, 1.8, -0.9);
-			this.scene.scale(0.12, 0.12, 0.35);
+			this.scene.translate(0, 1.8, -0.85);
+			this.scene.scale(0.12, 0.12, 0.30);
 			this.scene.rotate(-90*degToRad, 1, 0, 0);
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.rightShoulder.display();
@@ -212,7 +211,7 @@ MyRobot.prototype.update = function(){
 	if(this.waving){
 		if(this.waveCount == 3){
 			if(this.waveAngle > 0){
-				this.waveAngle -= 15;
+				this.waveAngle -= 10;
 			}
 			else{
 				this.waveCount++;
@@ -221,8 +220,8 @@ MyRobot.prototype.update = function(){
 		else{
 			if(this.waveMotion == 0){
 			if(this.waveAngle <= 180){
-				this.waveAngle +=15;
-				console.log(this.waveAngle);
+				this.waveAngle +=10;
+				//console.log(this.waveAngle);
 			}
 			else{
 				this.waveMotion = 1;
@@ -233,8 +232,8 @@ MyRobot.prototype.update = function(){
 	}
 		else if(this.waveMotion = 1){
 			if(this.waveAngle >= 90){
-				this.waveAngle -=15;
-				console.log(this.waveAngle);
+				this.waveAngle -=10;
+				//console.log(this.waveAngle);
 			}
 			else{
 				this.waveMotion = 0;
