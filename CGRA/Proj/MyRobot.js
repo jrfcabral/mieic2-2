@@ -26,6 +26,8 @@ function MyRobot(scene, minS, maxS, minT, maxT) {
 	this.waveMotion = 0;
 	this.waving = 0;
 	this.waveCount = 0;
+	this.lftWheelAngle = 0;
+	this.rgtWheelAngle = 0;
 
 	this.initBuffers();
 };
@@ -41,19 +43,23 @@ MyRobot.prototype.display = function () {
 		this.scene.pushMatrix();
 			this.scene.translate(0, 0.5, 0.5);
 			this.scene.scale(0.5, 0.5, 0.3);
+			this.scene.rotate(this.lftWheelAngle*degToRad, 0, 0, 1);
+			this.scene.slidesAppearance.apply();
 			this.wheelLeft.display();
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
 			this.scene.translate(0, 0.5, -0.5);
 			this.scene.scale(0.5, 0.5, 0.3);
+			this.scene.rotate(this.rgtWheelAngle*degToRad, 0, 0, 1);
 			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.wheelRight.display();
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
 			this.scene.translate(0, 1.3, 0);
-			this.scene.scale(0.8, 1.5, 0.8)
+			this.scene.scale(0.8, 1.5, 0.8);
+			this.scene.rotate(180*degToRad, 0, 1, 0);
 			this.scene.rotate(90*degToRad, 1, 0, 0);
 			this.bodyBottom.display();
 		this.scene.popMatrix();
@@ -140,6 +146,9 @@ MyRobot.prototype.moveForward = function(speed){
 	this.posZ+=speed*Math.cos(this.scene.bot.angle*(Math.PI/180));
 	this.posX+=speed*Math.sin(this.scene.bot.angle*(Math.PI/180));
 
+	this.lftWheelAngle += this.scene.speed*45;
+	this.rgtWheelAngle += this.scene.speed*45;
+
 	if(this.waving)
 		return;
 
@@ -165,6 +174,9 @@ MyRobot.prototype.moveBackward = function(speed){
 
 	this.posZ-=speed*Math.cos(this.scene.bot.angle*(Math.PI/180));
 	this.posX-=speed*Math.sin(this.scene.bot.angle*(Math.PI/180));
+
+	this.lftWheelAngle -= this.scene.speed*45;
+	this.rgtWheelAngle -= this.scene.speed*45;
 
 	if(this.waving)
 		return;
@@ -223,4 +235,18 @@ MyRobot.prototype.update = function(){
 	}
 		}
 			
+};
+
+MyRobot.prototype.turn = function(val){
+	this.scene.bot.setAngle(this.scene.bot.angle + val);
+	
+	if(val < 0){
+		this.rgtWheelAngle -= this.scene.speed*45;
+		this.lftWheelAngle += this.scene.speed*45;
+	}
+	else if(val > 0){
+		this.rgtWheelAngle += this.scene.speed*45;
+		this.lftWheelAngle -= this.scene.speed*45;
+	}
+		
 };
