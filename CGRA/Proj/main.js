@@ -19,6 +19,7 @@ serialInclude([
 	'MyRobot.js',
 	'windowWall.js',
 	'MyRobotPart.js',
+	'MyWheel.js',
 
 	 
 

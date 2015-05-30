@@ -29,11 +29,11 @@
  		for(var j = 0; j < this.stacks; j++){
  			var y = Math.cos(ang2*j) - 1.0//2.0*Math.PI*j/this.stacks - 1.0;
  			var r = Math.sqrt(1.0-y^2);
- 			var x = /*r*/Math.sin(ang2*j)*Math.sin(ang*i);
- 			var z = /*r*/Math.sin(ang2*j)*Math.cos(ang*i);
+ 			var x = Math.sin(ang2*j)*Math.sin(ang*i);
+ 			var z = Math.sin(ang2*j)*Math.cos(ang*i);
  			this.vertices.push(r*x, r*y, r*z);
 
- 			this.normals.push(r*x, r*y, r*z);
+ 			this.normals.push(x, y, z);
  			this.texCoords.push(i/this.slices, j/this.stacks);
  		}
  	}

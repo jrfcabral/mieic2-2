@@ -97,7 +97,7 @@ LightingScene.prototype.init = function(application) {
 	this.slidesAppearance.setSpecular(0.05, 0.05,0.05,1);
 	this.slidesAppearance.setDiffuse(1,1,1,1);
 	this.slidesAppearance.setShininess(10);
-	this.slidesAppearance.loadTexture("../resources/images/metalhead.png");
+	this.slidesAppearance.loadTexture("../resources/images/slides.png");
 	this.slidesAppearance.setTextureWrap("CLAMP_TO_EDGE","CLAMP_TO_EDGE");
 	
 	this.boardAppearance = new CGFappearance(this);
@@ -123,7 +123,7 @@ LightingScene.prototype.init = function(application) {
 	this.impostorAppearance.setDiffuse(1,1,1,1);
 	this.impostorAppearance.setSpecular(0,0,0,1);
 	this.impostorAppearance.setShininess(1);
-	this.impostorAppearance.loadTexture("../resources/images/impostor.png");
+	this.impostorAppearance.loadTexture("../resources/images/impostor.jpg");
 	this.impostorAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
 
 
@@ -274,11 +274,12 @@ LightingScene.prototype.display = function() {
 	this.popMatrix();
 		
 	//Lamp
-	/*this.pushMatrix();
-		this.rotate(-90 * degToRad, 1, 0, 0);
-		this.translate(8, -8, 8);
+	this.materialA.apply();
+	this.pushMatrix();
+		this.translate(8, 9, 8);
+		this.scale(0.5,0.5,0.5);
 		this.lamp.display();
-	this.popMatrix();*/
+	this.popMatrix();
 
 	//Clock
 	this.pushMatrix();
