@@ -318,7 +318,7 @@ LightingScene.prototype.display = function() {
 	this.pushMatrix();
 		this.translate(-2.5, 4,6);		
 		this.rotate(90*degToRad, 0,1,0);
-		this.scale(35, 25,1);
+		this.scale(20, 10, 1);
 		this.impostor.display();
 	this.popMatrix();
 		
@@ -341,8 +341,7 @@ LightingScene.prototype.display = function() {
 	this.slidesAppearance.apply();
 	this.pushMatrix();
 		this.translate(this.bot.posX, 0, this.bot.posZ);
-		this.rotate(this.bot.angle*degToRad, 0, 1, 0);
-		//this.botAppearance.apply();
+		this.rotate(this.bot.angle*degToRad, 0, 1, 0);		
 		this.bot.display();
 	this.popMatrix();
 
@@ -360,7 +359,7 @@ LightingScene.prototype.loadHeadTexture = function(){
 
 LightingScene.prototype.loadBodyTexture = function(){
 	this.TexBodyMap[this.RobotTexture].apply();
-}
+} 
 
 LightingScene.prototype.update = function(currTime){
 	if(this.enableClock)
