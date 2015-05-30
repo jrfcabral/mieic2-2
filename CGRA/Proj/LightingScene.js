@@ -24,12 +24,13 @@ LightingScene.prototype.init = function(application) {
 
 	this.option1=true; 
 	this.option2=false; 	
-	this.speed=3;
+	this.speed=0.1;
 	this.Light0 = true;
 	this.Light1 = true;
 	this.Light2 = true;
 	this.Light3 = true;
 	this.enableClock = true;
+	
 
 	this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	this.gl.clearDepth(100.0);
@@ -126,6 +127,54 @@ LightingScene.prototype.init = function(application) {
 	this.impostorAppearance.loadTexture("../resources/images/impostor.jpg");
 	this.impostorAppearance.setTextureWrap("CLAMP_TO_EDGE", "CLAMP_TO_EDGE");
 
+	//define robot material options
+	this.materialHead1 = new CGFappearance(this);
+	this.materialHead1.setDiffuse(1.0, 1.0, 1.0, 1);
+	this.materialHead1.setSpecular(0.5, 0.5, 0.5, 1);	
+	this.materialHead1.setShininess(120);
+	this.materialHead1.loadTexture("../resources/images/head1.png");
+	this.materialBody1 = new CGFappearance(this);
+	this.materialBody1.setDiffuse(1.0, 1.0, 1.0, 1);
+	this.materialBody1.setSpecular(0.5, 0.5, 0.5, 1);	
+	this.materialBody1.setShininess(120);
+	this.materialBody1.loadTexture("../resources/images/body1.jpg");
+
+
+	this.materialHead2 = new CGFappearance(this);
+	this.materialHead2.setDiffuse(1.0, 1.0, 1.0, 1);
+	this.materialHead2.setSpecular(0.5, 0.5, 0.5, 1);	
+	this.materialHead2.setShininess(120);
+	this.materialHead2.loadTexture("../resources/images/head2.png");
+	this.materialBody2 = new CGFappearance(this);
+	this.materialBody2.setDiffuse(1.0, 1.0, 1.0, 1);
+	this.materialBody2.setSpecular(0.5, 0.5, 0.5, 1);	
+	this.materialBody2.setShininess(120);
+	this.materialBody2.loadTexture("../resources/images/body2.jpg");
+
+
+	this.materialHead3 = new CGFappearance(this);
+	this.materialHead3.setDiffuse(1.0, 1.0, 1.0, 1);
+	this.materialHead3.setSpecular(0.5, 0.5, 0.5, 1);	
+	this.materialHead3.setShininess(120);
+	this.materialHead3.loadTexture("../resources/images/head3.png");
+	this.materialBody3 = new CGFappearance(this);
+	this.materialBody3.setDiffuse(1.0, 1.0, 1.0, 1);
+	this.materialBody3.setSpecular(0.5, 0.5, 0.5, 1);	
+	this.materialBody3.setShininess(120);
+	this.materialBody3.loadTexture("../resources/images/body3.jpg");
+
+	//Robot switching textures support structures
+	this.RobotTexture = "metal";
+	this.TexBodyMap = {};
+	this.TexBodyMap["metal"] = this.materialBody1;
+	this.TexBodyMap["fabric"] =this.materialBody2;
+	this.TexBodyMap["carbon"] = this.materialBody3;
+	this.TexHeadMap = {};
+	this.TexHeadMap["metal"] = this.materialHead1;
+	this.TexHeadMap["fabric"] = this.materialHead2;
+	this.TexHeadMap["carbon"] = this.materialHead3;
+
+		
 
 	this.setUpdatePeriod(100);
 };
@@ -305,6 +354,14 @@ LightingScene.prototype.display = function() {
 	this.shader.unbind();
 };
 
+LightingScene.prototype.loadHeadTexture = function(){
+	this.TexHeadMap[this.RobotTexture].apply();
+}
+
+LightingScene.prototype.loadBodyTexture = function(){
+	this.TexBodyMap[this.RobotTexture].apply();
+}
+
 LightingScene.prototype.update = function(currTime){
 	if(this.enableClock)
 		this.clock.update(currTime);
@@ -339,8 +396,6 @@ LightingScene.prototype.update = function(currTime){
 
 };
 
-LightingScene.prototype.doSomething = function ()
-{ console.log("Doing something..."); };
 
 LightingScene.prototype.ToggleClock = function(){
 	if(this.enableClock)

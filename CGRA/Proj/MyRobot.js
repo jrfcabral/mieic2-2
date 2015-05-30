@@ -7,17 +7,6 @@ function MyRobot(scene, minS, maxS, minT, maxT) {
 	CGFobject.call(this,scene);
 	this.currTexture = 1;
 
-	//define material options
-	this.materialHead = new CGFappearance(scene);
-	this.materialHead.setDiffuse(1.0, 1.0, 1.0, 1);
-	this.materialHead.setSpecular(0.5, 0.5, 0.5, 1);	
-	this.materialHead.setShininess(120);
-	this.materialHead.loadTexture("../resources/images/head2.png");
-	this.materialBody = new CGFappearance(scene);
-	this.materialBody.setDiffuse(1.0, 1.0, 1.0, 1);
-	this.materialBody.setSpecular(0.5, 0.5, 0.5, 1);	
-	this.materialBody.setShininess(120);
-	this.materialBody.loadTexture("../resources/images/body2.jpg");	
 
  	
 	this.wheelLeft = new MyWheel(this.scene);
@@ -63,12 +52,12 @@ MyRobot.prototype.display = function () {
 
 		this.scene.pushMatrix();
 			this.scene.translate(0, 2.7, 0);
-			this.scene.scale(0.33, 0.4, 0.33);
-			this.materialHead.apply();
+			this.scene.scale(0.325, 0.4, 0.325);
+			this.scene.loadHeadTexture();
 			this.head.display();
 		this.scene.popMatrix();
 	
-		this.materialBody.apply();
+		this.scene.loadBodyTexture();
 		this.scene.pushMatrix();
 			this.scene.translate(0, 2.05, 0);
 			this.scene.scale(0.8, 3.2, 0.8)
@@ -126,18 +115,4 @@ MyRobot.prototype.moveForward = function(speed){
 MyRobot.prototype.moveBackward = function(speed){
 	this.posZ-=speed*Math.cos(this.scene.bot.angle*(Math.PI/180));
 	this.posX-=speed*Math.sin(this.scene.bot.angle*(Math.PI/180));
-}
-MyRobot.prototype.changeTexture = function(number){
-	if(number == 1){
-		this.materialHead.loadTexture("../resources/images/body1.jpg");
-		this.materialBody.loadTexture("../resources/images/head1.png");
-	}
-	else if (number == 2){
-		this.materialHead.loadTexture("../resources/images/body2.jpg");
-		this.materialBody.loadTexture("../resources/images/head2.png");
-	}
-	else if (number == 3){
-		this.materialHead.loadTexture("../resources/images/body3.jpg");
-		this.materialBody.loadTexture("../resources/images/body3.jpg");
-	}
 }
