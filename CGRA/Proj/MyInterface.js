@@ -26,7 +26,7 @@ MyInterface.prototype.init = function(application) {
 	this.gui = new dat.GUI();
 
 	
-	this.gui.add(this.scene, 'RobotTexture', [ 'metal', 'fabric', 'carbon' ] );
+	this.gui.add(this.scene, 'RobotTexture', [ 'metal', 'fabric', 'carbon', 'Android' ] );
 	
 	// add a slider
 	// must be a numeric variable of the scene, initialized in scene.init e.g.

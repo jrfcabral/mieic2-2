@@ -17,6 +17,8 @@ function MyRobot(scene, minS, maxS, minT, maxT) {
 	this.rightArm = new MyRobotPart(this.scene);
 	this.leftShoulder = new MyLamp(this.scene, 20, 20);
 	this.rightShoulder= new MyLamp(this.scene, 20, 20);
+	this.leftAntenna = new MyRobotPart(this.scene);
+	this.rightAntenna = new MyRobotPart(this.scene);
 
 	this.degToRad = Math.PI / 180.0;
 	this.angle = 0;
@@ -45,7 +47,7 @@ MyRobot.prototype.display = function () {
 			this.scene.translate(0, 0.5, 0.5);
 			this.scene.scale(0.5, 0.5, 0.3);
 			this.scene.rotate(this.lftWheelAngle*degToRad, 0, 0, 1);
-			this.scene.slidesAppearance.apply();
+			//this.scene.slidesAppearance.apply();
 			this.wheelLeft.display();
 		this.scene.popMatrix();
 
@@ -135,6 +137,24 @@ MyRobot.prototype.display = function () {
 			this.rightArm.display();
 		this.scene.popMatrix();
 
+	if(this.scene.RobotTexture == "Android"){
+		this.scene.pushMatrix();
+			this.scene.translate(0, 2.5, 0.2);
+			this.scene.rotate(30*degToRad, 1, 0, 0);
+			this.scene.scale(0.05, 0.7, 0.05);
+			this.scene.rotate(-90*degToRad, 1, 0, 0);
+			this.leftAntenna.display();
+		this.scene.popMatrix();
+
+		this.scene.pushMatrix();
+			this.scene.translate(0, 2.5, -0.2);
+			this.scene.rotate(-30*degToRad, 1, 0, 0);
+			this.scene.scale(0.05, 0.7, 0.05);
+			this.scene.rotate(-90*degToRad, 1, 0, 0);
+			this.leftAntenna.display();
+		this.scene.popMatrix();
+	}
+	
 		
 
 	this.scene.popMatrix();

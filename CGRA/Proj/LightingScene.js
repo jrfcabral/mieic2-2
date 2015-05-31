@@ -165,17 +165,30 @@ LightingScene.prototype.init = function(application) {
 	this.materialBody3.setShininess(120);
 	this.materialBody3.loadTexture("../resources/images/body3.jpg");
 
+
+	this.materialHead4 = new CGFappearance(this);
+	this.materialHead4.setDiffuse(1.0, 1.0, 1.0, 1);
+	this.materialHead4.setSpecular(0.5, 0.5, 0.5, 1);	
+	this.materialHead4.setShininess(120);
+	this.materialHead4.loadTexture("../resources/images/head4.png");
+	this.materialBody4 = new CGFappearance(this);
+	this.materialBody4.setDiffuse(1.0, 1.0, 1.0, 1);
+	this.materialBody4.setSpecular(0.5, 0.5, 0.5, 1);	
+	this.materialBody4.setShininess(120);
+	this.materialBody4.loadTexture("../resources/images/body4.png");
+
 	//Robot switching textures support structures
 	this.RobotTexture = "metal";
 	this.TexBodyMap = {};
 	this.TexBodyMap["metal"] = this.materialBody1;
 	this.TexBodyMap["fabric"] =this.materialBody2;
 	this.TexBodyMap["carbon"] = this.materialBody3;
+	this.TexBodyMap["Android"] = this.materialBody4;
 	this.TexHeadMap = {};
 	this.TexHeadMap["metal"] = this.materialHead1;
 	this.TexHeadMap["fabric"] = this.materialHead2;
 	this.TexHeadMap["carbon"] = this.materialHead3;
-
+	this.TexHeadMap["Android"] = this.materialHead4;
 		
 
 	this.setUpdatePeriod(100);
@@ -191,20 +204,20 @@ LightingScene.prototype.initLights = function() {
 	this.shader.bind();
 	
 	// Positions for four lights
-	this.lights[0].setPosition(0, 0, 0, 1);
-	this.lights[1].setPosition(10.5, 2.0, 3.0, 1.0);
-	this.lights[2].setPosition(10.5, 2.0, 5.0, 1.0);
+	this.lights[0].setPosition(8, 2, 12, 1);
+	this.lights[1].setPosition(10.5, 6.0, 0.5, 1.0);
+	this.lights[2].setPosition(4, 6.0, 0.5, 1.0);
 	this.lights[3].setPosition(8, 8, 8, 1.0);
 
 
 	this.lights[0].setAmbient(0, 0, 0, 1);
 	this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
 	this.lights[0].setSpecular(1.0,1.0,0.0,1.0);
-	this.lights[0].setVisible(true);
+	//this.lights[0].setVisible(true);
 	
 	this.lights[1].setAmbient(0, 0, 0, 1);
 	this.lights[1].setDiffuse(1.0, 1.0, 1.0, 1.0);
-	this.lights[1].setVisible(true);
+	//this.lights[1].setVisible(true);
 	//this.lights[1].enable();
 
 	this.lights[2].setDiffuse(1.0,1.0,1.0,1.0);
@@ -212,7 +225,7 @@ LightingScene.prototype.initLights = function() {
 	this.lights[2].setQuadraticAttenuation(0);
 	this.lights[2].setLinearAttenuation(0.2);
 	this.lights[2].setConstantAttenuation(0);
-	this.lights[2].setVisible(true);
+	//this.lights[2].setVisible(true);
 	//this.lights[2].enable();
 
 	this.lights[3].setAmbient(0, 0, 0, 1);
@@ -340,7 +353,7 @@ LightingScene.prototype.display = function() {
 	this.popMatrix();
 
 	//Robot
-	this.slidesAppearance.apply();
+	//this.slidesAppearance.apply();
 	this.pushMatrix();
 		this.translate(this.bot.posX, 0, this.bot.posZ);
 		this.rotate(this.bot.angle*degToRad, 0, 1, 0);		
